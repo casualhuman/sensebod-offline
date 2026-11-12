@@ -1,0 +1,132 @@
+/* Admin home and the source list (ADM-M-Home, ADM-Source). */
+.adm-source__title {
+  display: block;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 800;
+}
+.adm-source > .adm-row > .sb-icon {
+  flex: none;
+  color: var(--sb-accent-text);
+}
+.adm-source__becomes {
+  display: block;
+  margin-top: 12px;
+}
+.adm-home__place {
+  margin-top: 12px;
+}
+.adm-home__laptop {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: transparent;
+  color: var(--sb-accent-text);
+  text-decoration: none;
+}
+.adm-home__laptop > .sb-icon {
+  flex: none;
+  margin-right: 12px;
+}
+.adm-home__laptop-title {
+  display: block;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+/* Jumbo menu (ADM-M-Menu): two columns of big tiles. */
+.adm-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 12px;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.adm-menu__tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 132px;
+  padding: 14px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 22px;
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  text-decoration: none;
+}
+.adm-menu__tile > .adm-disc {
+  margin-bottom: 10px;
+}
+.adm-menu__label {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 800;
+}
+.adm-menu__hint {
+  margin-top: 2px;
+  font-size: 16px;
+  line-height: 21px;
+  color: var(--sb-slate);
+}
+.adm-menu__tile[aria-current='page'] {
+  padding: 12px;
+  border: 4px solid var(--sb-accent);
+  background: var(--sb-accent-tint);
+}
+.adm-menu__here {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.adm-menu__here .sb-icon {
+  margin-right: 4px;
+}
+@media (min-width: 720px) {
+  .adm-menu__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Laptop source cards (ADM-Source) */
+.adm-source-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-color: var(--sb-edge);
+}
+.adm-source-card > * + * {
+  margin-top: 14px;
+}
+.adm-source-card__becomes {
+  padding-top: 12px;
+  border-top: 2px solid #e1eaf4;
+}
+.adm-source-card__action {
+  margin-top: auto;
+  padding-top: 14px;
+}
+.adm-drop {
+  display: block;
+  padding: 24px;
+  border: 3px dashed var(--sb-edge);
+  border-radius: 22px;
+  background: var(--sb-white);
+  text-align: center;
+}
+.adm-drop--over {
+  border-style: solid;
+  border-color: var(--sb-accent);
+  background: var(--sb-accent-tint);
+}
+.adm-drop > * + * {
+  margin-top: 10px;
+}

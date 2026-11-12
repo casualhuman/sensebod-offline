@@ -1,0 +1,666 @@
+/*
+ * Learner browsing (stream 2). Only what the shared catalogue does not have:
+ * the hero card, step heading, class picker, and the Child protection help
+ * pieces. Prefix `lrn-`. Written for the Android 8 floor (Chrome 58):
+ * no flex gap, grid-gap before gap, no inset / clamp / aspect-ratio / :has,
+ * and no movement at all (nothing here animates).
+ * Phone below 720px, tablet from 720px, laptop from 1100px.
+ */
+
+/* ---- small helpers ---- */
+.lrn-gap-top-sm {
+  margin-top: var(--sb-space-2);
+}
+.lrn-gap-top {
+  margin-top: var(--sb-space-4);
+}
+.lrn-gap-top-lg {
+  margin-top: var(--sb-space-6);
+}
+.lrn-regular {
+  font-weight: 400;
+}
+.lrn-semibold {
+  font-weight: 600;
+}
+.lrn-danger-text {
+  color: var(--sb-red-text);
+}
+.lrn-eyebrow {
+  font-size: var(--sb-text-body);
+  line-height: 27px;
+  font-weight: 700;
+  color: var(--sb-accent-text);
+}
+.lrn-intro > * + * {
+  margin-top: var(--sb-space-2);
+}
+.lrn-intro {
+  padding: 4px 4px 0;
+}
+.lrn-section-title {
+  margin-left: 4px;
+}
+.lrn-anchor {
+  scroll-margin-top: 16px; /* ignored before Chrome 69: the heading then sits at the very top */
+}
+
+/* ---- hero card: scene, badge on the picture edge, title, Listen ---- */
+.lrn-hero__body {
+  padding-bottom: 22px;
+}
+.lrn-hero__top {
+  display: flex;
+  align-items: flex-start;
+}
+.lrn-hero__title {
+  margin-top: var(--sb-space-2);
+}
+.lrn-hero__listen {
+  margin-top: var(--sb-space-4);
+}
+
+/* ---- panels and the icon + words row inside them ---- */
+.lrn-panel {
+  padding: 18px;
+}
+.lrn-media {
+  display: flex;
+  align-items: center;
+}
+.lrn-media__badge {
+  margin-right: 14px;
+}
+.lrn-badge--tint-ring {
+  border-color: var(--sb-accent-tint);
+  box-shadow: none;
+}
+.lrn-media__title {
+  font-size: var(--sb-text-body);
+  line-height: 26px;
+  font-weight: 700;
+}
+.lrn-media__title--lg {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 800;
+}
+.lrn-help-card__action {
+  margin-top: var(--sb-space-4);
+}
+
+/* "Leave this page (top right)…" on Who are you? */
+.lrn-note {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border: 2px solid var(--sb-divider);
+  border-radius: 18px;
+  background: var(--sb-white);
+  font-size: 16px;
+  line-height: 24px;
+}
+.lrn-note .sb-icon {
+  flex: none;
+  margin-right: 14px;
+}
+.lrn-note strong {
+  font-weight: 800;
+}
+.lrn-h1-lg {
+  font-size: 34px;
+  line-height: 40px;
+}
+
+/* ---- section heading with the "Step 1 of 2" pill ---- */
+.lrn-heading {
+  padding: 0 4px;
+}
+.lrn-heading > * + * {
+  margin-top: 4px;
+}
+.lrn-heading h2:focus {
+  outline: none; /* focus is moved here by script after a class is chosen */
+}
+.lrn-step-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  margin: 0 -4px 4px;
+  padding: 0 14px;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-accent-tint);
+  color: var(--sb-accent-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ---- class picker: big number tiles ---- */
+.lrn-classes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 12px;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lrn-classes--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.lrn-class {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 124px;
+  padding: 8px 6px;
+  border: 2px solid var(--sb-edge);
+  border-radius: var(--sb-radius-card);
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  text-align: center;
+  text-decoration: none;
+}
+.lrn-classes--3 .lrn-class {
+  min-height: 132px;
+}
+.lrn-class:active {
+  background: var(--sb-accent-tint);
+}
+.lrn-class__word {
+  font-size: var(--sb-text-body);
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-slate);
+}
+.lrn-class__number {
+  font-size: 60px;
+  line-height: 62px;
+  font-weight: 800;
+}
+.lrn-class__name {
+  font-size: var(--sb-text-topic);
+  line-height: 30px;
+  font-weight: 800;
+}
+.lrn-class__note {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 800;
+  color: var(--sb-accent-text);
+}
+/* chosen: thicker accent edge on the tint, plus a tick and the words "Your class" */
+.lrn-class[aria-current='true'] {
+  padding: 6px 4px;
+  border: 4px solid var(--sb-accent);
+  background: var(--sb-accent-tint);
+  color: var(--sb-accent-deep);
+}
+.lrn-class[aria-current='true'] .lrn-class__word {
+  color: var(--sb-accent-deep);
+}
+.lrn-class__tick {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+.lrn-class--unavailable {
+  border: 2px dashed var(--sb-quiet);
+  background: var(--sb-page-blue);
+}
+.lrn-class--unavailable .lrn-class__note {
+  color: var(--sb-slate);
+}
+
+/* ---- "You finished 1 of 4 lessons" ---- */
+.lrn-progress-panel {
+  padding: 16px 18px;
+  border: 2px solid var(--sb-divider);
+  border-radius: 20px;
+  background: var(--sb-white);
+}
+.lrn-progress-panel > * + * {
+  margin-top: 10px;
+}
+.lrn-progress-panel__words {
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.lrn-progress-panel__words .sb-icon {
+  flex: none;
+  margin-right: 10px;
+  color: var(--sb-accent);
+}
+
+/* ---- Who are you? audience card: "This is me" ---- */
+.lrn-audience .lrn-audience__body {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding-bottom: 22px;
+}
+.lrn-audience__pill {
+  order: 2;
+  margin-left: auto;
+}
+.lrn-audience__words {
+  order: 3;
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-top: 4px;
+}
+.lrn-stack-cards > :not(:first-child) {
+  margin-top: 18px;
+}
+
+/* ---- Save my progress ---- */
+.lrn-field-label {
+  margin: 20px 0 8px;
+  font-size: var(--sb-text-body);
+  line-height: 26px;
+  font-weight: 700;
+}
+.lrn-text-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--sb-target-min);
+  padding: 0 12px 0 6px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--sb-accent-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+.lrn-text-button--danger {
+  color: var(--sb-red-text);
+}
+.lrn-text-button .sb-icon {
+  margin-right: 8px;
+}
+.lrn-two-col > * + * {
+  margin-top: var(--sb-space-6);
+}
+
+/* ---- Child protection: Talk to someone you trust ---- */
+.lrn-trust__pictures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-gap: 3px;
+  gap: 3px;
+  background: var(--sb-white);
+}
+.lrn-trust__pictures .sb-picture::before {
+  padding-top: 125%; /* each drawing is 160x200 */
+}
+
+/* ---- Child protection: What to do if a child tells you (4 steps) ---- */
+.lrn-steps {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lrn-steps__item {
+  display: flex;
+  align-items: flex-start;
+}
+.lrn-steps__mark {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 16px;
+}
+/* the line that joins one step to the next */
+.lrn-steps__item:not(:last-child) .lrn-steps__mark::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--sb-edge);
+}
+.lrn-steps__badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border: 5px solid var(--sb-accent-tint);
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+.lrn-steps__number {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--sb-accent);
+  border-radius: 50%;
+  background: var(--sb-white);
+  color: var(--sb-accent-text);
+  font-size: 18px;
+  font-weight: 800;
+}
+.lrn-steps__words {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-top: 6px;
+}
+.lrn-steps__title {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 800;
+}
+.lrn-steps__text {
+  font-size: 17px;
+  line-height: 25px;
+}
+
+/* ---- Get help now ---- */
+.lrn-help-grid > * + * {
+  margin-top: var(--sb-space-4);
+}
+.lrn-danger {
+  border: 3px solid var(--sb-red);
+  border-radius: var(--sb-radius-card-lg);
+  background: var(--sb-white);
+  box-shadow: var(--sb-shadow);
+  overflow: hidden;
+}
+.lrn-danger__head {
+  padding: 16px 18px;
+  background: var(--sb-red-tint);
+}
+.lrn-danger__list {
+  margin: 0;
+  padding: 18px;
+  list-style: none;
+  font-size: var(--sb-text-body);
+  line-height: 26px;
+}
+.lrn-danger__list li {
+  display: flex;
+  align-items: center;
+}
+.lrn-danger__list li + li {
+  margin-top: 14px;
+}
+.lrn-danger__list strong {
+  font-weight: 800;
+}
+.lrn-danger__mark {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-right: 14px;
+  border-radius: 50%;
+  background: var(--sb-red-tint);
+  color: var(--sb-red-text);
+}
+.lrn-contact-box {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--sb-accent-tint);
+}
+.lrn-contact {
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.lrn-contact + .lrn-contact {
+  margin-top: 8px;
+}
+.lrn-contact .sb-icon {
+  flex: none;
+  margin-right: 12px;
+}
+.lrn-trusted {
+  margin-bottom: 0;
+  padding: 0;
+  list-style: none;
+}
+.lrn-trusted__item {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  background: var(--sb-accent-tint);
+  overflow: hidden;
+}
+.lrn-trusted__item + .lrn-trusted__item {
+  margin-top: 12px;
+}
+.lrn-trusted__label {
+  padding: 8px 14px;
+  font-size: var(--sb-text-body);
+  line-height: 26px;
+  font-weight: 700;
+  color: var(--sb-accent-strong);
+}
+
+/* ================= small phones (320 to 359 wide) ================= */
+@media (max-width: 359px) {
+  /*
+   * TODO(stream-1): two shared pieces are wider than a 320px screen
+   * (docs/team/REQUESTS.md "320px"). Until they are fixed in shared code:
+   *  - the Listen + language row wraps onto two lines on these screens;
+   *  - the logo in the one-row header (Back, Home, logo) is hidden. Home is
+   *    still one tap away on the Home button beside it. This rule reaches
+   *    the shared header, so it also applies to other screens once this
+   *    feature's styles are loaded; remove it with the shared fix.
+   */
+  .lrn-listen {
+    flex-wrap: wrap;
+  }
+  .lrn-listen > .sb-lang {
+    margin: 8px 0 0;
+  }
+  .sb-shell__header--single .sb-shell__logo-link {
+    display: none;
+  }
+  .lrn-hero__body,
+  .lrn-panel {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .lrn-class__number {
+    font-size: 52px;
+    line-height: 56px;
+  }
+  .lrn-steps__mark {
+    margin-right: 12px;
+  }
+}
+
+/* ================= tablet (design width 800) ================= */
+@media (min-width: 720px) {
+  /* hero: picture beside the words, badge on the picture's edge (CPB-Child-Tab) */
+  .lrn-hero {
+    display: flex;
+  }
+  .lrn-hero .lrn-hero__picture {
+    flex: none;
+    width: 52.5%;
+    max-width: 520px;
+  }
+  .lrn-hero .lrn-hero__body {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    padding: 24px 26px 24px 30px;
+  }
+  .lrn-hero .lrn-hero__badge {
+    margin: 0 14px 0 -70px;
+  }
+  .lrn-hero__top {
+    align-items: center;
+  }
+  .lrn-hero__title {
+    margin-top: 10px;
+    font-size: 38px;
+    line-height: 46px;
+  }
+  .lrn-h1-lg {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
+  .lrn-classes,
+  .lrn-classes--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-gap: 16px;
+    gap: 16px;
+  }
+
+  /* audience card: wide scene, then badge, words and "This is me" in one row (CPB-Who-Tab) */
+  .lrn-audience .lrn-audience__picture::before {
+    padding-top: 34.8%; /* 748x260 */
+  }
+  .lrn-audience .lrn-audience__body {
+    flex-wrap: nowrap;
+    padding: 0 26px 24px;
+  }
+  .lrn-audience__words {
+    order: 1;
+    flex: 1 1 0;
+    margin: 0 20px;
+    padding-top: 16px;
+  }
+  .lrn-audience__pill {
+    flex: none;
+    height: 56px;
+    margin-top: 20px;
+    padding: 0 18px 0 24px;
+    font-size: 19px;
+  }
+  .lrn-stack-cards > :not(:first-child) {
+    margin-top: 24px;
+  }
+
+  /* "Need help now?": words on the left, the red button on the right (CPB-Who-Tab) */
+  .lrn-help-card {
+    display: flex;
+    align-items: center;
+    padding: 20px 22px;
+  }
+  .lrn-help-card__words {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .lrn-help-card .lrn-help-card__action {
+    flex: none;
+    width: 290px;
+    margin: 0 0 0 18px;
+  }
+
+  .lrn-continue {
+    max-width: 480px;
+  }
+
+  .lrn-two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: var(--sb-space-6);
+    gap: var(--sb-space-6);
+    align-items: start;
+  }
+  .lrn-two-col > * + * {
+    margin-top: 0;
+  }
+
+  .lrn-help-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: var(--sb-space-5);
+    gap: var(--sb-space-5);
+    align-items: start;
+  }
+  .lrn-help-grid > * + * {
+    margin-top: 0;
+  }
+  .lrn-help-grid__wide {
+    grid-column: 1 / 3;
+  }
+  .lrn-trusted {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-gap: 12px;
+    gap: 12px;
+  }
+  .lrn-trusted__item + .lrn-trusted__item {
+    margin-top: 0;
+  }
+}
+
+/* ================= laptop (design width 1440) ================= */
+@media (min-width: 1100px) {
+  .lrn-narrow {
+    max-width: 640px;
+  }
+  .lrn-classes {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .lrn-classes--3 {
+    grid-template-columns: repeat(3, minmax(0, 220px));
+  }
+  .lrn-hero .lrn-hero__picture {
+    width: 40%;
+  }
+  .lrn-stack-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-gap: var(--sb-space-6);
+    gap: var(--sb-space-6);
+  }
+  .lrn-stack-cards > :not(:first-child) {
+    margin-top: 0;
+  }
+  /* three audience cards side by side: back to the stacked card of the phone board */
+  .lrn-audience .lrn-audience__picture::before {
+    padding-top: 55.56%;
+  }
+  .lrn-audience .lrn-audience__body {
+    flex-wrap: wrap;
+    padding: 0 20px 22px;
+  }
+  .lrn-audience__words {
+    order: 3;
+    flex: 0 0 100%;
+    margin: 4px 0 0;
+    padding-top: 0;
+  }
+  .lrn-audience__pill {
+    height: 48px;
+    margin-top: 10px;
+    padding: 0 14px 0 20px;
+    font-size: 17px;
+  }
+}

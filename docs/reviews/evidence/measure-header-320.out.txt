@@ -1,0 +1,176 @@
+
+single-row inner header (Agriculture lesson) @ 320px wide, 569px tall
+[
+ {
+  "bar": "sb-shell__bar sb-shell__bar--nav",
+  "barClientWidth": 320,
+  "barScrollWidth": 359,
+  "children": [
+   {
+    "what": "Back",
+    "left": 16,
+    "right": 124,
+    "width": 108
+   },
+   {
+    "what": "Home",
+    "left": 134,
+    "right": 249,
+    "width": 116
+   },
+   {
+    "what": "Sensebod home",
+    "left": 259,
+    "right": 359,
+    "width": 99
+   }
+  ],
+  "headerHeight": 78,
+  "position": "static"
+ }
+]
+document scrollWidth: 359
+
+single-row inner header (Agriculture lesson) @ 360px wide, 569px tall
+[
+ {
+  "bar": "sb-shell__bar sb-shell__bar--nav",
+  "barClientWidth": 360,
+  "barScrollWidth": 360,
+  "children": [
+   {
+    "what": "Back",
+    "left": 16,
+    "right": 124,
+    "width": 108
+   },
+   {
+    "what": "Home",
+    "left": 134,
+    "right": 249,
+    "width": 116
+   },
+   {
+    "what": "Sensebod home",
+    "left": 259,
+    "right": 359,
+    "width": 99
+   }
+  ],
+  "headerHeight": 78,
+  "position": "static"
+ }
+]
+document scrollWidth: 360
+
+quick-exit header (Child protection lesson) @ 320px wide, 569px tall
+[
+ {
+  "bar": "sb-shell__bar",
+  "barClientWidth": 320,
+  "barScrollWidth": 320,
+  "children": [
+   {
+    "what": "sb-shell__logo",
+    "left": 16,
+    "right": 115,
+    "width": 99
+   },
+   {
+    "what": "Leave this page",
+    "left": 125,
+    "right": 304,
+    "width": 179
+   }
+  ],
+  "headerHeight": 150,
+  "position": "sticky"
+ },
+ {
+  "bar": "sb-shell__bar sb-shell__bar--nav",
+  "barClientWidth": 320,
+  "barScrollWidth": 320,
+  "children": [
+   {
+    "what": "Back",
+    "left": 16,
+    "right": 124,
+    "width": 108
+   },
+   {
+    "what": "Home",
+    "left": 134,
+    "right": 249,
+    "width": 116
+   },
+   {
+    "what": "sb-shell__spacer",
+    "left": 249,
+    "right": 304,
+    "width": 55
+   }
+  ],
+  "headerHeight": 150,
+  "position": "sticky"
+ }
+]
+document scrollWidth: 326
+
+quick-exit header (Child protection lesson) @ 360px wide, 569px tall
+[
+ {
+  "bar": "sb-shell__bar",
+  "barClientWidth": 360,
+  "barScrollWidth": 360,
+  "children": [
+   {
+    "what": "sb-shell__logo",
+    "left": 16,
+    "right": 115,
+    "width": 99
+   },
+   {
+    "what": "sb-shell__spacer",
+    "left": 115,
+    "right": 127,
+    "width": 11
+   },
+   {
+    "what": "Leave this page",
+    "left": 137,
+    "right": 344,
+    "width": 207
+   }
+  ],
+  "headerHeight": 144,
+  "position": "sticky"
+ },
+ {
+  "bar": "sb-shell__bar sb-shell__bar--nav",
+  "barClientWidth": 360,
+  "barScrollWidth": 360,
+  "children": [
+   {
+    "what": "Back",
+    "left": 16,
+    "right": 124,
+    "width": 108
+   },
+   {
+    "what": "Home",
+    "left": 134,
+    "right": 249,
+    "width": 116
+   },
+   {
+    "what": "sb-shell__spacer",
+    "left": 249,
+    "right": 344,
+    "width": 95
+   }
+  ],
+  "headerHeight": 144,
+  "position": "sticky"
+ }
+]
+document scrollWidth: 360

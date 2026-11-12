@@ -1,0 +1,59 @@
+## 1. Overflow, touch targets (< 48px), smallest text
+
+Home (learner stub, PageShell home) @ 320px: scrollWidth 320; controls 9; smallest text 16px (button.sb-lang__option "English")
+Home (learner stub, PageShell home) @ 360px: scrollWidth 360; controls 9; smallest text 16px (button.sb-lang__option "English")
+Home (learner stub, PageShell home) @ 390px: scrollWidth 390; controls 9; smallest text 16px (button.sb-lang__option "English")
+Home (learner stub, PageShell home) @ 800px: scrollWidth 800; controls 9; smallest text 16px (button.sb-lang__option "English")
+Lesson, Child protection (quick exit shell) @ 320px: scrollWidth 326; controls 7; smallest text 16px (li.sb-facts__item "Length: [length]")
+Lesson, Child protection (quick exit shell) @ 360px: scrollWidth 360; controls 7; smallest text 16px (li.sb-facts__item "Length: [length]")
+Lesson, Child protection (quick exit shell) @ 390px: scrollWidth 390; controls 7; smallest text 16px (li.sb-facts__item "Length: [length]")
+Lesson, Child protection (quick exit shell) @ 800px: scrollWidth 800; controls 7; smallest text 16px (button.sb-lang__option "English")
+Lesson, Agriculture (single-row inner shell) @ 320px: scrollWidth 359; controls 7; smallest text 16px (li.sb-facts__item "Length: [length]")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Lesson, Agriculture (single-row inner shell) @ 360px: scrollWidth 360; controls 7; smallest text 16px (li.sb-facts__item "Length: [length]")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Lesson, Agriculture (single-row inner shell) @ 390px: scrollWidth 390; controls 7; smallest text 16px (li.sb-facts__item "Length: [length]")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Lesson, Agriculture (single-row inner shell) @ 800px: scrollWidth 800; controls 7; smallest text 16px (button.sb-lang__option "English")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 113x34
+Not found (inner shell) @ 320px: scrollWidth 359; controls 5; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Not found (inner shell) @ 360px: scrollWidth 360; controls 5; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Not found (inner shell) @ 390px: scrollWidth 390; controls 5; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Not found (inner shell) @ 800px: scrollWidth 800; controls 5; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 113x34
+Admin stub @ 320px: scrollWidth 359; controls 4; smallest text 17px (span.sb-btn__label "Back")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Admin stub @ 360px: scrollWidth 360; controls 4; smallest text 17px (span.sb-btn__label "Back")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Admin stub @ 390px: scrollWidth 390; controls 4; smallest text 17px (span.sb-btn__label "Back")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Admin stub @ 800px: scrollWidth 800; controls 4; smallest text 18px (a.sb-skip-link "Skip to the main part")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 113x34
+Kitchen sink (dev server, every shared component) @ 320px: scrollWidth 359; controls 50; smallest text 8px (text.[object "10")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Kitchen sink (dev server, every shared component) @ 360px: scrollWidth 360; controls 50; smallest text 8px (text.[object "10")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Kitchen sink (dev server, every shared component) @ 390px: scrollWidth 390; controls 50; smallest text 8px (text.[object "10")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 99x30
+Kitchen sink (dev server, every shared component) @ 800px: scrollWidth 800; controls 50; smallest text 8px (text.[object "10")
+    small target: <a.sb-shell__logo-link> "Sensebod home" 113x34
+
+## 2. Focus after in-app navigation
+
+after tapping a portal card: {"path":"/portal/primary","activeElement":"sb-main","title":"Page not found · Sensebod","scrollY":0}
+
+## 3. Failed feature download, then the network comes back (production build)
+
+lessons chunk blocked, opened a lesson in-app → This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home
+network restored, tapped "Go to Home" → / :: What do you want to learn today?
+opened the same lesson again in-app (network is fine) → This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home
+learner chunk blocked on first load of Home → This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home
+network restored, tapped "Go to Home" → This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home
+
+## 4. Bracket placeholders on screen
+
+kitchen sink: occurrences of "[length]": 7 · "[pages]": 1
+quiz lesson facts row: Length: | [length]

@@ -8,7 +8,7 @@
  * It resets the mock database to the seed each time, and remembers the admin
  * session cookie the way a browser would.
  */
-import { clearApiCache } from '../src/shared/api/client.ts';
+import { clearApiCache, forgetSubmissions } from '../src/shared/api/client.ts';
 import { handleMockRequest, mockControls, resetMockDb, type MockResponse } from './handler.ts';
 
 let cookie = '';
@@ -106,6 +106,7 @@ export function installMockApi(): MockApiHandle {
   resetMockDb();
   mockControls.setDelay(0);
   clearApiCache();
+  forgetSubmissions();
   cookie = '';
   globalThis.fetch = mockFetch as typeof fetch;
   (globalThis as unknown as { XMLHttpRequest: unknown }).XMLHttpRequest = MockXhr;

@@ -9,12 +9,14 @@
 import {
   createContext,
   useContext,
+  useMemo,
   useSyncExternalStore,
   type AnchorHTMLAttributes,
   type ComponentType,
   type MouseEvent,
   type ReactNode,
 } from 'react';
+import { visits } from './recover';
 
 export interface RouteLocation {
   pathname: string;
@@ -32,8 +34,17 @@ export interface RouteDef {
    * '/portal/:portalId', '/lesson/:lessonId/done', '/admin/*'.
    */
   path: string;
-  /** The screen. Wrap big screens in React.lazy so they load on demand. */
+  /** The screen. Wrap big screens in `lazyScreen` so they load on demand. */
   component: ComponentType;
+  /**
+   * Optional. By default every route, and every set of named params on it,
+   * gets its own screen instance: /lesson/a to /lesson/b mounts a new screen
+   * with fresh state. Routes that name the same `instance` (and use the same
+   * component) share ONE mounted screen instead, across the routes and
+   * across param changes. Such a screen must itself cope with params that
+   * change under it (key its children, reset its state).
+   */
+  instance?: string;
 }
 
 export interface NavigateOptions {
@@ -48,6 +59,7 @@ export interface NavigateOptions {
 const listeners = new Set<() => void>();
 
 function notify(): void {
+  visits.count += 1;
   listeners.forEach((listener) => listener());
 }
 
@@ -74,9 +86,14 @@ export function normalisePath(pathname: string): string {
   return pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname || '/';
 }
 
-/** Go to another screen without reloading the page. */
+/**
+ * Go to another screen without reloading the page. Going to the URL the
+ * learner is already on (a card tapped twice on a slow phone) replaces the
+ * history entry instead of adding one, so the browser's Back still leaves.
+ */
 export function navigate(to: string, options: NavigateOptions = {}): void {
-  if (options.replace) window.history.replaceState(null, '', to);
+  const here = window.location.pathname + window.location.search + window.location.hash;
+  if (options.replace || to === here) window.history.replaceState(null, '', to);
   else window.history.pushState(null, '', to);
   notify();
   if (!options.keepScroll) window.scrollTo(0, 0);
@@ -137,9 +154,14 @@ export function useParams<K extends string = string>(): Record<K, string> {
   return useContext(ParamsContext) as Record<K, string>;
 }
 
-/** Query string values: `useQuery().get('type')`. */
+/**
+ * Query string values: `useQuery().get('type')`. The same object is returned
+ * for as long as the query string is the same, so it is safe in a dependency
+ * list. Treat it as read-only.
+ */
 export function useQuery(): URLSearchParams {
-  return new URLSearchParams(useLocation().search);
+  const { search } = useLocation();
+  return useMemo(() => new URLSearchParams(search), [search]);
 }
 
 /* ---- components ---- */
@@ -150,7 +172,28 @@ export interface RoutesProps {
   notFound: ReactNode;
 }
 
-/** Renders the first route whose pattern matches the current path. */
+/**
+ * One screen instance per route and set of named params: going from
+ * /lesson/a to /lesson/b gives a new instance (no state, refs or running
+ * effects carried over). The wildcard is left out, so one '/admin/*' screen
+ * keeps its state across its own sub-steps. A route can opt out with
+ * `instance` (see RouteDef).
+ */
+function screenKey(route: RouteDef, params: RouteParams): string {
+  if (route.instance) return 'instance|' + route.instance;
+  let key = route.path;
+  for (const name of Object.keys(params)) {
+    if (name !== '*') key += '|' + params[name];
+  }
+  return key;
+}
+
+/**
+ * Renders the first route whose pattern matches the current path. The screen
+ * is mounted afresh whenever the route or one of its named params changes
+ * (see `screenKey`); a change of the query string or of the wildcard part
+ * keeps the instance.
+ */
 export function Routes({ routes, notFound }: RoutesProps) {
   const { pathname } = useLocation();
   const match = matchRoutes(routes, pathname);
@@ -158,7 +201,7 @@ export function Routes({ routes, notFound }: RoutesProps) {
   const Screen = match.route.component;
   return (
     <ParamsContext.Provider value={match.params}>
-      <Screen />
+      <Screen key={screenKey(match.route, match.params)} />
     </ParamsContext.Provider>
   );
 }

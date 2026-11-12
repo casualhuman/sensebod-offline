@@ -30,13 +30,34 @@ export interface SessionState {
 let state: SessionState | null = null;
 const listeners = new Set<() => void>();
 
+/** Keeps a stored learner only if it has the two fields every screen reads. */
+function asLearner(value: unknown): Learner | null {
+  if (typeof value !== 'object' || value === null) return null;
+  const candidate = value as Partial<Learner>;
+  if (typeof candidate.id !== 'string' || candidate.id === '' || typeof candidate.name !== 'string') return null;
+  return value as Learner;
+}
+
+/**
+ * Reads the stored session. Whatever is on the phone is checked, never
+ * trusted: phones are shared and long-lived, and an older or damaged value
+ * must give a guest session, not a blank page.
+ */
 function load(): SessionState {
-  const stored = readStored<Partial<SessionState>>(KEY, {});
+  const raw = readStored<unknown>(KEY, null);
+  const stored = (typeof raw === 'object' && raw !== null && !Array.isArray(raw) ? raw : {}) as Record<string, unknown>;
+  const known: Learner[] = [];
+  if (Array.isArray(stored.knownLearners)) {
+    for (const item of stored.knownLearners) {
+      const learner = asLearner(item);
+      if (learner && !known.some((other) => other.id === learner.id)) known.push(learner);
+    }
+  }
   return {
-    learner: stored.learner ?? null,
-    knownLearners: Array.isArray(stored.knownLearners) ? stored.knownLearners : [],
+    learner: asLearner(stored.learner),
+    knownLearners: known.slice(0, MAX_KNOWN_LEARNERS),
     language: stored.language === 'kri' ? 'kri' : 'en',
-    childProtectionAudience: stored.childProtectionAudience ?? null,
+    childProtectionAudience: typeof stored.childProtectionAudience === 'string' ? stored.childProtectionAudience : null,
   };
 }
 
@@ -85,9 +106,15 @@ export function forgetLearner(learnerId: string): void {
   });
 }
 
+/**
+ * Remembers the chosen language. The document's `lang` is deliberately left
+ * at "en": every string on screen is still English, and marking the page as
+ * Krio would make a screen reader pronounce English words with the wrong
+ * rules. When translated text exists, set `document.documentElement.lang`
+ * here AND at start-up in app/main.tsx (from getSession().language).
+ */
 export function setLanguage(language: LanguageCode): void {
-  update({ ...getSession(), language });
-  document.documentElement.lang = language === 'kri' ? 'kri' : 'en';
+  update({ ...getSession(), language: language === 'kri' ? 'kri' : 'en' });
 }
 
 export function setChildProtectionAudience(groupId: string | null): void {

@@ -3,7 +3,7 @@
  * docs/API-CONTRACT.md. The session is an HttpOnly cookie set by the Pi;
  * the client never sees or stores a token.
  */
-import { api, newRequestKey, uploadFile, type RequestOptions, type UploadHandle } from './client';
+import { api, submitOnce, uploadFile, type RequestOptions, type UploadHandle } from './client';
 import type {
   AdminCredentials,
   AdminLesson,
@@ -73,9 +73,9 @@ export function deleteUpload(uploadId: string, options?: RequestOptions): Promis
 }
 
 /* ---- lessons: create, place, picture, publish ---- */
-/** Creates a draft that is "Waiting to be placed". */
+/** Creates a draft that is "Waiting to be placed". Safe to repeat with the same input (see `submitOnce`). */
 export function createLesson(input: NewLesson, options?: RequestOptions): Promise<AdminLesson> {
-  return api.post('/admin/lessons', input, { idempotencyKey: newRequestKey(), ...options });
+  return submitOnce('/admin/lessons', input, options);
 }
 /** Title, placement ("Where does it go?"), picture choice, type override, text. */
 export function updateLesson(lessonId: string, patch: LessonPatch, options?: RequestOptions): Promise<AdminLesson> {
@@ -105,9 +105,9 @@ export function uploadPicture(file: File, alt: string, onProgress?: (sent: numbe
 export function getAdminSeries(seriesId: string, options?: RequestOptions): Promise<AdminSeries> {
   return api.get(`/admin/series/${enc(seriesId)}`, undefined, options);
 }
-/** "Start a new series". */
+/** "Start a new series". Safe to repeat with the same input (see `submitOnce`). */
 export function createSeries(input: NewSeries, options?: RequestOptions): Promise<AdminSeries> {
-  return api.post('/admin/series', input, { idempotencyKey: newRequestKey(), ...options });
+  return submitOnce('/admin/series', input, options);
 }
 /** "Save order". Send every lesson id; the quiz stays last. */
 export function saveSeriesOrder(seriesId: string, order: SeriesOrder, options?: RequestOptions): Promise<AdminSeries> {

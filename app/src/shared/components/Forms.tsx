@@ -111,11 +111,33 @@ export interface ChoiceGroupProps<V extends string> {
  * One-of-many choice as big rows: quiz answers, "Who are you?", admin
  * pickers. Default 2px edge on white; chosen = 4px accent edge on the tint
  * plus a tick and words, so it never depends on colour alone.
- * Arrow keys are not needed: every row is its own tab stop.
+ * Every row is its own tab stop (touch, TalkBack and Tab all reach each
+ * one); on a keyboard the arrow keys also move to and choose the next or
+ * previous row, as radio buttons do.
  */
 export function ChoiceGroup<V extends string>({ label, options, value, onChange, chosenNote, compact, disabled, className }: ChoiceGroupProps<V>) {
   return (
-    <div role="radiogroup" aria-label={label} className={cx('sb-choices', className)}>
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className={cx('sb-choices', className)}
+      onKeyDown={(event) => {
+        const step = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : event.key === 'ArrowUp' || event.key === 'ArrowLeft' ? -1 : 0;
+        if (step === 0 || disabled || options.length === 0) return;
+        const rows = event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+        let from = -1;
+        for (let i = 0; i < rows.length; i += 1) {
+          if (rows[i] === document.activeElement) from = i;
+        }
+        if (from < 0) return;
+        event.preventDefault();
+        const to = (from + step + options.length) % options.length;
+        const row = rows[to];
+        const option = options[to];
+        if (row) row.focus();
+        if (option) onChange(option.value);
+      }}
+    >
       {options.map((option, index) => {
         const chosen = option.value === value;
         return (

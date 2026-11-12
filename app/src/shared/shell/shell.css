@@ -44,8 +44,11 @@
   height: 30px;
 }
 .sb-shell__logo-link {
-  display: block;
+  /* 48px tall target around the 30px logo */
+  display: flex;
+  align-items: center;
   flex: none;
+  min-height: var(--sb-target-min);
   border-radius: 8px;
 }
 .sb-shell__spacer {
@@ -114,7 +117,9 @@
   align-items: stretch;
 }
 .sb-listen-bar > .sb-btn {
+  /* may shrink: long words wrap inside the button instead of pushing the row wider */
   flex: 1 1 auto;
+  min-width: 0;
   min-height: 60px;
 }
 .sb-listen-bar > .sb-lang {
@@ -127,6 +132,45 @@
   line-height: 24px;
   font-weight: 600;
   color: var(--sb-slate);
+}
+
+/*
+ * Narrow phones. The boards are drawn at 390px; these rules keep the header
+ * and the Listen row inside the screen below that, down to 320px.
+ * 360 to 375: Back + Home + logo need 375px with both gutters, so the row is
+ * tightened a little (it then needs 346px).
+ */
+@media (max-width: 375px) {
+  .sb-shell__bar > * + * {
+    margin-left: 8px;
+  }
+  .sb-shell__nav-btn {
+    padding-right: 13px;
+    padding-left: 7px;
+  }
+  .sb-shell__header--single .sb-shell__logo {
+    height: 26px;
+  }
+}
+/*
+ * 320 to 359: the logo in the one-row header goes (the Home button beside it
+ * does the same job), and the language switch drops under the Listen button.
+ */
+@media (max-width: 359px) {
+  .sb-shell__header--single .sb-shell__logo-link {
+    display: none;
+  }
+  .sb-listen-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .sb-listen-bar > .sb-btn {
+    flex: none;
+    width: 100%;
+  }
+  .sb-listen-bar > .sb-lang {
+    margin: 8px 0 0;
+  }
 }
 
 @media (min-width: 720px) {

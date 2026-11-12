@@ -76,36 +76,38 @@ export function LessonHeaderPill({ type, detail, className }: { type: LessonType
  * Facts row, drawn from the data tag:
  * [length] · Needs sound · Captions (Watch), Read along (Listen), [pages] pages (Read).
  */
-export function FactsRow({ tag, className }: { tag: LessonTag; className?: string }) {
+export function FactsRow({ tag, inline = false, className }: { tag: LessonTag; /** Inside a link or other phrasing content (a card): plain spans instead of a list. */ inline?: boolean; className?: string }) {
   const showLength = tag.type !== 'read' || tag.length !== null;
+  const Row = inline ? 'span' : 'ul';
+  const Item = inline ? 'span' : 'li';
   return (
-    <ul className={cx('sb-facts', className)}>
-      {tag.type === 'read' ? <li className="sb-facts__item">{formatPages(tag.pages)}</li> : null}
+    <Row className={cx('sb-facts', className)}>
+      {tag.type === 'read' ? <Item className="sb-facts__item">{formatPages(tag.pages)}</Item> : null}
       {showLength ? (
-        <li className="sb-facts__item">
+        <Item className="sb-facts__item">
           <IconClock size={22} />
           <span className="sb-visually-hidden">Length: </span>
           {tag.type === 'read' ? `${Math.max(1, Math.round((tag.length ?? 0) / 60))} min read` : formatLength(tag.length)}
-        </li>
+        </Item>
       ) : null}
       {tag.needsSound ? (
-        <li className="sb-facts__item">
+        <Item className="sb-facts__item">
           <IconSound size={22} />
           Needs sound
-        </li>
+        </Item>
       ) : null}
       {tag.captions ? (
-        <li className="sb-facts__item">
+        <Item className="sb-facts__item">
           <IconCaptions size={22} />
           Captions
-        </li>
+        </Item>
       ) : null}
       {tag.readAlong ? (
-        <li className="sb-facts__item">
+        <Item className="sb-facts__item">
           <IconRead size={22} />
           Read along
-        </li>
+        </Item>
       ) : null}
-    </ul>
+    </Row>
   );
 }

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample animation package</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#E8F0F9;color:#15233B;text-align:center;padding:24px}
+button{min-height:64px;padding:0 24px;border:0;border-radius:18px;background:#085CAA;color:#fff;font-size:20px;font-weight:bold}
+p{font-size:18px}
+</style>
+</head>
+<body>
+<p>Sample animation package. Everything it needs is inside this file.</p>
+<button id="tap" type="button">Tap me</button>
+<p id="count" role="status">Tapped 0 times</p>
+<script>
+var n = 0;
+document.getElementById('tap').addEventListener('click', function () {
+  n += 1;
+  document.getElementById('count').textContent = 'Tapped ' + n + ' times';
+});
+</script>
+</body>
+</html>

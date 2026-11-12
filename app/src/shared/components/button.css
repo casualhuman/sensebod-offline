@@ -1,0 +1,241 @@
+/* Buttons · 64-72px tall, icon and words (V3-Components "Buttons") */
+.sb-icon {
+  flex: none;
+  display: block;
+}
+
+.sb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--sb-button-md);
+  padding: 8px 20px;
+  border: 0;
+  border-radius: var(--sb-radius-button);
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  font-family: inherit;
+  font-size: 19px;
+  line-height: 24px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.sb-btn__icon {
+  flex: none;
+  display: flex;
+  margin-right: 12px;
+}
+.sb-btn__icon--after {
+  margin-right: 0;
+  margin-left: 10px;
+}
+.sb-btn--full {
+  display: flex;
+  width: 100%;
+}
+.sb-btn--lg {
+  min-height: var(--sb-button-lg);
+  border-radius: var(--sb-radius-button-lg);
+  font-size: var(--sb-text-button);
+}
+.sb-btn--sm {
+  min-height: var(--sb-button-sm);
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 18px;
+}
+.sb-btn--sm .sb-btn__icon {
+  margin-right: 8px;
+}
+
+/* pressed: darker fill with an inset top edge */
+.sb-btn:active,
+.sb-btn.is-pressed {
+  background: var(--sb-accent-pressed);
+  box-shadow: inset 0 5px 0 var(--sb-accent-deep);
+}
+
+/* secondary · full size, outlined */
+.sb-btn--secondary {
+  border: 3px solid var(--sb-accent);
+  background: var(--sb-white);
+  color: var(--sb-accent-text);
+  font-weight: 700;
+}
+.sb-btn--secondary:active,
+.sb-btn--secondary.is-pressed {
+  background: var(--sb-accent-tint);
+  box-shadow: none;
+}
+
+/* Listen · the only gold, ink text */
+.sb-btn--listen {
+  border: 2px solid var(--sb-gold-edge);
+  background: var(--sb-gold);
+  color: var(--sb-ink);
+}
+.sb-btn--listen:active,
+.sb-btn--listen.is-pressed {
+  background: #c99500;
+  box-shadow: inset 0 4px 0 var(--sb-gold-edge);
+}
+
+/* red: remove, wrong, urgent help only */
+.sb-btn--danger {
+  background: var(--sb-red);
+}
+.sb-btn--danger:active,
+.sb-btn--danger.is-pressed {
+  background: var(--sb-red-text);
+  box-shadow: inset 0 5px 0 #8f0e21;
+}
+.sb-btn--danger-outline {
+  border: 3px solid var(--sb-red);
+  background: var(--sb-white);
+  color: var(--sb-red-text);
+}
+.sb-btn--danger-outline:active,
+.sb-btn--danger-outline.is-pressed {
+  background: var(--sb-red-tint);
+  box-shadow: none;
+}
+
+/* green "correct" actions on any theme (Next question) */
+.sb-btn--success {
+  background: var(--sb-green);
+}
+.sb-btn--success:active,
+.sb-btn--success.is-pressed {
+  background: var(--sb-green-text);
+  box-shadow: inset 0 5px 0 var(--sb-green-deep);
+}
+
+/* quick exit: ink outline, deliberately not blue so it stands apart */
+.sb-btn--exit {
+  border: 3px solid var(--sb-ink);
+  background: var(--sb-white);
+  color: var(--sb-ink);
+}
+.sb-btn--exit:active,
+.sb-btn--exit.is-pressed {
+  background: var(--sb-disabled);
+  box-shadow: none;
+}
+
+/* not ready yet: dashed, grey, says what to do first */
+.sb-btn[disabled],
+.sb-btn.is-not-ready {
+  border: 2px dashed var(--sb-quiet);
+  background: var(--sb-disabled);
+  color: var(--sb-slate);
+  font-weight: 700;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* working: same colours, spinner in place of the icon */
+.sb-btn[aria-busy='true'] {
+  cursor: progress;
+}
+
+/* icon above the word (player controls, filter on small buttons) */
+.sb-btn--stacked {
+  flex-direction: column;
+  padding: 8px 6px;
+  font-size: 16px;
+  line-height: 22px;
+}
+.sb-btn--stacked .sb-btn__icon {
+  margin: 0 0 4px;
+}
+
+/* The spinner only turns when motion is allowed (see base.css). */
+@media (prefers-reduced-motion: no-preference) {
+  .sb-spinner {
+    animation: sb-spin 0.9s linear infinite;
+  }
+}
+@keyframes sb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Language · words, not flags */
+.sb-lang {
+  display: inline-flex;
+  border: 3px solid var(--sb-accent);
+  border-radius: var(--sb-radius-button);
+  overflow: hidden;
+  background: var(--sb-white);
+}
+.sb-lang__option {
+  min-height: var(--sb-target-min);
+  min-width: 64px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--sb-white);
+  color: var(--sb-accent-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+.sb-lang__option[aria-pressed='true'] {
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+.sb-lang__option:focus {
+  outline-offset: -4px;
+}
+
+/* Person chip · "Learning as Aminata" + Change */
+.sb-chip-row {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  padding: 6px;
+  border: 2px solid var(--sb-edge);
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-white);
+}
+.sb-chip-row__avatar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  font-size: 20px;
+  font-weight: 800;
+}
+.sb-chip-row__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 17px;
+  line-height: 24px;
+}
+.sb-chip-row__text strong {
+  font-weight: 800;
+}
+.sb-chip-row__action {
+  flex: none;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin-left: 8px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-accent-tint);
+  color: var(--sb-accent-text);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}

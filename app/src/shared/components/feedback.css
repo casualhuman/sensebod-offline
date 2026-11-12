@@ -1,0 +1,163 @@
+/* Progress · words first, then the bar */
+.sb-progress__words {
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.sb-progress__words .sb-icon {
+  margin-right: 10px;
+}
+.sb-progress--not-started .sb-progress__words {
+  color: var(--sb-slate);
+}
+.sb-progress--finished .sb-progress__words {
+  color: var(--sb-accent-strong);
+}
+.sb-progress__track {
+  display: block;
+  height: 16px;
+  margin-top: 8px;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-accent-tint);
+  overflow: hidden;
+}
+.sb-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-accent);
+}
+
+/* one segment per lesson: finished / started / not started */
+.sb-steps {
+  display: flex;
+  margin: 0 -3px;
+}
+.sb-steps__step {
+  flex: 1 1 0;
+  height: 16px;
+  margin: 0 3px;
+  border: 2px solid var(--sb-edge);
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-white);
+  overflow: hidden;
+}
+.sb-steps__step--finished {
+  border-color: var(--sb-accent);
+  background: var(--sb-accent);
+}
+.sb-steps__step--started {
+  border: 3px solid var(--sb-accent);
+  background: var(--sb-accent-tint);
+}
+.sb-steps__step--started::before {
+  content: '';
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--sb-accent);
+}
+
+/* Messages: saved / good to know / not in this bag / error */
+.sb-message {
+  display: flex;
+  padding: 18px;
+  border: 3px solid var(--sb-blue);
+  border-radius: 20px;
+  background: var(--sb-blue-tint);
+}
+.sb-message__badge {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-right: 14px;
+  border: 4px solid var(--sb-white);
+  border-radius: 50%;
+  background: var(--sb-blue);
+  color: var(--sb-white);
+}
+.sb-message__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sb-message__title {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 800;
+  color: var(--sb-blue-deep);
+}
+.sb-message__text {
+  font-size: 18px;
+  line-height: 27px;
+}
+.sb-message__action {
+  margin-top: 14px;
+}
+.sb-message--success {
+  border-color: var(--sb-green);
+  background: var(--sb-green-tint);
+}
+.sb-message--success .sb-message__badge {
+  background: var(--sb-green);
+}
+.sb-message--success .sb-message__title {
+  color: var(--sb-green-text);
+}
+.sb-message--empty {
+  border: 2px dashed var(--sb-quiet);
+  background: var(--sb-page-blue);
+}
+.sb-message--empty .sb-message__badge {
+  background: var(--sb-slate);
+}
+.sb-message--empty .sb-message__title {
+  color: var(--sb-ink);
+}
+.sb-message--error {
+  border-color: var(--sb-red);
+  background: var(--sb-red-tint);
+}
+.sb-message--error .sb-message__badge {
+  background: var(--sb-red);
+}
+.sb-message--error .sb-message__title {
+  color: var(--sb-red-text);
+}
+
+/* Loading: words with a spinner, never a blank screen */
+.sb-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: 24px 16px;
+  color: var(--sb-accent-text);
+  font-size: 19px;
+  font-weight: 700;
+}
+.sb-loading .sb-icon {
+  margin-right: 12px;
+}
+
+/* "Everything here is in this bag. No internet needed." */
+.sb-info-strip {
+  display: flex;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: var(--sb-accent-tint);
+  font-size: 16px;
+  line-height: 24px;
+}
+.sb-info-strip .sb-icon {
+  margin-right: 14px;
+  color: var(--sb-accent-text);
+}
+.sb-info-strip strong {
+  font-weight: 700;
+}

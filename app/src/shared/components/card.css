@@ -1,0 +1,209 @@
+/* Cards · white, 2px edge. A card that can be tapped has an edge of at least 3:1. */
+.sb-card {
+  display: block;
+  border: 2px solid var(--sb-divider);
+  border-radius: var(--sb-radius-card);
+  background: var(--sb-card);
+  box-shadow: var(--sb-shadow);
+  color: var(--sb-ink);
+  text-decoration: none;
+  overflow: hidden;
+}
+.sb-card--lg {
+  border-radius: var(--sb-radius-card-lg);
+}
+.sb-card--tappable {
+  border-color: var(--sb-edge);
+}
+/* the Agriculture portal card on Home, and the "current" card in a list */
+.sb-card--current {
+  border: 3px solid var(--sb-accent);
+}
+.sb-card--frame {
+  border-color: var(--sb-accent);
+}
+.sb-card--unavailable {
+  border: 2px dashed var(--sb-quiet);
+  background: var(--sb-page-blue);
+  box-shadow: none;
+}
+a.sb-card:active,
+button.sb-card:active {
+  background: var(--sb-accent-tint);
+}
+.sb-card__body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 20px;
+}
+.sb-card__body--padded {
+  padding-top: 18px;
+}
+
+/* Picture area: fixed shape via padding (aspect-ratio is not on Android 8) */
+.sb-picture {
+  position: relative;
+  display: block;
+  width: 100%;
+  background: var(--sb-accent-tint);
+  overflow: hidden;
+}
+.sb-picture::before {
+  content: '';
+  display: block;
+  padding-top: 55.56%; /* lesson 360x200 */
+}
+.sb-picture--portal::before {
+  padding-top: 41.9%; /* 358x150 */
+}
+.sb-picture--topic::before {
+  padding-top: 35.2%; /* 284x100 */
+}
+.sb-picture--header::before {
+  padding-top: 56.41%; /* 390x220 */
+}
+.sb-picture--square::before {
+  padding-top: 100%;
+}
+.sb-picture__img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+}
+.sb-illustration {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Round icon badge with a white ring, sitting on the picture edge */
+.sb-badge {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border: 4px solid var(--sb-white);
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  box-shadow: var(--sb-shadow);
+}
+.sb-badge--sm {
+  width: 48px;
+  height: 48px;
+  border-width: 0;
+  box-shadow: none;
+}
+.sb-badge--md {
+  width: 64px;
+  height: 64px;
+}
+.sb-badge--lg {
+  width: 76px;
+  height: 76px;
+  border-width: 5px;
+}
+.sb-badge--xl {
+  width: 80px;
+  height: 80px;
+  border-width: 5px;
+}
+.sb-badge--overlap {
+  margin-top: -34px;
+}
+.sb-badge--md.sb-badge--overlap {
+  margin-top: -32px;
+}
+.sb-badge--lg.sb-badge--overlap {
+  margin-top: -38px;
+}
+.sb-badge--xl.sb-badge--overlap {
+  margin-top: -40px;
+}
+.sb-badge--muted {
+  background: var(--sb-slate);
+  border-color: var(--sb-page-blue);
+}
+.sb-badge--success {
+  background: var(--sb-green);
+}
+.sb-badge--danger {
+  background: var(--sb-red);
+}
+
+/* Portal card · scene + badge + Open */
+.sb-portal-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 58px;
+}
+.sb-open-pill {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  margin-top: 10px;
+  padding: 0 14px 0 20px;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  font-size: 17px;
+  font-weight: 700;
+}
+.sb-open-pill .sb-icon {
+  margin-left: 6px;
+}
+.sb-portal-card__title {
+  margin-top: 8px;
+  font-size: var(--sb-text-card);
+  line-height: 34px;
+  font-weight: 800;
+}
+.sb-portal-card__text {
+  margin-top: 2px;
+  font-size: 18px;
+  line-height: 26px;
+  color: var(--sb-slate);
+}
+
+/* Topic card · 4 states */
+.sb-topic-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 50px;
+}
+.sb-topic-card__top .sb-state-chip {
+  margin-top: 10px;
+}
+.sb-topic-card__tag {
+  margin-top: 6px;
+}
+.sb-topic-card__title {
+  margin-top: 6px;
+  font-size: var(--sb-text-topic);
+  line-height: 30px;
+  font-weight: 800;
+}
+.sb-topic-card__detail {
+  margin-top: 4px;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.sb-topic-card__detail--done {
+  font-weight: 600;
+  color: var(--sb-accent-strong);
+}
+.sb-topic-card .sb-progress__track {
+  margin-top: 8px;
+  height: 12px;
+}

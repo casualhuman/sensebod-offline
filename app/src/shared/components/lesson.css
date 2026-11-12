@@ -1,0 +1,198 @@
+/* Lesson types · tag by what the learner does. Icon + word, never colour alone. */
+
+/* state chip: Not started / Started / Finished / Not in bag */
+.sb-state-chip,
+.sb-take-part {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 12px 0 8px;
+  border-radius: var(--sb-radius-pill);
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.sb-state-chip .sb-icon,
+.sb-take-part .sb-icon {
+  margin-right: 6px;
+}
+.sb-state-chip--not-started {
+  background: var(--sb-page-blue);
+  color: var(--sb-slate);
+}
+.sb-state-chip--started {
+  background: var(--sb-accent-tint);
+  color: var(--sb-accent-strong);
+}
+.sb-state-chip--finished {
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+.sb-state-chip--not-in-bag {
+  background: var(--sb-white);
+  color: var(--sb-slate);
+}
+
+/* modifier pill: never replaces the tag */
+.sb-take-part {
+  border: 2px solid var(--sb-accent);
+  background: var(--sb-white);
+  color: var(--sb-accent-strong);
+}
+
+/* "Watch · Lesson 4": the tag word first, in bold */
+.sb-tag-line {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.sb-tag-line strong {
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+
+/* lesson screen header pill: "Lesson 1 · Watch" */
+.sb-lesson-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 16px 4px 10px;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  font-size: 17px;
+  font-weight: 600;
+}
+.sb-lesson-pill .sb-icon {
+  margin-right: 8px;
+}
+.sb-lesson-pill strong {
+  font-weight: 800;
+}
+
+/* facts row: [length] · Needs sound · Captions */
+.sb-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.sb-facts__item {
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+}
+.sb-facts__item .sb-icon {
+  margin-right: 6px;
+}
+.sb-facts__item + .sb-facts__item::before {
+  content: '\00B7';
+  margin: 0 8px;
+}
+
+/* lesson card: same order on every card */
+.sb-lesson-card__top {
+  display: flex;
+  align-items: flex-start;
+  min-height: 44px;
+}
+.sb-lesson-card__tag {
+  margin: 10px 0 0 12px;
+}
+.sb-lesson-card__tag .sb-tag-line {
+  display: block;
+}
+.sb-lesson-card__eyebrow {
+  display: block;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-accent-strong);
+}
+.sb-lesson-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 2px 0 0 -8px;
+}
+.sb-lesson-card__chips > * {
+  margin: 4px 0 0 8px;
+}
+.sb-lesson-card__title {
+  margin-top: 10px;
+  font-size: var(--sb-text-topic);
+  line-height: 30px;
+  font-weight: 800;
+}
+.sb-lesson-card__summary {
+  margin-top: 2px;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.sb-lesson-card .sb-facts {
+  margin-top: 8px;
+}
+/* The whole card is the link; this only looks like the main button. */
+.sb-lesson-card__action {
+  margin-top: 16px;
+  min-height: 60px;
+}
+
+/* Filter · above every lesson list. All choices visible, no scrolling row. */
+.sb-filter {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-gap: 8px;
+  gap: 8px;
+}
+.sb-filter__option {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  padding: 0 8px;
+  border: 3px solid var(--sb-accent);
+  border-radius: var(--sb-radius-button);
+  background: var(--sb-white);
+  color: var(--sb-accent-text);
+  font-size: 17px;
+  font-weight: 800;
+}
+.sb-filter__option .sb-icon {
+  margin-right: 8px;
+}
+/* 5 buttons: 3 + 2 on a phone */
+.sb-filter--5 .sb-filter__option:nth-child(n + 4) {
+  grid-column: span 3;
+}
+/* 4 buttons: 2 + 2; 2 buttons: 1 row */
+.sb-filter--4 .sb-filter__option,
+.sb-filter--2 .sb-filter__option {
+  grid-column: span 3;
+}
+.sb-filter__option[aria-pressed='true'] {
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+@media (min-width: 720px) {
+  /* tablet and laptop: one row */
+  .sb-filter {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-template-columns: none;
+    grid-gap: 10px;
+    gap: 10px;
+  }
+  .sb-filter .sb-filter__option,
+  .sb-filter--5 .sb-filter__option:nth-child(n + 4) {
+    grid-column: auto;
+  }
+}

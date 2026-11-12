@@ -1,0 +1,132 @@
+/* Text field · label above, 64px input, 3px accent edge */
+.sb-field {
+  display: block;
+}
+.sb-field__label {
+  display: block;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+}
+.sb-field__hint {
+  display: block;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.sb-field__input {
+  display: block;
+  width: 100%;
+  min-height: 64px;
+  margin-top: 8px;
+  padding: 0 18px;
+  border: 3px solid var(--sb-accent);
+  border-radius: var(--sb-radius-button);
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  font-size: 19px;
+  font-weight: 600;
+  -webkit-appearance: none;
+  appearance: none;
+}
+textarea.sb-field__input {
+  min-height: 160px;
+  padding: 14px 18px;
+  line-height: 28px;
+  font-weight: 400;
+  resize: vertical;
+}
+.sb-field__input::placeholder {
+  color: var(--sb-slate);
+  font-weight: 400;
+  opacity: 1;
+}
+.sb-field__input:focus {
+  outline-offset: 2px;
+}
+.sb-field--error .sb-field__input {
+  border-color: var(--sb-red);
+}
+.sb-field__error {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-red-text);
+}
+.sb-field__error .sb-icon {
+  margin-right: 8px;
+}
+
+/* Choices · name rows, answers, "Who are you?" */
+.sb-choices > * + * {
+  margin-top: 10px;
+}
+.sb-choice {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 80px;
+  padding: 12px 14px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 20px;
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+}
+.sb-choice--compact {
+  min-height: 64px;
+}
+.sb-choice__mark {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-right: 14px;
+  border-radius: 50%;
+  background: var(--sb-accent-tint);
+  color: var(--sb-accent-text);
+  font-size: 20px;
+  font-weight: 800;
+}
+.sb-choice__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sb-choice__detail {
+  display: block;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--sb-slate);
+}
+.sb-choice__note {
+  flex: none;
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--sb-accent-text);
+}
+/* chosen: thicker accent edge on a tint, plus a tick and words */
+.sb-choice[aria-checked='true'],
+.sb-choice[aria-pressed='true'] {
+  padding: 10px 12px;
+  border: 4px solid var(--sb-accent);
+  background: var(--sb-accent-tint);
+}
+.sb-choice[aria-checked='true'] .sb-choice__mark,
+.sb-choice[aria-pressed='true'] .sb-choice__mark {
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+.sb-choice[disabled] {
+  cursor: default;
+}

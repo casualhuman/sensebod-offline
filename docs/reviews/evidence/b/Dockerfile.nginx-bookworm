@@ -1,0 +1,13 @@
+# Reviewer B: the documented install path from app/deploy/nginx.conf, on Debian 12
+# (the base of Raspberry Pi OS 12), linux/arm64. Not a Raspberry Pi.
+# Build context = app/deploy.   docker build -f Dockerfile.nginx-bookworm -t sensebod-review-nginx app/deploy
+FROM debian:bookworm-slim
+# socat is test harness only: with API_FORWARD=host:port it makes 127.0.0.1:8000 inside the
+# container reach the mock API on the host, so nginx.conf can run byte for byte as committed.
+RUN apt-get update && apt-get install -y --no-install-recommends nginx-light curl ca-certificates socat && rm -rf /var/lib/apt/lists/*
+COPY security-headers.conf /etc/nginx/snippets/sensebod-security-headers.conf
+COPY nginx.conf /etc/nginx/sites-available/sensebod
+RUN ln -sf ../sites-available/sensebod /etc/nginx/sites-enabled/sensebod && rm -f /etc/nginx/sites-enabled/default
+# dist is mounted at /var/www/sensebod/releases/r1 and /var/www/sensebod/current -> releases/r1
+RUN mkdir -p /var/www/sensebod/releases /var/lib/sensebod/media && ln -s /var/www/sensebod/releases/r1 /var/www/sensebod/current
+CMD ["sh", "-c", "if [ -n \"$API_FORWARD\" ]; then socat TCP-LISTEN:8000,bind=127.0.0.1,fork,reuseaddr TCP:$API_FORWARD & fi; exec nginx -g 'daemon off;'"]

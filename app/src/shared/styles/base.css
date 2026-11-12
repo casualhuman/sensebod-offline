@@ -1,0 +1,220 @@
+/*
+ * Base rules. Written for the Android 8 floor (Chrome/WebView 58):
+ *   - no flex `gap` (Chrome 84): spacing between flex children uses margins
+ *   - grids declare `grid-gap` (Chrome 57) before `gap`
+ *   - no :has(), container queries, color-mix(), aspect-ratio, inset, clamp()
+ *   - :focus-visible only as an enhancement
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--sb-page);
+  color: var(--sb-ink);
+  font-family: var(--sb-font);
+  font-size: var(--sb-text-body);
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: rgba(8, 92, 170, 0.15);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  margin: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+a {
+  color: var(--sb-accent-text);
+  touch-action: manipulation;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ---- focus: 4px ring, 4px away (V3-Components "keyboard focus") ---- */
+:focus {
+  outline: 4px solid var(--sb-focus);
+  outline-offset: 4px;
+}
+/* Browsers that know :focus-visible hide the ring for touch and mouse.
+   Older ones drop this rule and keep the ring on every focus, which is safe. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+/* Programmatic focus targets (page heading after navigation) show no ring. */
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+/* ---- motion ----
+   Movement is opt-in: it only runs when the browser says the user has no
+   reduced-motion preference. Browsers too old to answer (Chrome < 74) get
+   the still version. Feature CSS must follow the same pattern. */
+@media (prefers-reduced-motion: no-preference) {
+  .sb-motion-ok {
+    transition-duration: 0.15s;
+  }
+}
+
+/* ---- helpers ---- */
+.sb-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sb-skip-link {
+  position: absolute;
+  left: 8px;
+  top: -80px;
+  z-index: 20;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--sb-ink);
+  color: var(--sb-white);
+  font-weight: 700;
+  text-decoration: none;
+}
+.sb-skip-link:focus {
+  top: 8px;
+}
+
+/* Page text styles from the type scale */
+.sb-h1 {
+  font-size: var(--sb-text-screen);
+  line-height: 38px;
+  font-weight: 800;
+}
+.sb-h2 {
+  font-size: var(--sb-text-card);
+  line-height: 36px;
+  font-weight: 800;
+}
+.sb-h3 {
+  font-size: var(--sb-text-topic);
+  line-height: 30px;
+  font-weight: 800;
+}
+.sb-body {
+  font-size: var(--sb-text-body);
+  line-height: 27px;
+}
+.sb-label {
+  font-size: var(--sb-text-label);
+  line-height: 24px;
+  font-weight: 700;
+}
+.sb-muted {
+  color: var(--sb-slate);
+}
+.sb-accent-text {
+  color: var(--sb-accent-text);
+}
+
+/* Layout helpers that avoid flex gap. `:not(:first-child)` (rather than
+   `* + *`) so the spacing wins over a component's own `margin: 0`. */
+.sb-container {
+  width: 100%;
+  max-width: var(--sb-content-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--sb-gutter);
+  padding-right: var(--sb-gutter);
+}
+.sb-stack > :not(:first-child) {
+  margin-top: var(--sb-space-4);
+}
+.sb-stack--sm > :not(:first-child) {
+  margin-top: var(--sb-space-2);
+}
+.sb-stack--lg > :not(:first-child) {
+  margin-top: var(--sb-space-6);
+}
+.sb-row {
+  display: flex;
+  align-items: center;
+}
+.sb-row > :not(:first-child) {
+  margin-left: var(--sb-space-3);
+}
+.sb-row--stretch > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+/* 1 column on phones, 2 on tablets, 3 on laptops (lesson and topic lists) */
+.sb-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-gap: var(--sb-space-4);
+  gap: var(--sb-space-4);
+}
+@media (min-width: 720px) {
+  .sb-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: var(--sb-space-5);
+    gap: var(--sb-space-5);
+  }
+}
+@media (min-width: 1100px) {
+  .sb-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-gap: var(--sb-space-6);
+    gap: var(--sb-space-6);
+  }
+  .sb-grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+/* Show / hide by width. Phone < 720 <= tablet < 1100 <= laptop */
+@media (max-width: 719px) {
+  .sb-from-tablet {
+    display: none !important;
+  }
+}
+@media (min-width: 720px) {
+  .sb-phone-only {
+    display: none !important;
+  }
+}

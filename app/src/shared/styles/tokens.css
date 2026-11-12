@@ -1,0 +1,113 @@
+/*
+ * Design tokens, from brand/tokens.json and the V3-Components board.
+ * Plain CSS custom properties (Chrome 49+), no build step, no runtime.
+ *
+ * Two layers:
+ *   1. raw palette  (--sb-blue, --sb-green …)   never changes
+ *   2. theme roles  (--sb-accent, --sb-edge …)  what components use
+ * The Agriculture theme only re-points layer 2, on any element that carries
+ * data-theme="agriculture" (the page shell sets it).
+ */
+:root {
+  /* ---- raw palette ---- */
+  --sb-blue: #085caa;
+  --sb-blue-dark: #064a8a;
+  --sb-blue-deep: #0a3a6b;
+  --sb-blue-tint: #e8f0f9;
+  --sb-blue-edge: #5b8fcc; /* tappable card edge, 3.13:1 on page, 3.36:1 on white */
+  --sb-blue-track: #c9dcef; /* seek-bar track */
+
+  --sb-green: #1f7a3a;
+  --sb-green-text: #145a28;
+  --sb-green-deep: #0e4520;
+  --sb-green-tint: #e6f2e9;
+  --sb-green-edge: #4a8f5c; /* tappable card edge on Agriculture, 3.64:1 */
+
+  --sb-gold: #e4aa09; /* Listen only, ink text on it */
+  --sb-gold-edge: #9a6e00;
+
+  --sb-red: #c41e2a; /* wrong answer, errors, remove, urgent help only */
+  --sb-red-text: #b3122a;
+  --sb-red-tint: #fdecee;
+
+  --sb-orange: #b45309; /* "try again" accents where a board uses them */
+  --sb-orange-text: #8a3b00;
+  --sb-orange-tint: #fff3e6;
+
+  --sb-ink: #15233b;
+  --sb-slate: #4a5568;
+  --sb-quiet: #6b7c93; /* dashed "not in this bag" edge */
+  --sb-disabled: #e3e8ee;
+  --sb-white: #ffffff;
+  --sb-page-blue: #f4f7fb;
+  --sb-page-green: #f3f8f4;
+
+  /* ---- theme roles (default = blue) ---- */
+  --sb-page: var(--sb-page-blue);
+  --sb-card: var(--sb-white);
+  --sb-accent: var(--sb-blue); /* solid fills: badges, main button, selected, progress */
+  --sb-accent-pressed: var(--sb-blue-dark);
+  --sb-accent-deep: var(--sb-blue-deep); /* pressed inset edge, focus ring */
+  --sb-accent-text: var(--sb-blue); /* accent-coloured text and outlines on white */
+  --sb-accent-strong: var(--sb-blue-dark); /* tag word, "You take part" */
+  --sb-accent-tint: var(--sb-blue-tint);
+  --sb-edge: var(--sb-blue-edge);
+  --sb-divider: var(--sb-blue-tint); /* never a boundary for a tap target */
+  --sb-focus: var(--sb-blue-deep);
+
+  /* ---- type ---- */
+  --sb-font: 'Poppins', Arial, sans-serif;
+  --sb-text-label: 16px; /* never smaller */
+  --sb-text-body: 18px;
+  --sb-text-button: 20px;
+  --sb-text-topic: 24px;
+  --sb-text-card: 28px;
+  --sb-text-screen: 32px;
+
+  /* ---- space, radius, shadow ---- */
+  --sb-space-1: 4px;
+  --sb-space-2: 8px;
+  --sb-space-3: 12px;
+  --sb-space-4: 16px;
+  --sb-space-5: 20px;
+  --sb-space-6: 24px;
+  --sb-space-7: 32px;
+  --sb-radius-button: 18px;
+  --sb-radius-button-lg: 20px;
+  --sb-radius-card: 22px;
+  --sb-radius-card-lg: 24px;
+  --sb-radius-pill: 999px;
+  --sb-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); /* the only shadow */
+
+  /* ---- sizes ---- */
+  --sb-target-min: 48px;
+  --sb-button-lg: 72px;
+  --sb-button-md: 64px;
+  --sb-button-sm: 56px;
+  --sb-gutter: 16px; /* page side padding; grows at tablet and laptop */
+  --sb-content-max: 1328px;
+}
+
+[data-theme='agriculture'] {
+  --sb-page: var(--sb-page-green);
+  --sb-accent: var(--sb-green);
+  --sb-accent-pressed: var(--sb-green-text);
+  --sb-accent-deep: var(--sb-green-deep);
+  --sb-accent-text: var(--sb-green-text);
+  --sb-accent-strong: var(--sb-green-text);
+  --sb-accent-tint: var(--sb-green-tint);
+  --sb-edge: var(--sb-green-edge);
+  --sb-divider: var(--sb-green-tint);
+  --sb-focus: var(--sb-green-deep);
+}
+
+@media (min-width: 720px) {
+  :root {
+    --sb-gutter: 24px;
+  }
+}
+@media (min-width: 1100px) {
+  :root {
+    --sb-gutter: 56px;
+  }
+}

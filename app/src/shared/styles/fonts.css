@@ -1,0 +1,77 @@
+/*
+ * Self-hosted Poppins. `font-display: swap` shows text at once in the Arial
+ * fallback and swaps when the file arrives, so fonts never block reading.
+ * `unicode-range` is ignored by browsers that do not know it, which only
+ * means the file is fetched a little more eagerly.
+ */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/poppins-latin-400.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/poppins-latin-600.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/poppins-latin-700.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../fonts/poppins-latin-800.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026;
+}
+
+/*
+ * Krio letters Ɛ ɛ Ɔ ɔ Ŋ ŋ. Poppins has no glyphs for them (see ../fonts/README.md).
+ * Declared under the same family name so every weight "just works"; the
+ * unicode-range keeps these four tiny files off the network until a page
+ * really contains one of the letters.
+ */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/krio-letters-400.woff2') format('woff2');
+  unicode-range: U+014A-014B, U+0186, U+0190, U+0254, U+025B;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/krio-letters-600.woff2') format('woff2');
+  unicode-range: U+014A-014B, U+0186, U+0190, U+0254, U+025B;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/krio-letters-700.woff2') format('woff2');
+  unicode-range: U+014A-014B, U+0186, U+0190, U+0254, U+025B;
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../fonts/krio-letters-800.woff2') format('woff2');
+  unicode-range: U+014A-014B, U+0186, U+0190, U+0254, U+025B;
+}

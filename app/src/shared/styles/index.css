@@ -1,0 +1,15 @@
+/*
+ * Single entry for shared CSS, in a fixed order:
+ * fonts → tokens → base → components → shell.
+ * Imported once by src/app/main.tsx. Feature CSS loads after it, with the
+ * feature's lazy chunk.
+ */
+@import './fonts.css';
+@import './tokens.css';
+@import './base.css';
+@import '../components/button.css';
+@import '../components/card.css';
+@import '../components/lesson.css';
+@import '../components/feedback.css';
+@import '../components/form.css';
+@import '../shell/shell.css';

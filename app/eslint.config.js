@@ -46,7 +46,9 @@ export default tseslint.config(
     plugins: { 'react-hooks': reactHooks },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      // An error, and `useApi(load, deps)` is checked like useEffect: a missing
+      // dependency there means a screen that keeps showing the old answer.
+      'react-hooks/exhaustive-deps': ['error', { additionalHooks: '(useApi)' }],
       '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': ['error', { allow: ['warn', 'error'] }],
@@ -54,10 +56,60 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/shared/**/*.{ts,tsx}', 'src/app/**/*.{ts,tsx}'],
-    ignores: ['**/*.test.{ts,tsx}', 'src/shared/test/**'],
+    files: ['src/app/**/*.{ts,tsx}'],
+    ignores: ['**/*.test.{ts,tsx}', 'src/app/dev/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@shared/api',
+              message: 'In the app shell import from the module itself (e.g. @shared/api/client). The barrel pulls every API function into the start bundle and makes the bundler split it into a second start request.',
+            },
+          ],
+          patterns: [{ group: ['@mock/*', '**/mock/**'], message: 'The mock API must never be imported by app code (tests excepted).' }],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/app/dev/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': ['error', { patterns: [{ group: ['@mock/*', '**/mock/**'], message: 'The mock API must never be imported by app code (tests excepted).' }] }],
+    },
+  },
+  {
+    // Shared code is used by every feature, so it may not depend on one.
+    // (src/app is the one place that knows the features: it lazy-loads them.)
+    files: ['src/shared/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['**/features/**', '**/features'], message: 'Shared code must not import a feature. Move what is needed into src/shared.' },
+            { group: ['**/app/**', '@app/*'], message: 'Shared code must not import the app shell.' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Shared, non-test code: both restrictions at once (a later block replaces an earlier one for the same rule).
+    files: ['src/shared/**/*.{ts,tsx}'],
+    ignores: ['**/*.test.{ts,tsx}', 'src/shared/test/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['@mock/*', '**/mock/**'], message: 'The mock API must never be imported by app code (tests excepted).' },
+            { group: ['**/features/**', '**/features'], message: 'Shared code must not import a feature. Move what is needed into src/shared.' },
+            { group: ['**/app/**', '@app/*'], message: 'Shared code must not import the app shell.' },
+          ],
+        },
+      ],
     },
   },
   ...['learner', 'lessons', 'admin'].map((feature) => ({

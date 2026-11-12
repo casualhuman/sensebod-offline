@@ -38,7 +38,18 @@ async function measure(file) {
 const all = await Promise.all((await walk(dist)).map(measure));
 const html = await fs.readFile(path.join(dist, 'index.html'), 'utf8');
 const startScripts = [...html.matchAll(/(?:src|data-src)="\/(assets\/[^"]+\.js)"/g)].map((m) => m[1]);
-const preloadedFonts = [...html.matchAll(/href="\/(assets\/[^"]+\.woff2)"/g)].map((m) => m[1]);
+// A start script may need other chunks before it can run: the list at the
+// top of each chunk, System.register(["./x.js", …]. Those are start
+// JavaScript too (one more request before the first screen), so follow them.
+for (let i = 0; i < startScripts.length; i += 1) {
+  const code = await fs.readFile(path.join(dist, startScripts[i]), 'utf8');
+  const needs = /System\.register\(\[([^\]]*)\]/.exec(code)?.[1] ?? '';
+  for (const match of needs.matchAll(/\.\/([\w.-]+\.js)/g)) {
+    const file = 'assets/' + match[1];
+    if (!startScripts.includes(file)) startScripts.push(file);
+  }
+}
+const preloadedFonts =[...html.matchAll(/href="\/(assets\/[^"]+\.woff2)"/g)].map((m) => m[1]);
 
 const pick = (test) => all.filter((f) => test(f.file));
 const sum = (list, key) => list.reduce((total, f) => total + f[key], 0);
@@ -59,7 +70,7 @@ const critical =
   sum(groups['index.html'], 'gzip') + startJs + sum(groups['CSS files'], 'gzip') + sum(groups['Fonts · preloaded (Poppins 400, 800)'], 'gzip') + sum(pick((f) => f === 'brand/sensebod-logo.png'), 'gzip');
 const largestLazy = groups['JS · lazy chunks (all features)'].reduce((max, f) => (f.gzip > max.gzip ? f : max), { file: '-', gzip: 0 });
 const checks = [
-  { name: 'Start JavaScript (gzip)', value: startJs, budget: BUDGET.startJs },
+  { name: `Start JavaScript (gzip), ${startScripts.length} file(s): polyfills, entry and what the entry needs first`, value: startJs, budget: BUDGET.startJs },
   { name: 'Critical resources for first screen (gzip): html + start JS + CSS + 2 fonts + logo', value: critical, budget: BUDGET.critical },
   { name: `Largest lazy chunk (gzip): ${largestLazy.file}`, value: largestLazy.gzip, budget: BUDGET.featureChunk },
 ];

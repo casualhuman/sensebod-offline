@@ -1,0 +1,31 @@
+/* Type it yourself (ADM-M-Type): one card per block of the lesson. */
+.adm-block {
+  padding: 12px;
+}
+.adm-block__heading {
+  font-size: 20px;
+  font-weight: 800;
+}
+.adm-block__picture {
+  width: 100%;
+  max-width: 280px;
+  height: 160px;
+  margin-top: 6px;
+}
+.adm-block__tools {
+  margin-top: 6px;
+}
+.adm-check {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.adm-check > input {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0 10px 0 0;
+}

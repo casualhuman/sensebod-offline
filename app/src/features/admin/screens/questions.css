@@ -1,0 +1,120 @@
+/* Question editor and Try it setup (ADM-Questions, ADM-TryIt). */
+.adm-q__video {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  border-radius: 16px;
+  background: var(--sb-ink);
+}
+.adm-q__time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: -5px;
+}
+.adm-q__time > * {
+  margin: 5px;
+}
+.adm-q__time > .adm-field {
+  flex: 0 1 220px;
+}
+.adm-q__answer {
+  display: flex;
+  align-items: flex-end;
+}
+.adm-q__answer > * + * {
+  margin-left: 8px;
+}
+.adm-q__correct {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 56px;
+  cursor: pointer;
+}
+.adm-q__correct > input {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+}
+.adm-q__tag {
+  margin-left: 8px;
+  min-height: 24px;
+}
+.adm-q__preview {
+  padding: 14px;
+  border: 3px solid var(--sb-ink);
+  border-radius: 22px;
+  background: var(--sb-white);
+}
+.adm-q__preview > * + * {
+  margin-top: 10px;
+}
+.adm-q__choice {
+  display: flex;
+  align-items: flex-start;
+  min-height: 56px;
+  padding: 10px 12px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 16px;
+  font-size: 17px;
+  line-height: 24px;
+}
+.adm-q__choice > .sb-icon {
+  flex: none;
+  margin-right: 8px;
+  color: var(--sb-green);
+}
+.adm-q__choice--right {
+  border: 3px solid var(--sb-green);
+  background: var(--sb-green-tint);
+}
+.adm-q__why {
+  display: block;
+  font-weight: 400;
+}
+
+/* Try it: the scene with its tappable spots */
+.adm-scene {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 3px solid var(--sb-edge);
+  border-radius: 16px;
+  background: var(--sb-accent-tint);
+  overflow: hidden;
+  cursor: crosshair;
+}
+.adm-scene > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.adm-scene__spot {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px dashed var(--sb-white);
+  border-radius: 50%;
+  background: rgba(8, 92, 170, 0.35);
+  color: var(--sb-white);
+  font-size: 18px;
+  font-weight: 800;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.adm-scene__spot--selected {
+  border-style: solid;
+  background: rgba(8, 92, 170, 0.6);
+}
+.adm-nudge {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-gap: 6px;
+  gap: 6px;
+  max-width: 360px;
+}

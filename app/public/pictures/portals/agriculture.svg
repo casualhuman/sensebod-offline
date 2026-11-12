@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A farm: rows of crops, a maize plant, and a hen with her chicks" width="358" height="150" viewBox="0 0 358 150" preserveAspectRatio="xMidYMid slice">
+        <rect width="358" height="150" fill="#E6F2E9"></rect>
+        <circle cx="300" cy="30" r="17" fill="#CFE6D5"></circle>
+        <path d="M0 80 Q120 62 240 74 T358 70 V150 H0 Z" fill="#9BCBA8"></path>
+        <path d="M0 100 L130 76 M0 124 L160 78 M20 150 L190 80 M90 150 L220 80 M160 150 L246 80" stroke="#5FA572" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M150 138 V46" stroke="#1F7A3A" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M150 114 q-24 -4 -32 -22 q20 6 32 16 z M150 98 q24 -6 32 -24 q-20 8 -32 18 z M150 80 q-20 -6 -24 -24 q16 8 24 18 z M150 64 q14 -8 16 -22 q-12 6 -16 16 z" fill="#1F7A3A"></path>
+        <rect x="155" y="74" width="9" height="20" rx="4.5" fill="#CFE6D5" stroke="#145A28" stroke-width="2"></rect>
+        <path d="M244 112 q-26 -6 -30 -26 q14 10 26 8" fill="#FFFFFF" stroke="#145A28" stroke-width="2.5" stroke-linejoin="round"></path>
+        <ellipse cx="262" cy="114" rx="30" ry="19" fill="#FFFFFF" stroke="#145A28" stroke-width="2.5"></ellipse>
+        <path d="M251 114 q11 11 24 0" stroke="#5FA572" stroke-width="3" fill="none" stroke-linecap="round"></path>
+        <circle cx="290" cy="93" r="11" fill="#FFFFFF" stroke="#145A28" stroke-width="2.5"></circle>
+        <path d="M283 85 q2 -9 7 -4 q2 -7 7 -1 q4 -3 4 3 z" fill="#1F7A3A"></path>
+        <path d="M300 92 l9 3 l-9 3 z" fill="#145A28"></path>
+        <circle cx="293" cy="91" r="2" fill="#145A28"></circle>
+        <path d="M256 132 v10 M268 132 v10 M252 142 h8 M264 142 h8" stroke="#145A28" stroke-width="3" stroke-linecap="round"></path>
+        <ellipse cx="318" cy="134" rx="9" ry="7" fill="#CFE6D5" stroke="#145A28" stroke-width="2"></ellipse>
+        <circle cx="326" cy="127" r="4.5" fill="#CFE6D5" stroke="#145A28" stroke-width="2"></circle>
+        <ellipse cx="340" cy="140" rx="8" ry="6" fill="#CFE6D5" stroke="#145A28" stroke-width="2"></ellipse>
+        <circle cx="347" cy="134" r="4" fill="#CFE6D5" stroke="#145A28" stroke-width="2"></circle>
+      </svg>

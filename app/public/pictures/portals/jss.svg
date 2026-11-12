@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A secondary school with a zinc roof and a flag; two students walk to class with their books" width="358" height="150" viewBox="0 0 358 150" preserveAspectRatio="xMidYMid slice">
+        <rect width="358" height="150" fill="#E8F0F9"></rect>
+        <circle cx="292" cy="32" r="16" fill="#C9DCEF"></circle>
+        <rect y="122" width="358" height="28" fill="#C9DCEF"></rect>
+        <path d="M126 150 L134 122 H162 L172 150 Z" fill="#FFFFFF"></path>
+        <rect x="40" y="62" width="208" height="62" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+        <path d="M26 66 H262 L244 36 H44 Z" fill="#9DBFE3"></path>
+        <path d="M60 38 V64 M78 38 V64 M96 38 V64 M114 38 V64 M132 38 V64 M150 38 V64 M168 38 V64 M186 38 V64 M204 38 V64 M222 38 V64" stroke="#5B8FCC" stroke-width="2"></path>
+        <rect x="58" y="78" width="26" height="20" rx="2" fill="#064A8A"></rect>
+        <rect x="94" y="78" width="26" height="20" rx="2" fill="#064A8A"></rect>
+        <rect x="134" y="82" width="28" height="42" fill="#0A3A6B"></rect>
+        <rect x="174" y="78" width="26" height="20" rx="2" fill="#064A8A"></rect>
+        <rect x="210" y="78" width="26" height="20" rx="2" fill="#064A8A"></rect>
+        <line x1="334" y1="24" x2="334" y2="124" stroke="#5B8FCC" stroke-width="4" stroke-linecap="round"></line>
+        <rect x="336" y="24" width="20" height="14" fill="#085CAA"></rect>
+        <circle cx="280" cy="90" r="8" fill="#064A8A"></circle>
+        <rect x="272" y="99" width="16" height="20" rx="4" fill="#085CAA"></rect>
+        <rect x="286" y="102" width="9" height="12" rx="1" fill="#FFFFFF" stroke="#0A3A6B" stroke-width="2"></rect>
+        <path d="M276 119 v12 M284 119 v12" stroke="#0A3A6B" stroke-width="4" stroke-linecap="round"></path>
+        <circle cx="306" cy="94" r="7" fill="#064A8A"></circle>
+        <rect x="299" y="102" width="14" height="18" rx="4" fill="#085CAA"></rect>
+        <path d="M302 120 v11 M310 120 v11" stroke="#0A3A6B" stroke-width="4" stroke-linecap="round"></path>
+      </svg>

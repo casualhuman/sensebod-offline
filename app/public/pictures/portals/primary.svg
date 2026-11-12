@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A classroom: a teacher points at the blackboard and two children sit at their desks, one with a hand up" width="358" height="150" viewBox="0 0 358 150" preserveAspectRatio="xMidYMid slice">
+        <rect width="358" height="150" fill="#E8F0F9"></rect>
+        <rect y="124" width="358" height="26" fill="#C9DCEF"></rect>
+        <rect x="96" y="16" width="176" height="86" rx="6" fill="#0A3A6B" stroke="#9DBFE3" stroke-width="5"></rect>
+        <text x="116" y="52" fill="#FFFFFF" font-family="Poppins, Arial, sans-serif" font-size="24" font-weight="700">A  B  C</text>
+        <text x="116" y="88" fill="#C9DCEF" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700">1  2  3</text>
+        <rect x="104" y="102" width="160" height="6" rx="3" fill="#5B8FCC"></rect>
+        <path d="M292 76 h30 l9 48 h-48 z" fill="#085CAA"></path>
+        <circle cx="307" cy="60" r="13" fill="#064A8A"></circle>
+        <path d="M294 57 q13 -20 26 0 q-13 -6 -26 0 z" fill="#5B8FCC"></path>
+        <path d="M294 84 L272 70" stroke="#064A8A" stroke-width="7" stroke-linecap="round"></path>
+        <circle cx="166" cy="110" r="10" fill="#064A8A"></circle>
+        <path d="M151 132 q0 -14 15 -14 q15 0 15 14 z" fill="#FFFFFF"></path>
+        <path d="M177 120 L186 96" stroke="#064A8A" stroke-width="6" stroke-linecap="round"></path>
+        <rect x="142" y="130" width="48" height="8" rx="2" fill="#5B8FCC"></rect>
+        <circle cx="232" cy="110" r="10" fill="#064A8A"></circle>
+        <path d="M217 132 q0 -14 15 -14 q15 0 15 14 z" fill="#FFFFFF"></path>
+        <rect x="208" y="130" width="48" height="8" rx="2" fill="#5B8FCC"></rect>
+      </svg>

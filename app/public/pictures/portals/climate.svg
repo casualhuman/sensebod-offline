@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A village by a river: houses under a rain cloud, with the sun coming out" width="358" height="150" viewBox="0 0 358 150" preserveAspectRatio="xMidYMid slice">
+        <rect width="358" height="150" fill="#E8F0F9"></rect>
+        <circle cx="300" cy="36" r="18" fill="#C9DCEF"></circle>
+        <path d="M0 108 Q90 80 180 104 T358 96 V150 H0 Z" fill="#C9DCEF"></path>
+        <path d="M168 44 a15 15 0 0 1 28 -9 a18 18 0 0 1 33 5 a13 13 0 0 1 2 26 h-62 a11 11 0 0 1 -1 -22 z" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></path>
+        <path d="M180 76 l-5 11 M196 76 l-5 11 M212 76 l-5 11 M228 76 l-5 11" stroke="#5B8FCC" stroke-width="3.5" stroke-linecap="round"></path>
+        <rect x="216" y="96" width="44" height="28" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+        <path d="M208 98 L238 70 L268 98 Z" fill="#085CAA"></path>
+        <rect x="232" y="106" width="12" height="18" fill="#064A8A"></rect>
+        <rect x="280" y="100" width="56" height="24" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+        <path d="M273 102 H343 L332 84 H284 Z" fill="#9DBFE3"></path>
+        <path d="M294 85 V101 M308 85 V101 M322 85 V101" stroke="#5B8FCC" stroke-width="2"></path>
+        <rect x="302" y="108" width="12" height="16" fill="#0A3A6B"></rect>
+        <path d="M0 128 Q60 120 120 130 T240 128 T358 126 V150 H0 Z" fill="#5B8FCC"></path>
+        <path d="M130 140 q10 -4 20 0 M210 138 q10 -4 20 0 M290 139 q10 -4 20 0" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+      </svg>

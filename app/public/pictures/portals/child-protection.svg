@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A mother and her child walk hand in hand towards their home; a heart above them" width="358" height="150" viewBox="0 0 358 150" preserveAspectRatio="xMidYMid slice">
+        <rect width="358" height="150" fill="#E8F0F9"></rect>
+        <circle cx="190" cy="86" r="64" fill="#C9DCEF"></circle>
+        <rect y="126" width="358" height="24" fill="#9DBFE3"></rect>
+        <path d="M190 40 c-7 -5 -12 -9 -12 -14 a6 6 0 0 1 12 -2.5 a6 6 0 0 1 12 2.5 c0 5 -5 9 -12 14 z" fill="#085CAA"></path>
+        <rect x="262" y="80" width="68" height="46" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+        <path d="M252 84 L296 50 L340 84 Z" fill="#085CAA"></path>
+        <rect x="288" y="98" width="18" height="28" fill="#064A8A"></rect>
+        <path d="M156 70 q16 -8 32 0 l10 56 h-52 z" fill="#085CAA"></path>
+        <circle cx="172" cy="54" r="12" fill="#064A8A"></circle>
+        <path d="M159 52 q13 -22 26 0 q-13 -7 -26 0 z" fill="#0A3A6B"></path>
+        <path d="M186 76 q10 14 14 28" stroke="#064A8A" stroke-width="6" fill="none" stroke-linecap="round"></path>
+        <circle cx="222" cy="86" r="9.5" fill="#064A8A"></circle>
+        <path d="M212 98 h20 l4 22 h-28 z" fill="#FFFFFF" stroke="#5B8FCC" stroke-width="2.5"></path>
+        <path d="M216 120 v8 M228 120 v8" stroke="#0A3A6B" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M213 102 L203 106" stroke="#064A8A" stroke-width="5" stroke-linecap="round"></path>
+        <circle cx="201" cy="106" r="4.5" fill="#064A8A"></circle>
+      </svg>

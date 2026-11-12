@@ -1,0 +1,49 @@
+# features/admin — Admin (stream 4)
+
+This folder belongs to **stream 4**. It builds: the phone add-content flow (`ADM-M-*`) and the laptop library and editors (`ADM-*`).
+
+Stream 1 created only `routes.tsx` (a working placeholder) and this note. Everything else in here is yours.
+
+## The one rule: add screens in `routes.tsx`
+
+The app router (`src/app/features.ts`, owned by stream 1) lazy-loads **this folder's `routes.tsx`** the first time someone opens one of its URLs. You never edit the app router. To add a screen:
+
+1. Create the screen as a component with a **default export**, e.g. `screens/Library.tsx`.
+2. Add one line to the `routes` array in `routes.tsx`:
+
+```tsx
+import { lazy } from 'react';
+import type { RouteDef } from '@shared/router';
+
+export const routes: RouteDef[] = [
+  { path: '/admin/library', component: lazy(() => import('./screens/Library')) },
+];
+```
+
+- `routes.tsx` must keep the named export `routes: RouteDef[]`. That is the whole contract with the app router.
+- **Paths are absolute** and must stay inside this feature's URL space: `/admin` and everything below it. A test (`src/app/App.test.tsx`) fails if a route leaves it.
+- `:name` matches one segment (`useParams<'name'>()`); a trailing `/*` matches the rest. First match wins, so put specific paths before general ones.
+- Wrap each screen in `lazy()` so its code is downloaded only when opened. A loading state and a "did not open" error screen are already provided around every screen.
+- Link to screens (yours or another stream's) with the `paths` helpers from `@shared/router`, never with hand-written strings and never by importing another feature: `<ButtonLink to={paths.admin(…)}>`. The full URL scheme is in `src/shared/router/paths.ts`.
+
+## What to import
+
+```tsx
+import { Button, LessonCard, LoadingState, ErrorState } from '@shared/components'; // catalogue: docs/ARCHITECTURE.md
+import { IconBack } from '@shared/icons';
+import { PageShell, ListenBar } from '@shared/shell';
+import { paths, Link, navigate, useParams, useQuery } from '@shared/router';
+import { useApi, learnerApi, adminApi, type Lesson } from '@shared/api';
+import { useSession, setLearner } from '@shared/session';
+import { sceneUrl } from '@shared/illustrations';
+```
+
+Every screen is wrapped in `<PageShell title="…" backTo={paths.…}>`. Load data with `useApi`; show `<LoadingState />` while loading and `<ErrorState error={error} onRetry={reload} />` on failure.
+
+## House rules (details in docs/ARCHITECTURE.md)
+
+- Import only from `@shared/*` and from this folder. ESLint blocks imports from other features, from `src/app` and from `mock/`.
+- CSS: put styles next to the component as `Name.module.css` (CSS Modules) or plain `.css` with a `admin-` class prefix. Use the tokens (`var(--sb-accent)`, `var(--sb-space-4)` …). **No flex `gap`**, no `:has()`, container queries, `color-mix()`, `aspect-ratio`, `inset`, `clamp()`: they do not exist on Android 8.
+- Movement only inside `@media (prefers-reduced-motion: no-preference)`.
+- Tests live next to the code as `*.test.tsx`; use `installMockApi()` from `@mock/installMockFetch` for API data.
+- Something shared missing or wrong? Add an entry to `docs/team/REQUESTS.md`, work around it here and mark it `TODO(stream-1)`.

@@ -1,49 +1,47 @@
 # features/lessons — Lesson players (stream 3)
 
-This folder belongs to **stream 3**. It builds: Watch, Listen + Read along, Read, Try it, Check quiz, Watch and answer, finished screen.
+Everything under `/lesson`: one screen per lesson, whatever its type, and the finished screen. Full write-up: `docs/reports/stream-3-lesson-players.md`.
 
-Stream 1 created only `routes.tsx` (a working placeholder) and this note. Everything else in here is yours.
+| URL | Screen | File |
+|---|---|---|
+| `/lesson/:lessonId` | the lesson (player chosen from `lesson.content`) | `screens/LessonScreen.tsx` |
+| `/lesson/:lessonId/done` | finished: result, saved or not, next lesson | `screens/LessonDoneScreen.tsx` |
 
-## The one rule: add screens in `routes.tsx`
+## Map
 
-The app router (`src/app/features.ts`, owned by stream 1) lazy-loads **this folder's `routes.tsx`** the first time someone opens one of its URLs. You never edit the app router. To add a screen:
-
-1. Create the screen as a component with a **default export**, e.g. `screens/LessonDone.tsx`.
-2. Add one line to the `routes` array in `routes.tsx`:
-
-```tsx
-import { lazy } from 'react';
-import type { RouteDef } from '@shared/router';
-
-export const routes: RouteDef[] = [
-  { path: '/lesson/:lessonId/done', component: lazy(() => import('./screens/LessonDone')) },
-];
+```
+routes.tsx              the two routes (imported directly: the feature is one lazy chunk)
+lessons.css             all styles, prefix les-
+screens/                LessonScreen (frame + which player), LessonDoneScreen
+players/
+  WatchPlayer.tsx       Watch, and Watch and answer (questions over the video)
+  ListenPlayer.tsx      Listen + Read along
+  ReadPlayer.tsx        Read: typed text, photos of notes / document pages, optional voice
+  PictureLesson.tsx     picture lesson (Climate): a Read lesson made only of pictures
+  TryItHotspots.tsx     Try it: tap the picture
+  TryItPackage.tsx      Try it: uploaded animation package in a sandboxed frame
+  CheckQuiz.tsx         Check quiz
+media/                  useMedia (the one hook behind <video>/<audio>), controls, seek bar, full screen
+quiz/                   question rules (pure) and the answer rows with feedback
+parts/                  header, "Lesson 2 of 4", What you will learn, Up next, help card, finished actions
+progress/               started / position / finished through the API; guest = nothing sent
+logic.test.ts           the pure rules
+lessons.test.tsx        every screen against the mock API
 ```
 
-- `routes.tsx` must keep the named export `routes: RouteDef[]`. That is the whole contract with the app router.
-- **Paths are absolute** and must stay inside this feature's URL space: `/lesson` and everything below it. A test (`src/app/App.test.tsx`) fails if a route leaves it.
-- `:name` matches one segment (`useParams<'name'>()`); a trailing `/*` matches the rest. First match wins, so put specific paths before general ones.
-- Wrap each screen in `lazy()` so its code is downloaded only when opened. A loading state and a "did not open" error screen are already provided around every screen.
-- Link to screens (yours or another stream's) with the `paths` helpers from `@shared/router`, never with hand-written strings and never by importing another feature: `<ButtonLink to={paths.lessonDone(…)}>`. The full URL scheme is in `src/shared/router/paths.ts`.
+## Rules this folder keeps
 
-## What to import
+- **Media**: native elements only. No `src` and no request before the learner taps Play (`preload="none"` as well); no autoplay; source chosen with `canPlayType`; a file that fails to decode falls back to the next source, then to a plain message; on unmount the element is paused, its `src` removed and `load()` called. Never `fetch()` a media file.
+- **Only the bag**: media and package addresses must be root-relative (`media/localUrl.ts`); anything else is not opened.
+- **Animation packages**: `<iframe sandbox="allow-scripts">`, nothing else in the sandbox list, loaded only after Start.
+- **Quizzes**: no timers; a wrong answer shows the reason and can be tried again; state is said in words and an icon, never by colour alone. Questions come from the API, never from a component.
+- **Progress**: only when `useSession().learner` is set. Sent on open (`started`), on pause / leaving a video or audio (position), and at the end (`finished`, with quiz results). No polling.
+- **A fresh player per lesson**: the body is rendered with `key={lesson.id}`; the router keeps the same screen instance when only `:lessonId` changes.
+- **CSS**: the Android 8 rules in `docs/ARCHITECTURE.md` section 3.7 (no flex `gap`, no `aspect-ratio`, no `inset`, no `clamp()`); movement only inside `prefers-reduced-motion: no-preference`; laid out from 320px.
+- **Polyfills are paid by every phone at start-up**, not by this chunk. `Array.reduce`, `Number.toFixed` and `String.split(/pattern/)` in this folder added 1.8 KB gzip to the start script and were written out by hand instead. Check `npm run size` after using a new built-in.
 
-```tsx
-import { Button, LessonCard, LoadingState, ErrorState } from '@shared/components'; // catalogue: docs/ARCHITECTURE.md
-import { IconBack } from '@shared/icons';
-import { PageShell, ListenBar } from '@shared/shell';
-import { paths, Link, navigate, useParams, useQuery } from '@shared/router';
-import { useApi, learnerApi, adminApi, type Lesson } from '@shared/api';
-import { useSession, setLearner } from '@shared/session';
-import { sceneUrl } from '@shared/illustrations';
-```
+## Adding a lesson type
 
-Every screen is wrapped in `<PageShell title="…" backTo={paths.…}>`. Load data with `useApi`; show `<LoadingState />` while loading and `<ErrorState error={error} onRetry={reload} />` on failure.
-
-## House rules (details in docs/ARCHITECTURE.md)
-
-- Import only from `@shared/*` and from this folder. ESLint blocks imports from other features, from `src/app` and from `mock/`.
-- CSS: put styles next to the component as `Name.module.css` (CSS Modules) or plain `.css` with a `lessons-` class prefix. Use the tokens (`var(--sb-accent)`, `var(--sb-space-4)` …). **No flex `gap`**, no `:has()`, container queries, `color-mix()`, `aspect-ratio`, `inset`, `clamp()`: they do not exist on Android 8.
-- Movement only inside `@media (prefers-reduced-motion: no-preference)`.
-- Tests live next to the code as `*.test.tsx`; use `installMockApi()` from `@mock/installMockFetch` for API data.
-- Something shared missing or wrong? Add an entry to `docs/team/REQUESTS.md`, work around it here and mark it `TODO(stream-1)`.
+1. Add the player in `players/` (props: `lesson`, its `content`).
+2. Branch on `lesson.content.type` in `screens/LessonScreen.tsx`.
+3. Call `finishLesson(lesson.id)` when the learner reaches the end; show `<SaveNote>` or go to `paths.lessonDone(lesson.id)`.

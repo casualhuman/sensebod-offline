@@ -105,10 +105,16 @@ export function markStarted(lessonId: string): void {
   learnerApi.saveLessonProgress(learner.id, lessonId, { state: 'started' }).catch(() => undefined);
 }
 
+let lastPlace = '';
+
 /** Where a video or audio stopped, so it can carry on from there next time. */
 export function savePosition(lessonId: string, seconds: number): void {
   const { learner } = getSession();
   if (!learner || !isFinite(seconds) || seconds < 1) return;
+  const place = `${learner.id}|${lessonId}|${Math.floor(seconds)}`;
+  // Pausing and then leaving reports the same place twice: send it once.
+  if (place === lastPlace) return;
+  lastPlace = place;
   learnerApi.saveLessonProgress(learner.id, lessonId, { state: 'started', positionSeconds: Math.floor(seconds) }).catch(() => undefined);
 }
 

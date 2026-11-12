@@ -28,6 +28,21 @@
 .les-header__listen {
   margin-top: 14px;
 }
+/* TODO(stream-1): the shared Listen bar does not wrap, so inside a padded
+   card on a 320px phone the language switch is cut off. Let it wrap here
+   until the shared one does (docs/team/REQUESTS.md). */
+.les-page .sb-listen-bar {
+  flex-wrap: wrap;
+  margin-left: -5px;
+  margin-right: -5px;
+}
+.les-page .sb-listen-bar > .sb-btn,
+.les-page .sb-listen-bar > .sb-lang {
+  margin: 4px 5px;
+}
+.les-header__listen.sb-listen-bar {
+  margin-top: 10px;
+}
 .les-header > .les-progress {
   margin-top: 8px;
 }
@@ -1580,7 +1595,8 @@
 }
 .les-finished__pair {
   display: flex;
-  margin: 0 -5px;
+  margin-left: -5px;
+  margin-right: -5px;
 }
 .les-finished__small {
   flex: 1 1 0;

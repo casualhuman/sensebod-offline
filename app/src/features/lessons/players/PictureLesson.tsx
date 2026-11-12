@@ -5,7 +5,7 @@
  */
 import { useEffect, useState } from 'react';
 import type { Lesson, Picture, ReadBlock, ReadContent } from '@shared/api';
-import { Badge, Button, ButtonLink, cx, Illustration, ScenePicture } from '@shared/components';
+import { Badge, Button, ButtonLink, cx, ScenePicture } from '@shared/components';
 import { IconInfo, IconPlay, IconTick } from '@shared/icons';
 import { navigate, paths } from '@shared/router';
 import { ListenBar } from '@shared/shell';
@@ -80,7 +80,7 @@ export default function PictureLesson({ lesson, frames, cover }: { lesson: Lesso
 
         {current ? (
           <div className="les-picture__frame les-picture__frame--playing" role="status">
-            <Illustration key={showing} className="les-picture__img" src={current.picture.url} alt={current.picture.alt} eager />
+            <ScenePicture key={showing} className="les-picture__img" picture={current.picture} eager />
             <p className="les-picture__caption">
               <span className="les-picture__number" aria-hidden="true">
                 {showing + 1}
@@ -95,7 +95,8 @@ export default function PictureLesson({ lesson, frames, cover }: { lesson: Lesso
           <ol className="les-picture__list">
             {frames.map((frame, index) => (
               <li key={index} className="les-picture__frame">
-                <Illustration className="les-picture__img" src={frame.picture.url} alt={frame.picture.alt} />
+                {/* A fixed-shape box: the page does not jump when a picture arrives. */}
+                <ScenePicture className="les-picture__img" picture={frame.picture} />
                 <p className="les-picture__caption">
                   <span className="les-picture__number" aria-hidden="true">
                     {index + 1}

@@ -177,7 +177,7 @@ function ClassPicker({ portal, selectedId }: { portal: PortalDetail; selectedId:
         if (group.availability === 'not-in-bag') {
           return (
             <li key={group.id}>
-              <span className="lrn-class lrn-class--unavailable" aria-disabled="true">
+              <span className="lrn-class lrn-class--unavailable" role="group" aria-label={`${group.title}, not in this bag`} aria-disabled="true">
                 {word ? <span className="lrn-class__word">{word}</span> : null}
                 <span className={word ? 'lrn-class__number' : 'lrn-class__name'}>{number}</span>
                 <span className="lrn-class__note">Not in this bag</span>
@@ -190,6 +190,8 @@ function ClassPicker({ portal, selectedId }: { portal: PortalDetail; selectedId:
             <Link
               to={to}
               className="lrn-class"
+              // The word and the number are separate boxes: name the link as one phrase.
+              aria-label={selected ? `${group.title}, your class` : group.title}
               aria-current={selected ? 'true' : undefined}
               onClick={(event) => {
                 if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;

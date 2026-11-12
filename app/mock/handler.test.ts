@@ -78,6 +78,69 @@ describe('seed data', () => {
   });
 });
 
+describe('fields added for the learner screens (fix round 1)', () => {
+  it('names the quiz of a series, and of a group that holds one series', async () => {
+    const group = await learnerApi.getGroup('cp-child');
+    const series = group.series[0];
+    expect(series?.hasQuiz).toBe(true);
+    expect(series?.quiz).toMatchObject({ id: 'cp-child-staying-safe-quiz', type: 'check', position: null });
+    expect(group.quiz?.id).toBe('cp-child-staying-safe-quiz');
+
+    const agriculture = await learnerApi.getPortal('agriculture');
+    const quizzes = agriculture.groups.map((g) => g.quiz?.title ?? null);
+    expect(quizzes).toEqual(['Quick quiz: keeping quail', null, null, null, null, null]);
+
+    // A class holds several series: the quiz is on the series, not on the group.
+    const jss2 = await learnerApi.getGroup('jss-2');
+    expect(jss2.quiz).toBeNull();
+    expect(jss2.series.filter((s) => s.quiz).map((s) => [s.title, s.quiz?.title])).toEqual([['Integrated Science', 'Practice quiz']]);
+    expect(jss2.series.every((s) => (s.quiz !== null) === s.hasQuiz)).toBe(true);
+  });
+
+  it('says how many series the group of a series holds', async () => {
+    expect((await learnerApi.getSeries('cp-child-staying-safe')).group.seriesCount).toBe(1);
+    expect((await learnerApi.getSeries('primary-class-4-mathematics')).group.seriesCount).toBe(4);
+  });
+
+  it('gives subjects and Climate topics an icon key, and null where the portal icon is used', async () => {
+    const class4 = await learnerApi.getGroup('primary-class-4');
+    expect(class4.series.map((s) => [s.title, s.icon])).toEqual([
+      ['English Language', 'language'],
+      ['Mathematics', 'maths'],
+      ['Science', 'science'],
+      ['Social Studies', 'social-studies'],
+    ]);
+    expect(class4.icon).toBeNull();
+    const climate = await learnerApi.getPortal('climate');
+    expect(climate.groups.map((g) => g.icon)).toEqual(['seasons', 'floods', 'clean-water', 'heat', 'crops']);
+    const agriculture = await learnerApi.getPortal('agriculture');
+    expect(agriculture.groups.map((g) => g.icon)).toEqual([null, null, null, null, null, 'crops']);
+  });
+
+  it('says who each Child protection audience is for, and null elsewhere', async () => {
+    const cp = await learnerApi.getPortal('child-protection');
+    expect(cp.groups.map((g) => [g.id, g.audience])).toEqual([
+      ['cp-child', 'child'],
+      ['cp-parent', 'parent'],
+      ['cp-elder', 'elder'],
+    ]);
+    const primary = await learnerApi.getPortal('primary');
+    expect(primary.groups.every((g) => g.audience === null)).toBe(true);
+  });
+
+  it('marks quiz entries in progress, so a finished quiz is not counted as a lesson', async () => {
+    const learner = await learnerApi.createLearner({ name: 'Hawa', role: 'learner' });
+    await learnerApi.saveLessonProgress(learner.id, 'cp-child-staying-safe-1', { state: 'finished' });
+    const saved = await learnerApi.saveLessonProgress(learner.id, 'cp-child-staying-safe-quiz', { state: 'finished', correct: 2, total: 2 });
+    expect(saved.lessonType).toBe('check');
+    const progress = await learnerApi.getProgress(learner.id, { seriesId: 'cp-child-staying-safe' });
+    expect(progress.lessons.map((p) => p.lessonType)).toEqual(['watch', 'check']);
+    expect(progress.lessons.filter((p) => p.state === 'finished' && p.lessonType !== 'check')).toHaveLength(1);
+    const seeded = await learnerApi.getProgress('learner-aminata');
+    expect(seeded.lessons.every((p) => typeof p.lessonType === 'string')).toBe(true);
+  });
+});
+
 describe('automatic type rule', () => {
   it('sets the lesson type from the file', () => {
     expect(classifyFile('Quail housing.mp4').becomes).toBe('watch');

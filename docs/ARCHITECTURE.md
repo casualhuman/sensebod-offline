@@ -13,7 +13,7 @@ cd app
 npm ci                 # Node 20.19+ (developed on 23.10); internet needed for this step only
 npm run dev            # http://localhost:5173  app + mock API + sample media; also on your LAN IP for a real phone
 npm run typecheck      # tsc, strict
-npm run lint           # eslint: includes Android 8 floor rules and feature boundaries
+npm run lint           # eslint (no warnings allowed) + the CSS floor check (scripts/check-css.mjs)
 npm test               # vitest + jsdom + Testing Library (npm run test:watch while working)
 npm run build          # typecheck → vite build → postbuild checks → dist/
 npm run size           # sizes of dist/ against the budgets (run after build)
@@ -66,21 +66,23 @@ Each feature folder has a `routes.tsx` that exports `routes: RouteDef[]`. The ap
 
 ```tsx
 // src/features/learner/routes.tsx
-import { lazy } from 'react';
-import type { RouteDef } from '@shared/router';
+import { lazyScreen, type RouteDef } from '@shared/router';
 
 export const routes: RouteDef[] = [
-  { path: '/', component: lazy(() => import('./screens/Home')) },
-  { path: '/save-progress', component: lazy(() => import('./screens/SaveProgress')) },
-  { path: '/portal/child-protection/help', component: lazy(() => import('./screens/Help')) },   // specific first
-  { path: '/portal/:portalId', component: lazy(() => import('./screens/PortalPage')) },
-  { path: '/portal/:portalId/:groupId', component: lazy(() => import('./screens/GroupPage')) },
-  { path: '/portal/:portalId/:groupId/:seriesId', component: lazy(() => import('./screens/SeriesPage')) },
+  { path: '/', component: lazyScreen(() => import('./screens/Home')) },
+  { path: '/save-progress', component: lazyScreen(() => import('./screens/SaveProgress')) },
+  { path: '/portal/child-protection/help', component: lazyScreen(() => import('./screens/Help')) },   // specific first
+  { path: '/portal/:portalId', component: lazyScreen(() => import('./screens/PortalPage')) },
+  { path: '/portal/:portalId/:groupId', component: lazyScreen(() => import('./screens/GroupPage')) },
+  { path: '/portal/:portalId/:groupId/:seriesId', component: lazyScreen(() => import('./screens/SeriesPage')) },
 ];
 ```
 
 - Screens are components with a default export. Paths are absolute; first match wins.
 - `:name` matches one segment; a trailing `/*` matches the rest, including nothing.
+- **One screen instance per route and set of named params.** Going from `/lesson/a` to `/lesson/b` unmounts the screen and mounts a new one: no `useState`, `useRef` or running effect is carried into the next lesson, and you do not reset anything by hand. A change of the query string keeps the instance. So does a change of the wildcard part, so one `/admin/*` screen keeps its state across its own sub-steps.
+- **Opting out: `instance`.** Routes that name the same `instance` (and use the same component) share one mounted screen across those routes and across param changes: `{ path: '/portal/:portalId', component: Browse, instance: 'browse' }`. The learner feature does this so a portal page stays on screen while a class opens under it. Such a screen must itself cope with params that change under it (key its children on the ids, reset its own state).
+- **Use `lazyScreen`, not `React.lazy`, for screens.** `React.lazy` keeps a failed download for the life of the page: every later visit shows the error again without asking the bag. `lazyScreen(() => import('./screens/X'))` shows the error screen for the failed visit, asks again on the next visit, and if that fails too loads a fresh page, but only when the bag answers. `React.lazy` still works (the error screen recovers from it, see section 10); it only lacks the retry on the next visit.
 - A feature's routes must stay inside its URL space (a test enforces it):
 
 | Feature | Owns | Stream |
@@ -107,7 +109,7 @@ Build every link with `paths` from `@shared/router`; never write path strings by
 
 So a lesson card links with `paths.lesson(lesson.id)`, and a lesson's Back goes to `paths.series(lesson.portal.id, lesson.group.id, lesson.series.id)` (all three ids come with `GET /lessons/{id}`).
 
-Router API (`@shared/router`): `<Link to>`, `navigate(to, { replace?, keepScroll? })`, `useParams<'lessonId'>()`, `useQuery()` (a `URLSearchParams`), `useLocation()`, `matchPath()`. Navigation scrolls to the top and moves focus to the main area.
+Router API (`@shared/router`): `<Link to>`, `navigate(to, { replace?, keepScroll? })`, `useParams<'lessonId'>()`, `useQuery()` (a `URLSearchParams`; the same object for as long as the query string is the same, so it is safe in a dependency list; read-only), `useLocation()`, `matchPath()`, `lazyScreen()`. Navigation scrolls to the top and moves focus to the main area (without scrolling the header away). Navigating to the URL already open replaces the history entry instead of adding one, so a card tapped twice does not break the browser's Back.
 
 ### 3.3 Shared components
 
@@ -126,15 +128,26 @@ import { useApi, learnerApi, adminApi, describeError, ApiError, type SeriesDetai
 
 function SeriesPage() {
   const { seriesId } = useParams<'seriesId'>();
-  const { data, error, loading, reload } = useApi((signal) => learnerApi.getSeries(seriesId, { signal }), [seriesId]);
-  if (loading && !data) return <LoadingState />;
-  if (error) return <ErrorState error={error} onRetry={reload} />;
-  …
+  const { data: series, error, loading, reload } = useApi((signal) => learnerApi.getSeries(seriesId, { signal }), [seriesId]);
+  // Loading and error states go INSIDE the page shell, so Back, Home and (on
+  // Child protection) "Leave this page" are there while a screen loads or has failed.
+  return (
+    <PageShell title={series ? series.title : 'Lessons'} backTo={paths.home()} quickExit={series?.portal.id === 'child-protection'}>
+      {loading && !series ? <LoadingState label="Opening the lessons…" /> : null}
+      {error ? <ErrorState title="These lessons did not open" error={error} onRetry={reload} /> : null}
+      {series ? <LessonList series={series} /> : null}
+    </PageShell>
+  );
 }
 ```
 
 - `useApi(load, deps)` cancels the request when the screen goes away or `deps` change, keeps the old data on screen during "Try again", and never lets a stale answer overwrite a newer one.
+- **The answer belongs to the inputs it was asked with.** From the first render with new `deps` the hook returns `data: undefined`, `error: null`, `loading: true`; the previous answer is never handed to the screen under new inputs, not even for one render. An effect of the usual shape ("when loaded, save progress") therefore never sees lesson A's data with lesson B's id.
+- **List everything the request reads in `deps`**, exactly as for `useEffect`. Lint checks it (`react-hooks/exhaustive-deps` with `useApi`, as an error), and wants the loader written inline: `useApi((signal) => getSeries(id, { signal }), [id])`. Values are compared with `Object.is`: pass strings and numbers, not objects or arrays made during render (join ids into one string and read them back from it).
+- **Skipping a request**: return a resolved promise from the loader, `(signal) => (learner ? getProgress(learner.id, undefined, { signal }) : Promise.resolve(null))`, with `learner?.id` in `deps`.
+- **Cached answers are shared objects.** Content GETs are reused for 60 s, and every reader gets the same object: never sort or edit an answer in place; copy first (`[...series.lessons].sort(…)`).
 - For actions (save, publish), call the function directly, disable repeat taps with `<Button working workingLabel="Saving…">`, and catch `ApiError`: `error.fields` for form problems, `describeError(error)` for a plain sentence, `error.retryable` to decide whether to offer "Try again".
+- **Creating things is safe to repeat.** `createLearner`, `createLesson` and `createSeries` keep one `Idempotency-Key` per submission: calling again with the same input (a double tap, "Try again" after a timeout or a Wi-Fi drop) sends the same key, and the server answers with the record it already made. The key is renewed when the input changes, when the server refuses the submission (4xx), 5 seconds after success and after 10 minutes; it lives in memory, so a page reload starts a new submission. You do not need to pass a key. If you do pass `{ idempotencyKey }` it is used as given (keep it in a ref across retries). For another creating POST use `submitOnce(path, body)` from `@shared/api`.
 - Uploads: `adminApi.uploadContent(file, options, onProgress)` returns `{ promise, abort }`.
 - Endpoints, shapes and rules: `docs/API-CONTRACT.md`. The mock (dev server and tests) is section 7 of that document.
 
@@ -145,7 +158,9 @@ import { useSession, setLearner, learnAsGuest, forgetLearner, setChildProtection
 const { learner, knownLearners, language, childProtectionAudience } = useSession();
 ```
 
-Small settings in `localStorage` (with an in-memory fallback when storage is unavailable). Progress itself lives in the bag, through the API. "Leave this page" clears `childProtectionAudience`.
+Small settings in `localStorage` (with an in-memory fallback when storage is unavailable). Progress itself lives in the bag, through the API. "Leave this page" clears `childProtectionAudience`. What is read from the phone is checked, never trusted: a damaged or older value gives a guest session, and a stored learner without a string `id` and `name` is dropped.
+
+The language choice is remembered, but `<html lang>` stays `en` for now: every string on screen is still English, and marking the page as Krio would make a screen reader read English words by the wrong rules. When translations exist, set `document.documentElement.lang` in `setLanguage` and at start-up in `app/main.tsx` (from `getSession().language`).
 
 ### 3.6 Illustrations
 
@@ -164,21 +179,22 @@ Path scheme (stable): `/illustrations/<portal>/<cast|scenes>/<name>.svg?v=<hash>
 
 ### 3.7 CSS rules (they exist because of Android 8)
 
-- Plain CSS only, next to the component: `Name.module.css` (CSS Modules, class names made unique by the build) or `name.css` with your feature prefix (`lrn-`, `les-`, `adm-`). Shared classes use `sb-`. No CSS-in-JS, no utility framework.
-- Use the tokens: `var(--sb-accent)`, `var(--sb-edge)`, `var(--sb-space-4)`, `var(--sb-radius-card)` … (`shared/styles/tokens.css`). Use the role tokens (`--sb-accent…`), not the raw palette, so a screen turns green inside the Agriculture theme by itself.
-- **Not available on the floor browser: do not use**
+- Plain CSS only, next to the component: `Name.module.css` (CSS Modules, class names made unique by the build) or `name.css` with your feature prefix: `lrn-`, `les-`, `adm-` (the feature READMEs say `learner-`, `lessons-`, `admin-`; the short forms are the rule, the merged learner feature uses `lrn-`, and either is accepted as long as one feature uses one prefix). Shared classes use `sb-`. No CSS-in-JS, no utility framework.
+- Use the tokens: `var(--sb-accent)`, `var(--sb-edge)`, `var(--sb-space-4)`, `var(--sb-radius-card)` … (`shared/styles/tokens.css`). Use the role tokens (`--sb-accent…`), not the raw palette, so a screen turns green inside the Agriculture theme by itself. Known exception, kept as the boards draw it and still to be confirmed with the design owner: the default (info) `Message` and the page-blue card edge use the blue palette on every screen, also on Agriculture.
+- **Not available on the floor browser: do not use.** `npm run lint` checks this table (`scripts/check-css.mjs`, every `.css` file under `src/` and inline `style={{ … }}` in `.tsx`) and fails with the file and line. A line that is right although it matches (an enhancement with a working fallback) takes a comment `floor-ok: <reason>` on the same line or the line above.
 
 | Do not use | Since Chrome | Use instead |
 |---|---|---|
 | `gap` on flex containers | 84 | margins; helpers `.sb-stack`, `.sb-row` |
 | `gap` alone on grids | 66 | write `grid-gap` first, then `gap` (as `.sb-grid` does) |
-| `:has()`, container queries, `color-mix()`, CSS nesting | 105+ | plain selectors, media queries, fixed colours |
+| `:has()`, container queries, `color-mix()`, CSS nesting, `@layer`, range media queries (`width >= …`) | 99–112 | plain selectors, media queries, fixed colours |
+| `:is()`, `:where()` | 88 | write the selectors out (an unknown selector drops the whole rule) |
 | `aspect-ratio` | 88 | `ScenePicture` (padding box), or the `.sb-picture` pattern |
 | `inset`, `clamp()`, `min()`, `max()` | 79–87 | `top/right/bottom/left`, media queries |
 | `:focus-visible` on its own | 86 | nothing: focus styling is global (`base.css`) |
 | `position: sticky` without `-webkit-sticky` | fine from 56 | include both, as `shell.css` does |
 
-- Breakpoints: phone below 720px, tablet from 720px, laptop from 1100px (`@media (min-width: 720px)`, `(min-width: 1100px)`). Design widths are 390, 800 and 1440. Helpers: `.sb-phone-only`, `.sb-from-tablet`, `.sb-grid` (1 / 2 / 3 columns), `.sb-container`.
+- Breakpoints: phone below 720px, tablet from 720px, laptop from 1100px (`@media (min-width: 720px)`, `(min-width: 1100px)`). Design widths are 390, 800 and 1440. **Lay every screen out to work at 320px wide**, the width of the cheapest phones (480×854 at 1.5×): the boards are drawn at 390 only. The shell handles its own part: below 376px the header row is tightened, below 360px the logo in the one-row header is hidden (Home is beside it) and the language switch drops under the Listen button. Helpers: `.sb-phone-only`, `.sb-from-tablet`, `.sb-grid` (1 / 2 / 3 columns), `.sb-container`.
 - Movement is opt-in: put every animation and transition inside `@media (prefers-reduced-motion: no-preference) { … }`. Browsers that cannot answer that query (Chrome before 74) then get the still version, which is the safe one.
 - Text never below 16px; touch targets at least 48px; do not use `font-weight: 500` (not shipped).
 
@@ -188,6 +204,7 @@ Path scheme (stable): `/illustrations/<portal>/<cast|scenes>/<name>.svg?v=<hash>
 - **Browser APIs are not polyfilled.** Check before use: `AbortController` (Chrome 66; `useApi` already copes), `IntersectionObserver` (51, fine), `ResizeObserver` (64), `navigator.share`, `MediaRecorder`, `getUserMedia` (needs a secure context, section 10).
 - No new dependencies without stream 1 (`docs/TEAM.md`). Runtime dependencies today: `react`, `react-dom`. That is all.
 - No `console.log` in committed code; clean up timers, listeners and object URLs in effect clean-ups.
+- Lint is strict: warnings fail it (`--max-warnings 0`); `react-hooks/exhaustive-deps` is an error and also checks `useApi`; shared code may not import a feature; features may not import each other, the app shell or the mock. Not checked (it needs type-aware lint, which is not set up): a promise nobody handles. Handle or `void` every promise by hand.
 
 ### 3.9 Tests
 
@@ -284,7 +301,11 @@ All from `@shared/components` unless noted. Each maps to a section of the V3-Com
 
 - Edge contrast: a card that can be tapped gets the 2px `--sb-edge` border (`#5B8FCC`, 3.13:1 on the page; green `#4A8F5C`, 3.64:1). A card that cannot be tapped keeps the faint divider edge. `current` = 3px accent. `unavailable` = dashed `#6B7C93`, never a link.
 - `LessonCard` always renders the anatomy in the same order: picture, type badge, tag line ("Watch · Lesson 4"), "You take part" pill, state chip, title, facts row, main button. It is drawn entirely from the lesson's data tag. The card is one link; the button inside is a look, not a second control. A finished lesson gets the outlined button, as on CPB-Child.
-- `TopicCard` states: `started` (words + bar), `not-started`, `finished`, `not-in-bag`.
+- `TopicCard` states: `started` (words + bar), `not-started`, `finished`, `not-in-bag`. Optional `facts` draws a row under the detail line (AGB-Agriculture "Needs sound"); the card is one link, so pass spans: `facts={<span className="sb-facts"><span className="sb-facts__item">Needs sound</span></span>}`.
+- `PortalCard` says "Open" in its pill; `actionLabel="This is me"` changes the words (CPB-Who).
+- `FactsRow` is a list (`<ul>`) on its own and plain spans with `inline` (inside a link, as `LessonCard` uses it).
+- A card that is not in the bag has no `aria-disabled` (it means nothing on a plain `<div>`); its words say so. To find one in a test use the words or the class `sb-card--unavailable`.
+- A picture that fails to load is taken out, so the card keeps its tint; its alt text stays for screen readers.
 
 ### Lesson types — "Lesson types · tag by what the learner does"
 
@@ -325,7 +346,7 @@ All · Watch · Listen · Read · Try it. Phone: two rows (3 + 2), nothing hidde
 
 ```tsx
 <LoadingState label="Opening the lesson…" />
-<ErrorState title="This video did not open" error={error} onRetry={reload} />     // role="alert", red, Try again
+<ErrorState title="This video did not open" error={error} onRetry={reload} />     // role="alert", red, Try again; `retrying` shows the button busy
 <EmptyState action={<ButtonLink to={…} fullWidth>Back to Agriculture</ButtonLink>}>Crops videos are not in this bag. Ask your facilitator.</EmptyState>
 <SuccessState>Your progress is saved in this bag, Aminata.</SuccessState>
 <Message tone="info" title="Good to know">Videos never play by themselves.</Message>   // tone: success | info | empty | error
@@ -343,6 +364,8 @@ All · Watch · Listen · Read · Try it. Phone: two rows (3 + 2), nothing hidde
 <PersonChip name="Aminata" changeTo={paths.saveProgress()}>Learning as <strong>Aminata</strong></PersonChip>
 <LanguageSwitch />
 ```
+
+`ChoiceGroup` is a radio group in which every row is its own tab stop (touch, TalkBack and Tab reach each one); on a keyboard the arrow keys also move to and choose the next or previous row.
 
 ### Icons (`@shared/icons`)
 
@@ -383,7 +406,7 @@ A screen-specific icon (a topic's hen, a rabbit) belongs in the feature, built o
 ## 8. Data layer
 
 - `shared/api/types.ts` is the contract in TypeScript. `docs/API-CONTRACT.md` explains behaviour.
-- `shared/api/client.ts`: relative base path `/api/v1`; 15 s timeout; cancellation through `AbortSignal` with a fallback where `AbortController` does not exist; one `ApiError` type (`kind`: `network`, `timeout`, `aborted`, `http`, `parse`) with plain-language messages; identical GETs in flight are shared; content GETs are reused for 60 s in a cache capped at 40 entries and cleared by any write; **no automatic retries or polling**, so twenty tablets cannot hammer a struggling Pi. `Idempotency-Key` on creating POSTs. Uploads use `XMLHttpRequest` for progress, one file per request, raw body.
+- `shared/api/client.ts`: relative base path `/api/v1`; 15 s timeout; cancellation through `AbortSignal` with a fallback where `AbortController` does not exist; one `ApiError` type (`kind`: `network`, `timeout`, `aborted`, `http`, `parse`) with plain-language messages; identical GETs in flight are shared only when the caller passes no `signal` (a request made through `useApi` always has its own signal and is never shared: cancelling one screen's request must not cancel another's); content GETs are reused for 60 s in a cache capped at 40 entries, cleared by any admin write or upload and left alone by learner and progress writes (they do not change content); cached answers are shared objects and must be treated as read-only; **no automatic retries or polling**, so twenty tablets cannot hammer a struggling Pi. One `Idempotency-Key` per submission on creating POSTs (`submitOnce`, section 3.4). Uploads use `XMLHttpRequest` for progress, one file per request, raw body.
 - The mock (`app/mock`) is wired into the dev and preview servers by `build/mockApiPlugin.ts`, on the Node side: the browser bundle contains no mock code at all. `src/` may not import it (ESLint), and the build fails if mock markers appear in `dist/`.
 
 ## 9. Illustration pipeline
@@ -433,6 +456,8 @@ The five flat portal pictures of the Home board exist only inside `Main.dc.html`
 
 What Mode A already handles: a dropped connection shows "This phone cannot reach the bag. Check you are on the bag's Wi-Fi, then try again." with a **Try again** button (verified in headless Chrome by cutting the network after load and restoring it); screens already open keep working; a failed code download shows a recovery screen instead of a blank page; requests time out after 15 s.
 
+**Recovery after a failed code download.** In this build the module loader (SystemJS) keeps a failed chunk for the life of the page: asking for it again fails at once, with no new request (measured in the production build: rejected after 1 ms, 0 requests). Only a fresh page load clears it, and a page load while the bag is out of reach would replace the app with the browser's own error page. So: (1) every way out of the "This page did not open" screen (Try again, Go to Home, Back, Home, the logo) is a fresh page load, made only after the bag has answered one small request (`GET /?reach=<time>`, `cache: no-store`, 10 s limit); while the bag does not answer, the learner stays on the Sensebod screen and reads "This phone cannot reach the bag…"; (2) screens made with `lazyScreen` ask again on the next visit, and when that fails too they do the same checked page load by themselves, once. Nothing retries in a loop. Code: `shared/router/recover.ts`, `shared/router/lazyScreen.tsx`, `app/App.tsx`. The static server must answer `/?reach=…` like `/` (both deploy configs do).
+
 **The same secure-context limit affects other features. Stream 4 in particular:**
 
 | Feature | On plain HTTP | Use instead |
@@ -450,8 +475,8 @@ Measured on this build (`npm run size`; gzip level 9, as served by `gzip_static`
 
 | Budget | Limit | Now | Notes |
 |---|---|---|---|
-| Start JavaScript (polyfills + entry), gzip | 200 KB | **94.0 KB** | 36.4 KB polyfills + SystemJS, 57.6 KB React + all shared code + all shared CSS |
-| Critical resources for the first screen, gzip | 350 KB | **115.2 KB** | index.html 0.7 + start JS 94.0 + fonts 400 and 800 13.8 + logo 6.6 |
+| Start JavaScript (polyfills + entry), gzip | 200 KB | **99.0 KB** | 37.6 KB polyfills + SystemJS, 61.4 KB React + all shared code + all shared CSS (94.0 at the first build, 97.6 after stream 2 merged, 99.0 after fix round 1) |
+| Critical resources for the first screen, gzip | 350 KB | **120.2 KB** | index.html 0.7 + start JS 99.0 + fonts 400 and 800 13.8 + logo 6.6 |
 | CSS | (inside the JS) | 5.0 KB gzip, 23.6 KB raw | shared styles; measured from a split build |
 | Any lazy feature chunk, gzip | 60 KB | 1.0 KB (stubs) | **budget for streams 2–4**: keep each screen chunk under 60 KB |
 | Fonts, all 8 files | — | 32.4 KB | 4 × Poppins (28.4) + 4 × Krio letters (4.8); WOFF2 is already compressed |
@@ -459,7 +484,7 @@ Measured on this build (`npm run size`; gzip level 9, as served by `gzip_static`
 | Illustrations per screen | 300 KB gzip | n/a | a lesson list of 5 scenes is about 30 KB gzip; lazy below the fold |
 | `dist/` on disk | — | 3.9 MB | of which illustrations 3.4 MB (with their .gz twins) |
 
-`npm run size` exits with an error when a limit is exceeded. Budgets not yet measurable here, to be set on real hardware: cold and warm start time, time to a usable screen, interaction latency, memory during a long session, main-thread blocking, behaviour with many phones at once.
+`npm run size` exits with an error when a limit is exceeded. It counts as start JavaScript the two scripts in `index.html` and every chunk the entry needs before it can run, so a start bundle that the bundler splits in two is counted in full. That split happens when `src/app` imports the `@shared/api` barrel (lint forbids it there: import `@shared/api/client` instead); it costs one more request before the first screen. Budgets not yet measurable here, to be set on real hardware: cold and warm start time, time to a usable screen, interaction latency, memory during a long session, main-thread blocking, behaviour with many phones at once.
 
 Rules that keep it small: features are lazy; pictures are lazy and served by URL; no data is fetched until a screen needs it; no polling; media is never preloaded (`preload="none"` and no autoplay are the rule for the players).
 

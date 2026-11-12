@@ -85,6 +85,8 @@ export function noteAdminError(error: unknown): boolean {
 
 /** `useApi` for admin data: the same hook, plus the central 401 handling. */
 export function useAdminApi<T>(load: (signal: AbortSignal | undefined) => Promise<T>, deps: readonly unknown[]): ApiState<T> {
+  // The wrapper only passes these through; callers of useAdminApi are checked by the same lint rule.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const result = useApi(load, deps);
   const { error } = result;
   useEffect(() => {

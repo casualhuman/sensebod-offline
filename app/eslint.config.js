@@ -48,7 +48,7 @@ export default tseslint.config(
       'react-hooks/rules-of-hooks': 'error',
       // An error, and `useApi(load, deps)` is checked like useEffect: a missing
       // dependency there means a screen that keeps showing the old answer.
-      'react-hooks/exhaustive-deps': ['error', { additionalHooks: '(useApi)' }],
+      'react-hooks/exhaustive-deps': ['error', { additionalHooks: '(useApi|useAdminApi)' }],
       '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': ['error', { allow: ['warn', 'error'] }],

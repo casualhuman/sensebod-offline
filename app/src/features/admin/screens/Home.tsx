@@ -57,11 +57,17 @@ function WaitingList({ drafts }: { drafts: AdminLesson[] }) {
 
 function RecentList() {
   const ids = recentPublishedIds().slice(0, 3);
+  // The request depends on the ids as one string, so it is asked again only when the list changes.
+  const idsKey = ids.join(',');
   const { data, loading, error, reload } = useAdminApi(
     (signal) =>
       // A lesson that was deleted since is simply left out.
-      Promise.all(ids.map((id) => adminApi.getAdminLesson(id, { signal }).catch((failure: unknown) => (failure instanceof ApiError && failure.status === 404 ? null : Promise.reject(failure))))),
-    [ids.join(',')],
+      Promise.all(
+        (idsKey ? idsKey.split(',') : []).map((id) =>
+          adminApi.getAdminLesson(id, { signal }).catch((failure: unknown) => (failure instanceof ApiError && failure.status === 404 ? null : Promise.reject(failure))),
+        ),
+      ),
+    [idsKey],
   );
   if (ids.length === 0) {
     return (

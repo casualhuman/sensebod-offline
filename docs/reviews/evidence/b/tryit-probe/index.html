@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reviewer B: multi-file animation package probe</title>
+<link rel="stylesheet" href="style.css">
+<style>
+#inline { width: 7px }
+@font-face { font-family: ProbeFont; src: url(font.woff2) format('woff2'); }
+</style>
+</head>
+<body>
+<div id="inline"></div><div id="external"></div>
+<script src="probe.js"></script>
+<script type="module" src="module.mjs"></script>
+<script>
+/* What a typical exported HTML5 animation does: load its own script, style, pictures,
+   font, sound and data files. Each line reports whether the sandbox let it. */
+var R = {};
+function done(k, v) { R[k] = v; window.__probe = R; }
+function img(k, src) { var i = new Image(); i.onload = function () { done(k, 'loaded'); }; i.onerror = function () { done(k, 'BLOCKED/failed'); }; i.src = src; }
+done('origin', String(location.origin));
+done('inline script', 'ran');
+done('external script (probe.js)', window.__probeScript ? 'ran' : 'BLOCKED/failed');
+done('inline style', getComputedStyle(document.getElementById('inline')).width === '7px' ? 'applied' : 'not applied');
+done('external style (style.css)', getComputedStyle(document.getElementById('external')).width === '9px' ? 'applied' : 'BLOCKED/failed');
+img('image own svg', 'pic.svg');
+img('image own gif', 'pic.gif');
+img('image from the app (/brand/sensebod-logo.png)', '/brand/sensebod-logo.png');
+img('image from another host', '//example.invalid/x.png');
+try { document.fonts.load('16px ProbeFont').then(function (f) { done('own font (font.woff2)', f.length ? 'loaded' : 'BLOCKED/failed'); }, function () { done('own font (font.woff2)', 'BLOCKED/failed'); }); } catch (e) { done('own font (font.woff2)', 'no document.fonts'); }
+try { fetch('data.json').then(function (r) { return r.json(); }).then(function () { done('fetch own data.json', 'ok'); }, function (e) { done('fetch own data.json', 'BLOCKED: ' + e.message); }); } catch (e) { done('fetch own data.json', 'BLOCKED: ' + e.message); }
+try { var x = new XMLHttpRequest(); x.open('GET', 'data.json'); x.onload = function () { done('XHR own data.json', 'ok ' + x.status); }; x.onerror = function () { done('XHR own data.json', 'BLOCKED'); }; x.send(); } catch (e) { done('XHR own data.json', 'BLOCKED: ' + e.message); }
+try { fetch('/api/v1/portals').then(function (r) { done('fetch the bag API', 'REACHED ' + r.status); }, function (e) { done('fetch the bag API', 'blocked'); }); } catch (e) { done('fetch the bag API', 'blocked'); }
+try { fetch('/api/v1/learners', { method: 'POST', mode: 'no-cors', body: '{"name":"x","role":"learner"}' }).then(function (r) { done('no-cors POST to the bag API', 'SENT (' + r.type + ')'); }, function () { done('no-cors POST to the bag API', 'blocked'); }); } catch (e) { done('no-cors POST to the bag API', 'blocked'); }
+var a = new Audio(); a.oncanplay = function () { done('own sound (beep.wav)', 'can play'); }; a.onerror = function () { done('own sound (beep.wav)', 'BLOCKED/failed'); }; a.src = 'beep.wav'; a.load();
+try { localStorage.setItem('k', 'v'); done('localStorage', 'AVAILABLE'); } catch (e) { done('localStorage', 'denied (' + e.name + ')'); }
+try { document.cookie = 'probe=1'; done('cookies', document.cookie ? 'READABLE: ' + document.cookie : 'empty'); } catch (e) { done('cookies', 'denied (' + e.name + ')'); }
+try { done('parent document', parent === window ? 'top-level' : (parent.document ? 'REACHABLE' : 'null')); } catch (e) { done('parent document', 'denied (' + e.name + ')'); }
+try { var w = window.open('about:blank'); done('window.open', w ? 'OPENED' : 'blocked'); } catch (e) { done('window.open', 'blocked'); }
+done('module script (module.mjs)', 'BLOCKED/failed');
+setTimeout(function () { try { if (parent !== window) parent.postMessage(JSON.stringify(R), '*'); } catch (e) {} }, 2000);
+document.addEventListener('securitypolicyviolation', function (e) { (R.csp = R.csp || []).push(e.violatedDirective + ' ← ' + (e.blockedURI || 'inline')); });
+</script>
+</body>
+</html>

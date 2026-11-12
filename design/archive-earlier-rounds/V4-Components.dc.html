@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>V4 Components</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,Arial,sans-serif;color:#15233B}
+a{color:#085CAA}a:hover{color:#064A8A}
+</style>
+</helmet>
+<div style="width: 1440px; height: 5000px; box-sizing: border-box; padding: 48px; display: flex; flex-direction: column; gap: 32px; background: #F4F7FB; font-family: Poppins, Arial, sans-serif; color: #15233B;">
+
+  <header style="display: flex; align-items: center; gap: 28px;">
+    <span style="flex: none; display: flex; align-items: center; height: 84px; padding: 0 28px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 42px;">
+      <img src="../../brand/sensebod-logo.png" alt="Sensebod" style="height: 40px; width: auto; display: block;">
+    </span>
+    <div style="flex: 1;">
+      <h1 style="margin: 0; font-size: 44px; line-height: 54px; font-weight: 800; color: #15233B;">Component library · V4 Illustrated tiles</h1>
+      <p style="margin: 0; font-size: 20px; line-height: 30px; color: #4A5568;">Light flat page, white tiles with a 2px border. Each tile: a flat picture on a tint panel, a bold icon badge, a title and one short line.</p>
+    </div>
+    <span style="flex: none; display: flex; align-items: center; height: 72px; padding: 0 24px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 36px;">
+      <img src="../../brand/easystem-logo.png" alt="EasySTEM" style="height: 34px; width: auto; display: block;">
+    </span>
+  </header>
+
+  <div style="display: flex; gap: 32px; align-items: stretch;">
+    <section style="width: 860px; flex: none; box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+      <h2 style="margin: 0 0 6px; font-size: 30px; line-height: 38px; font-weight: 800;">Colour tokens · light page, checked WCAG AA</h2>
+      <p style="margin: 0 0 20px; font-size: 18px; line-height: 26px; color: #4A5568;">Flat fills used sparingly: solid blue only for badges, the main button, chosen and progress. Green does the same on Agriculture. Red = wrong, errors, remove. Gold = Listen only. Text 4.5:1+, meaningful edges 3:1+.</p>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #F4F7FB; border: 2px solid #D5E1EE; color: #15233B; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Page · blue screens</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#F4F7FB · ink 14.63:1, slate 7.00:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #F3F8F4; border: 2px solid #CFE6D5; color: #15233B; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Page · Agriculture</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#F3F8F4 · ink 14.63:1, slate 7.00:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #FFFFFF; border: 2px solid #C9DCEF; color: #15233B; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Card · white</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">ink 15.73:1, slate 7.53:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #FFFFFF; border: 2px solid #6B87AD; color: #15233B; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Tap-tile border · blue</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#6B87AD · 3.43:1 page, 3.69:1 card</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #FFFFFF; border: 2px solid #4F8A5F; color: #15233B; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Tap-tile border · farm</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#4F8A5F · 3.81:1 page, 4.09:1 card</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #FFFFFF; border: 2px solid #C9DCEF; color: #15233B; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 700;">Aa</div><span style="font-size: 16px; font-weight: 700;">Panel border · decor only</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#C9DCEF 1.31:1 · static panels, not a boundary</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #085CAA; color: #FFFFFF; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Brand blue · badge, main, chosen</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">white 6.73:1 · as text on page 6.26:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #064A8A; color: #FFFFFF; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Dark blue · pressed</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#064A8A · white 8.92:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #E8F0F9; color: #064A8A; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Blue tint · secondary surface</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#064A8A 7.76:1 · #085CAA 5.85:1 · slate 6.54:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #FFFFFF; border: 2px solid #C9DCEF; color: #4A5568; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 700;">Aa</div><span style="font-size: 16px; font-weight: 700;">Slate · secondary text</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#4A5568 · page 7.00:1, white 7.53:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #1F7A3A; color: #FFFFFF; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Green · farm badge, main, correct</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">white 5.38:1 · as text on farm page 5.01:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #E6F2E9; color: #145A28; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Green tint · saved</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#145A28 7.23:1 · #1F7A3A 4.67:1 · slate 6.54:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #E4AA09; border: 2px solid #8A6600; color: #15233B; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Gold · Listen only</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">ink 7.53:1 · edge #8A6600 4.91:1 on page</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #C41E2A; color: #FFFFFF; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Red · error, remove</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#C41E2A · white 5.89:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #FDECEE; border: 2px solid #B3122A; color: #B3122A; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 800;">Aa</div><span style="font-size: 16px; font-weight: 700;">Red tint · try again</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#B3122A on #FDECEE 6.06:1, page 6.44:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 64px; box-sizing: border-box; border-radius: 14px; background: #D5DBE3; color: #4A5568; display: flex; align-items: center; padding: 0 14px; font-size: 20px; font-weight: 700;">Aa</div><span style="font-size: 16px; font-weight: 700;">Not ready button</span><span style="font-size: 15px; line-height: 21px; color: #4A5568;">#4A5568 on #D5DBE3 5.40:1</span></div>
+      </div>
+    </section>
+
+    <section style="flex: 1; min-width: 0; box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08); display: flex; flex-direction: column; gap: 14px;">
+      <h2 style="margin: 0 0 6px; font-size: 30px; line-height: 38px; font-weight: 800;">Type scale · Poppins</h2>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 2px solid #E8F0F9;"><span style="font-size: 30px; line-height: 38px; font-weight: 800;">Agriculture</span><span style="font-size: 15px; color: #4A5568; font-weight: 600;">Screen title · 30 / 800</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 2px solid #E8F0F9;"><span style="font-size: 24px; line-height: 32px; font-weight: 800;">Choose a topic</span><span style="font-size: 15px; color: #4A5568; font-weight: 600;">Section heading · 24 / 800</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 2px solid #E8F0F9;"><span style="font-size: 19px; line-height: 25px; font-weight: 800;">Primary school</span><span style="font-size: 15px; color: #4A5568; font-weight: 600;">Tile title · 19 / 800</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 2px solid #E8F0F9;"><span style="font-size: 19px; line-height: 25px; font-weight: 800;">Save and start learning</span><span style="font-size: 15px; color: #4A5568; font-weight: 600;">Button · 19 / 800</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 2px solid #E8F0F9;"><span style="font-size: 18px; line-height: 26px; font-weight: 400;">Tap a picture to start.</span><span style="font-size: 15px; color: #4A5568; font-weight: 600;">Body and instructions · 18 / 400</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 2px solid #E8F0F9;"><span style="font-size: 16px; line-height: 24px; font-weight: 700;">Back 10s</span><span style="font-size: 15px; color: #4A5568; font-weight: 600;">Label under icon · 16 / 700</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 15px; line-height: 22px; font-weight: 600; color: #4A5568;">Class 1 to 6</span><span style="font-size: 15px; color: #4A5568; font-weight: 600;">Tile line · 15 / 600, the smallest text</span></div>
+      <p style="margin: auto 0 0; padding: 14px 16px; background: #EEF4FA; border-radius: 16px; font-size: 16px; line-height: 24px;">Weights 400 to 800 only. No all-caps sentences. Krio only for “Kushɛ!” and “Wi dae make u sensebod”.</p>
+    </section>
+  </div>
+
+  <section style="box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+    <h2 style="margin: 0 0 6px; font-size: 30px; line-height: 38px; font-weight: 800;">Buttons · 64–72px tall, bold icon and words</h2>
+    <p style="margin: 0 0 22px; font-size: 18px; line-height: 26px; color: #4A5568;">Every action is named. Icons are 3px strokes at 24px, drawn at 28–32px.</p>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Primary · default</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 70px; border: 0; border-radius: 18px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Save and start</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Primary · pressed</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 70px; border: 0; border-radius: 18px; background: #064A8A; box-shadow: inset 0 5px 0 #0A3A6B; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Save and start</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Primary · focus ring</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 70px; border: 0; border-radius: 18px; background: #085CAA; outline: 4px solid #15233B; outline-offset: 4px; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Save and start</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Primary · working</span>
+        <button aria-busy="true" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 70px; border: 0; border-radius: 18px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5" stroke="#5B8FCC"></circle><path d="M12 3.5a8.5 8.5 0 0 1 8.5 8.5"></path></svg>Saving your name</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Primary · not ready</span>
+        <button disabled="disabled" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 70px; border: 0; border-radius: 18px; background: #D5DBE3; color: #4A5568; font-family: Poppins, Arial, sans-serif; font-size: 17px; font-weight: 700;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Type your name first</button></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Secondary</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 66px; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;">Skip — learn as a guest</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Listen · the only gold</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 12px; height: 66px; border: 2px solid #8A6600; border-radius: 18px; background: #E4AA09; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>Listen</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Back + Home</span>
+        <div style="display: flex; gap: 8px;">
+          <a href="V4-Home.dc.html" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; height: 66px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 17px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>Back</a>
+          <a href="V4-Home.dc.html" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 66px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 17px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg>Home</a>
+        </div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Language switch</span>
+        <div role="group" aria-label="Language" style="display: flex; height: 66px; box-sizing: border-box; border: 3px solid #085CAA; border-radius: 18px; overflow: hidden;">
+          <button aria-pressed="true" style="flex: 1; border: 0; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;">English</button>
+          <button aria-pressed="false" style="flex: 1; border: 0; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 700;">Krio</button>
+        </div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Person chip</span>
+        <div style="display: flex; align-items: center; gap: 10px; height: 66px; padding: 0 8px; box-sizing: border-box; border: 2px solid #C9DCEF; border-radius: 33px; background: #FFFFFF;">
+          <span aria-hidden="true" style="flex: none; width: 46px; height: 46px; border-radius: 23px; background: #085CAA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: 800;">A</span>
+          <span style="flex: 1; font-size: 17px; font-weight: 800;">Aminata</span>
+          <a href="V4-SignIn.dc.html" style="display: flex; align-items: center; height: 48px; padding: 0 14px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 24px; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 16px; font-weight: 800;">Change</a>
+        </div></div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Main · finished video</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 72px; border: 0; border-radius: 18px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 20px; font-weight: 800;"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M8.5 13l2.5 2.5 4.5-5"></path></svg>Take the quiz</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Farm primary · green</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 70px; border: 0; border-radius: 18px; background: #1F7A3A; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="#FFFFFF"></path></svg>Play video</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Save for later</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 66px; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>Save</button></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Add name</span>
+        <a href="V4-SignIn.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 66px; border-radius: 18px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"></circle><path d="M3 21c1-4.5 4-6.5 7-6.5 1.6 0 3.2.5 4.5 1.6"></path><path d="M19 14v7M15.5 17.5h7"></path></svg>Add name</a></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Destructive · red</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 66px; border: 2px solid #B3122A; border-radius: 18px; background: #FDECEE; color: #B3122A; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#B3122A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path></svg>Remove a name</button></div>
+    </div>
+  </section>
+
+  <section style="box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+    <h2 style="margin: 0 0 6px; font-size: 30px; line-height: 38px; font-weight: 800;">Icons · bold, 3px stroke at 24px, always with a word</h2>
+    <p style="margin: 0 0 22px; font-size: 18px; line-height: 26px; color: #4A5568;">Shown at 44px. Simple shapes, round ends, filled where a shape reads faster (Play, Pause, Next).</p>
+    <div style="display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 14px 12px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Back</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Home</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E4AA09; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Listen</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="#085CAA"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Play</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="#085CAA"><rect x="5.5" y="4" width="5" height="16" rx="1.5"></rect><rect x="13.5" y="4" width="5" height="16" rx="1.5"></rect></svg></span><span style="font-size: 16px; font-weight: 700;">Pause</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 3.5V8h4.5"></path><text x="12.5" y="15.2" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="7.5" font-weight="800" fill="#085CAA" stroke="none">10</text></svg></span><span style="font-size: 16px; font-weight: 700;">Back 10s</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.4-5.7"></path><path d="M20 3.5V8h-4.5"></path><text x="11.5" y="15.2" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="7.5" font-weight="800" fill="#085CAA" stroke="none">10</text></svg></span><span style="font-size: 16px; font-weight: 700;">Forward 10s</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3"></rect><path d="M10.5 10.2a2.4 2.4 0 1 0 0 3.6M17.5 10.2a2.4 2.4 0 1 0 0 3.6"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Captions</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M17 9a4.5 4.5 0 0 1 0 6"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Sound</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5"></path><path d="M15 4h5v5"></path><path d="M20 15v5h-5"></path><path d="M9 20H4v-5"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Full screen</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M8.5 13l2.5 2.5 4.5-5"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Take the quiz</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Watch again</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5v14l10-7z" fill="#085CAA"></path><path d="M19 5v14"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Next</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Save</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Skip</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Person</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h11v8H8l-5 4z"></path><path d="M14 9h7v8l-4-3h-6v-2"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Language</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E6F2E9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#1F7A3A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Correct</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #FDECEE; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#B3122A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Try again</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #FDECEE; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#B3122A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"></path><path d="M12 10v4.5"></path><path d="M12 18v.2"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Error</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5v.2"></path></svg></span><span style="font-size: 16px; font-weight: 700;">Info</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;"><span aria-hidden="true" style="width: 80px; height: 80px; border-radius: 20px; background: #E8F0F9; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 13H6z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path><path d="M9 14l2 2 4-4"></path></svg></span><span style="font-size: 16px; font-weight: 700;">In this bag</span></div>
+    </div>
+  </section>
+
+  <section style="box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08); display: flex; gap: 40px;">
+    <div style="flex: none; width: 422px; box-sizing: border-box; padding: 16px; background: #F4F7FB; border: 2px solid #D5E1EE; border-radius: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+        <a href="#primary-school" style="display: flex; flex-direction: column; background: #FFFFFF; border: 2px solid #6B87AD; border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+          <svg role="img" aria-label="A classroom: a teacher points at the blackboard and a child sits at a desk" width="189" height="112" viewBox="0 0 172 104" preserveAspectRatio="xMidYMid slice" style="display: block; width: calc(100% - 12px); height: 102px; margin: 6px 6px 0; border-radius: 14px;">
+            <rect width="172" height="104" fill="#E8F0F9"></rect>
+            <rect y="86" width="172" height="18" fill="#C9DCEF"></rect>
+            <rect x="16" y="12" width="94" height="54" rx="4" fill="#0A3A6B" stroke="#9DBFE3" stroke-width="4"></rect>
+            <text x="28" y="36" fill="#FFFFFF" font-family="Poppins, Arial, sans-serif" font-size="16" font-weight="700">A B C</text>
+            <text x="28" y="57" fill="#C9DCEF" font-family="Poppins, Arial, sans-serif" font-size="13" font-weight="600">1 + 2 = 3</text>
+            <path d="M126 52 h24 l7 38 h-38 z" fill="#085CAA"></path>
+            <circle cx="138" cy="38" r="10" fill="#064A8A"></circle>
+            <path d="M128 58 L112 44" stroke="#064A8A" stroke-width="5" stroke-linecap="round"></path>
+            <circle cx="58" cy="78" r="8" fill="#064A8A"></circle>
+            <path d="M46 96 q0 -10 12 -10 q12 0 12 10 z" fill="#FFFFFF"></path>
+            <rect x="36" y="94" width="46" height="6" rx="2" fill="#5B8FCC"></rect>
+          </svg>
+          <span style="display: flex; flex-direction: column; gap: 2px; padding: 0 12px 16px;">
+            <span aria-hidden="true" style="margin-top: -28px; margin-bottom: 4px; width: 56px; height: 56px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 28px; background: #085CAA; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1z"></path><path d="M21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"></path></svg></span>
+            <span style="font-size: 19px; line-height: 25px; font-weight: 800;">Primary school</span>
+            <span style="font-size: 15px; line-height: 22px; font-weight: 600; color: #4A5568;">Class 1 to 6</span>
+          </span>
+        </a>
+        <a href="V4-Agriculture.dc.html" style="display: flex; flex-direction: column; background: #FFFFFF; border: 2px solid #1F7A3A; border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+          <svg role="img" aria-label="A farm: a maize plant, a hen and her chicks" width="189" height="112" viewBox="0 0 172 104" preserveAspectRatio="xMidYMid slice" style="display: block; width: calc(100% - 12px); height: 102px; margin: 6px 6px 0; border-radius: 14px;">
+            <rect width="172" height="104" fill="#E6F2E9"></rect>
+            <circle cx="146" cy="20" r="11" fill="#CFE6D5"></circle>
+            <path d="M0 62 Q60 50 120 58 T172 56 V104 H0 Z" fill="#9BCBA8"></path>
+            <path d="M0 80 L70 60 M0 98 L96 62 M30 104 L118 62" stroke="#5FA572" stroke-width="3" stroke-linecap="round"></path>
+            <path d="M34 98 V28" stroke="#1F7A3A" stroke-width="4" stroke-linecap="round"></path>
+            <path d="M34 80 q-18 -3 -24 -16 q14 5 24 11 z M34 66 q18 -5 24 -18 q-14 6 -24 12 z M34 50 q-14 -5 -18 -18 q12 6 18 13 z" fill="#1F7A3A"></path>
+            <path d="M100 80 q-22 -5 -24 -22 q12 8 22 7" fill="#FFFFFF" stroke="#145A28" stroke-width="2" stroke-linejoin="round"></path>
+            <ellipse cx="114" cy="80" rx="23" ry="15" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></ellipse>
+            <circle cx="136" cy="62" r="9" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></circle>
+            <path d="M131 55 q2 -7 5 -3 q2 -5 5 -1 q3 -2 3 3 z" fill="#1F7A3A"></path>
+            <path d="M144 61 l7 3 l-7 3 z" fill="#145A28"></path>
+            <ellipse cx="152" cy="94" rx="7" ry="5" fill="#CFE6D5" stroke="#145A28" stroke-width="1.5"></ellipse>
+            <circle cx="158" cy="89" r="3.5" fill="#CFE6D5" stroke="#145A28" stroke-width="1.5"></circle>
+          </svg>
+          <span style="display: flex; flex-direction: column; gap: 2px; padding: 0 12px 16px;">
+            <span aria-hidden="true" style="margin-top: -28px; margin-bottom: 4px; width: 56px; height: 56px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 28px; background: #1F7A3A; display: flex; align-items: center; justify-content: center;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"></path><path d="M12 13c-5 0-8-3-8-8 5 0 8 3 8 8z"></path><path d="M12 11c0-4.5 3-7 7.5-7 0 4.5-3 7-7.5 7z"></path></svg></span>
+            <span style="font-size: 19px; line-height: 25px; font-weight: 800;">Agriculture</span>
+            <span style="font-size: 15px; line-height: 22px; font-weight: 600; color: #145A28;">Animals, crops</span>
+          </span>
+        </a>
+      </div>
+      <a href="#climate" style="display: flex; align-items: stretch; min-height: 124px; background: #FFFFFF; border: 2px solid #6B87AD; border-radius: 22px; overflow: hidden; box-shadow: 0 2px 8px rgba(21,35,59,0.08); text-decoration: none; color: #15233B;">
+        <svg role="img" aria-label="A village by a river under a rain cloud" width="140" height="128" viewBox="0 0 140 128" preserveAspectRatio="xMidYMid slice" style="display: block; flex: none; width: 128px; height: 112px; margin: 6px 0 6px 6px; border-radius: 14px;">
+          <rect width="140" height="128" fill="#EEF4FA"></rect>
+          <path d="M30 34 a12 12 0 0 1 22 -7 a14 14 0 0 1 26 3 a11 11 0 0 1 2 21 h-48 a9 9 0 0 1 -2 -17 z" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="2"></path>
+          <path d="M40 60 l-4 9 M54 60 l-4 9 M68 60 l-4 9" stroke="#5B8FCC" stroke-width="3" stroke-linecap="round"></path>
+          <path d="M0 90 Q50 72 90 86 T140 82 V128 H0 Z" fill="#C9DCEF"></path>
+          <rect x="18" y="80" width="32" height="22" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="2"></rect>
+          <path d="M12 82 L34 62 L56 82 Z" fill="#085CAA"></path>
+          <rect x="70" y="84" width="40" height="18" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="2"></rect>
+          <path d="M64 86 H116 L108 72 H72 Z" fill="#9DBFE3"></path>
+          <path d="M0 108 Q35 100 70 110 T140 106 V128 H0 Z" fill="#5B8FCC"></path>
+        </svg>
+        <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 14px 16px;">
+          <span aria-hidden="true" style="margin-bottom: 4px; width: 52px; height: 52px; border-radius: 26px; background: #085CAA; display: flex; align-items: center; justify-content: center;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.4 1.5A3.3 3.3 0 0 0 7 15z"></path><path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2"></path></svg></span>
+          <span style="font-size: 19px; line-height: 25px; font-weight: 800;">Climate</span>
+          <span style="font-size: 15px; line-height: 22px; font-weight: 600; color: #4A5568;">Weather, floods, our land</span>
+        </span>
+      </a>
+    </div>
+
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 30px; line-height: 38px; font-weight: 800;">Portal tile · picture, badge, title, one line</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+        <p style="margin: 0; padding: 16px; background: #EEF4FA; border-radius: 18px; font-size: 18px; line-height: 26px;"><strong style="font-weight: 800;">1 · Picture</strong> On a light tint panel, inset 6px inside the card. Blue tints; green tints for Agriculture only.</p>
+        <p style="margin: 0; padding: 16px; background: #EEF4FA; border-radius: 18px; font-size: 18px; line-height: 26px;"><strong style="font-weight: 800;">2 · Icon badge</strong> 56px circle, white 3px icon, overlaps the picture edge.</p>
+        <p style="margin: 0; padding: 16px; background: #EEF4FA; border-radius: 18px; font-size: 18px; line-height: 26px;"><strong style="font-weight: 800;">3 · Title</strong> 19px, weight 800, ink. Two lines are fine.</p>
+        <p style="margin: 0; padding: 16px; background: #EEF4FA; border-radius: 18px; font-size: 18px; line-height: 26px;"><strong style="font-weight: 800;">4 · One line</strong> 15px, weight 600, slate #4A5568 (7.53:1 on white). The whole tile is one tap target.</p>
+      </div>
+      <p style="margin: 0; font-size: 18px; line-height: 26px; color: #4A5568;"><strong style="font-weight: 800; color: #15233B;">Tap boundary rule:</strong> portal tiles, topic tiles, person cards and quiz answers are whole-card taps, so they show a 2px border of 3:1 or more: blue #6B87AD (3.43:1 on page) or green #4F8A5F (3.81:1 on farm page); the Agriculture portal tile uses #1F7A3A (5.01:1). Static panels (Continue, notes, sign-in panels) use a light decorative border and carry their action as a solid button inside.</p>
+
+      <h2 style="margin: 12px 0 0; font-size: 30px; line-height: 38px; font-weight: 800;">Progress · words first, bar second</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+        <div style="padding: 16px; border: 2px solid #C9DCEF; border-radius: 18px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 18px; font-weight: 800;">1 of 5 done</span>
+          <div role="img" aria-label="1 of 5 lessons done" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px;"><span style="height: 14px; border-radius: 7px; background: #1F7A3A;"></span><span style="height: 14px; border-radius: 7px; background: #E6F2E9; box-shadow: inset 0 0 0 2px #4F8A5F;"></span><span style="height: 14px; border-radius: 7px; background: #E6F2E9; box-shadow: inset 0 0 0 2px #4F8A5F;"></span><span style="height: 14px; border-radius: 7px; background: #E6F2E9; box-shadow: inset 0 0 0 2px #4F8A5F;"></span><span style="height: 14px; border-radius: 7px; background: #E6F2E9; box-shadow: inset 0 0 0 2px #4F8A5F;"></span></div>
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Steps: one block per lesson</span>
+        </div>
+        <div style="padding: 16px; border: 2px solid #C9DCEF; border-radius: 18px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 18px; font-weight: 800;">Not started · 4 videos</span>
+          <div role="img" aria-label="0 of 4 videos done" style="height: 14px; border-radius: 7px; background: #E8F0F9; box-shadow: inset 0 0 0 2px #6B87AD;"></div>
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Empty bar, words say why</span>
+        </div>
+        <div style="padding: 16px; border: 2px solid #C9DCEF; border-radius: 18px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 18px; font-weight: 800; color: #145A28;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F7A3A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Finished</span>
+          <div role="img" aria-label="All lessons done" style="height: 14px; border-radius: 7px; background: #1F7A3A;"></div>
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Full bar plus a tick</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+    <h2 style="margin: 0 0 6px; font-size: 30px; line-height: 38px; font-weight: 800;">Topic tile · 4 states (Agriculture)</h2>
+    <p style="margin: 0 0 20px; font-size: 18px; line-height: 26px; color: #4A5568;">Same tile anatomy. The badge icon and the words carry the state, never colour alone.</p>
+    <div style="padding: 20px; background: #F3F8F4; border: 2px solid #CFE6D5; border-radius: 24px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #15233B;">Started</span>
+        <a href="#chickens-and-quail" style="display: flex; flex-direction: column; background: #FFFFFF; border: 2px solid #4F8A5F; border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+          <svg role="img" aria-label="A hen and a quail" width="296" height="120" viewBox="0 0 172 96" preserveAspectRatio="xMidYMid slice" style="display: block; width: calc(100% - 12px); height: 110px; margin: 6px 6px 0; border-radius: 14px;">
+            <rect width="172" height="96" fill="#E6F2E9"></rect><rect y="80" width="172" height="16" fill="#9BCBA8"></rect>
+            <path d="M58 64 q-20 -5 -22 -22 q12 8 20 7" fill="#FFFFFF" stroke="#145A28" stroke-width="2" stroke-linejoin="round"></path>
+            <ellipse cx="72" cy="64" rx="22" ry="15" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></ellipse>
+            <circle cx="94" cy="46" r="9" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></circle>
+            <path d="M89 39 q2 -7 5 -3 q2 -5 5 -1 q3 -2 3 3 z" fill="#1F7A3A"></path>
+            <path d="M102 45 l7 3 l-7 3 z" fill="#145A28"></path>
+            <path d="M68 78 v6 M78 78 v6" stroke="#145A28" stroke-width="2.5" stroke-linecap="round"></path>
+            <ellipse cx="134" cy="74" rx="13" ry="8" fill="#1F7A3A"></ellipse><circle cx="146" cy="66" r="5.5" fill="#1F7A3A"></circle>
+          </svg>
+          <span style="display: flex; flex-direction: column; gap: 2px; padding: 0 14px 18px;">
+            <span aria-hidden="true" style="margin-top: -28px; margin-bottom: 4px; width: 56px; height: 56px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 28px; background: #1F7A3A; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 0 18z" fill="#FFFFFF"></path></svg></span>
+            <span style="font-size: 19px; line-height: 25px; font-weight: 800;">Chickens and quail</span>
+            <span style="font-size: 15px; line-height: 22px; font-weight: 700; color: #145A28;">Started · 1 of 5 done</span>
+            <span role="img" aria-label="1 of 5 lessons done" style="margin-top: 6px; display: block; height: 10px; border-radius: 5px; background: #E6F2E9; box-shadow: inset 0 0 0 2px #4F8A5F; overflow: hidden;"><span style="display: block; width: 20%; height: 10px; background: #1F7A3A;"></span></span>
+          </span>
+        </a></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #15233B;">Not started</span>
+        <a href="#rabbits" style="display: flex; flex-direction: column; background: #FFFFFF; border: 2px solid #4F8A5F; border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+          <svg role="img" aria-label="A rabbit beside its wooden house" width="296" height="120" viewBox="0 0 172 96" preserveAspectRatio="xMidYMid slice" style="display: block; width: calc(100% - 12px); height: 110px; margin: 6px 6px 0; border-radius: 14px;">
+            <rect width="172" height="96" fill="#E6F2E9"></rect><rect y="80" width="172" height="16" fill="#9BCBA8"></rect>
+            <rect x="102" y="42" width="56" height="38" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></rect>
+            <path d="M96 44 L130 22 L164 44 Z" fill="#5FA572"></path>
+            <ellipse cx="54" cy="66" rx="24" ry="15" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></ellipse>
+            <circle cx="76" cy="52" r="10" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></circle>
+            <path d="M72 44 q-5 -18 0 -20 q5 3 4 20 M79 44 q3 -18 9 -18 q2 5 -4 19" fill="#FFFFFF" stroke="#145A28" stroke-width="2" stroke-linejoin="round"></path>
+            <circle cx="79" cy="51" r="1.8" fill="#145A28"></circle>
+          </svg>
+          <span style="display: flex; flex-direction: column; gap: 2px; padding: 0 14px 18px;">
+            <span aria-hidden="true" style="margin-top: -28px; margin-bottom: 4px; width: 56px; height: 56px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 28px; background: #1F7A3A; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="#FFFFFF"></path></svg></span>
+            <span style="font-size: 19px; line-height: 25px; font-weight: 800;">Rabbits</span>
+            <span style="font-size: 15px; line-height: 22px; font-weight: 700; color: #4A5568;">Not started · 4 videos</span>
+          </span>
+        </a></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #15233B;">Finished</span>
+        <a href="#milk-and-dairy-cows" style="display: flex; flex-direction: column; background: #FFFFFF; border: 2px solid #4F8A5F; border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+          <svg role="img" aria-label="A dairy cow and a milk bucket" width="296" height="120" viewBox="0 0 172 96" preserveAspectRatio="xMidYMid slice" style="display: block; width: calc(100% - 12px); height: 110px; margin: 6px 6px 0; border-radius: 14px;">
+            <rect width="172" height="96" fill="#E6F2E9"></rect><rect y="80" width="172" height="16" fill="#9BCBA8"></rect>
+            <rect x="32" y="40" width="74" height="30" rx="14" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></rect>
+            <ellipse cx="56" cy="50" rx="9" ry="6" fill="#1F7A3A"></ellipse><ellipse cx="86" cy="58" rx="7" ry="5" fill="#1F7A3A"></ellipse>
+            <path d="M40 70 v12 M54 70 v12 M84 70 v12 M98 70 v12" stroke="#145A28" stroke-width="4" stroke-linecap="round"></path>
+            <rect x="102" y="30" width="22" height="24" rx="9" fill="#FFFFFF" stroke="#145A28" stroke-width="2"></rect>
+            <path d="M104 32 l-6 -6 M122 32 l6 -6" stroke="#145A28" stroke-width="3" stroke-linecap="round"></path>
+            <path d="M138 62 h22 l-3 20 h-16 z" fill="#FFFFFF" stroke="#145A28" stroke-width="2" stroke-linejoin="round"></path>
+          </svg>
+          <span style="display: flex; flex-direction: column; gap: 2px; padding: 0 14px 18px;">
+            <span aria-hidden="true" style="margin-top: -28px; margin-bottom: 4px; width: 56px; height: 56px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 28px; background: #1F7A3A; display: flex; align-items: center; justify-content: center;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>
+            <span style="font-size: 19px; line-height: 25px; font-weight: 800;">Milk and dairy cows</span>
+            <span style="font-size: 15px; line-height: 22px; font-weight: 700; color: #145A28;">Finished · all done</span>
+          </span>
+        </a></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #15233B;">Not in this bag</span>
+        <a href="#crops" style="display: flex; flex-direction: column; background: #FFFFFF; border: 2px solid #4F8A5F; border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+          <svg role="img" aria-label="Young crop plants shown in grey because they are not in this bag" width="296" height="120" viewBox="0 0 172 96" preserveAspectRatio="xMidYMid slice" style="display: block; width: calc(100% - 12px); height: 110px; margin: 6px 6px 0; border-radius: 14px;">
+            <rect width="172" height="96" fill="#EEF1F4"></rect><rect y="78" width="172" height="18" fill="#D5DBE3"></rect>
+            <path d="M36 78 V54 M36 64 q-10 -2 -14 -12 q10 4 14 8 M36 60 q10 -4 14 -14 q-10 4 -14 10" stroke="#8C97A8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M86 78 V48 M86 62 q-12 -2 -16 -14 q12 4 16 10 M86 56 q12 -4 16 -16 q-12 4 -16 12" stroke="#8C97A8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M136 78 V54 M136 64 q-10 -2 -14 -12 q10 4 14 8 M136 60 q10 -4 14 -14 q-10 4 -14 10" stroke="#8C97A8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+            <rect x="8" y="8" width="156" height="80" rx="10" fill="none" stroke="#8C97A8" stroke-width="2" stroke-dasharray="6 5"></rect>
+          </svg>
+          <span style="display: flex; flex-direction: column; gap: 2px; padding: 0 14px 18px;">
+            <span aria-hidden="true" style="margin-top: -28px; margin-bottom: 4px; width: 56px; height: 56px; box-sizing: border-box; border: 4px solid #FFFFFF; border-radius: 28px; background: #4A5568; display: flex; align-items: center; justify-content: center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5v.2"></path></svg></span>
+            <span style="font-size: 19px; line-height: 25px; font-weight: 800;">Crops</span>
+            <span style="font-size: 15px; line-height: 22px; font-weight: 700; color: #4A5568;">Not in this bag yet</span>
+          </span>
+        </a></div>
+    </div>
+  </section>
+
+  <section style="box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08);">
+    <h2 style="margin: 0 0 6px; font-size: 30px; line-height: 38px; font-weight: 800;">Video player · phone width, 3 states</h2>
+    <p style="margin: 0 0 22px; font-size: 18px; line-height: 26px; color: #4A5568;">Never plays by itself. Control buttons are 80–104px tall with 36–48px icons and a word under every icon.</p>
+    <div style="display: grid; grid-template-columns: repeat(3, 360px); justify-content: space-between; gap: 24px;">
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 18px; font-weight: 800; color: #085CAA;">A · Ready</span>
+        <div style="width: 360px; box-sizing: border-box; border: 3px solid #C9DCEF; border-radius: 26px; overflow: hidden; background: #FFFFFF;">
+          <div style="position: relative; width: 354px; height: 199px;">
+            <svg role="img" aria-label="Video picture: a raised quail house with quail" width="354" height="199" viewBox="0 0 354 199" style="display: block;">
+              <rect width="354" height="199" fill="#E6F2E9"></rect>
+              <rect y="164" width="354" height="35" fill="#9BCBA8"></rect>
+              <path d="M100 70 H254 L238 42 H116 Z" fill="#9BCBA8"></path>
+              <rect x="112" y="70" width="130" height="62" fill="#FFFFFF" stroke="#145A28" stroke-width="2.5"></rect>
+              <path d="M126 78 V126 M142 78 V126 M158 78 V126 M196 78 V126 M212 78 V126 M228 78 V126 M118 92 H236 M118 110 H236" stroke="#9BCBA8" stroke-width="1.5"></path>
+              <path d="M120 132 V166 M234 132 V166" stroke="#145A28" stroke-width="4" stroke-linecap="round"></path>
+              <ellipse cx="60" cy="170" rx="15" ry="10" fill="#1F7A3A"></ellipse><circle cx="74" cy="162" r="6.5" fill="#1F7A3A"></circle>
+              <ellipse cx="296" cy="172" rx="15" ry="10" fill="#1F7A3A"></ellipse><circle cx="282" cy="164" r="6.5" fill="#1F7A3A"></circle>
+            </svg>
+            <button style="position: absolute; left: 117px; top: 40px; width: 120px; height: 120px; border: 6px solid #FFFFFF; border-radius: 60px; background: #085CAA; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 800;"><svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="#FFFFFF"></path></svg>Play</button>
+          </div>
+          <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 15px; line-height: 22px; font-weight: 700; color: #145A28;">Video 2 of 5 · Chickens and quail</span>
+            <span style="font-size: 24px; line-height: 32px; font-weight: 800;">Quail housing</span>
+            <button style="margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 12px; height: 72px; border: 0; border-radius: 18px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 20px; font-weight: 800;"><svg aria-hidden="true" width="34" height="34" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="#FFFFFF"></path></svg>Play video</button>
+            <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+              <button style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 64px; border: 2px solid #8A6600; border-radius: 18px; background: #E4AA09; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>Listen</button>
+              <button style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 64px; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>Save</button>
+            </div>
+            <p style="margin: 10px 0 0; display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 24px; color: #4A5568;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5v.2"></path></svg>The video starts only when you tap Play.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 18px; font-weight: 800; color: #085CAA;">B · Playing</span>
+        <div style="width: 360px; box-sizing: border-box; border: 3px solid #C9DCEF; border-radius: 26px; overflow: hidden; background: #FFFFFF;">
+          <div style="position: relative; width: 354px; height: 199px;">
+            <svg role="img" aria-label="Video playing: a hand puts dry grass on the floor of the quail house" width="354" height="199" viewBox="0 0 354 199" style="display: block;">
+              <rect width="354" height="199" fill="#E6F2E9"></rect>
+              <rect x="40" y="30" width="274" height="130" fill="#FFFFFF" stroke="#145A28" stroke-width="3"></rect>
+              <path d="M56 130 q30 -10 60 0 q30 10 60 0 q30 -10 60 0 q30 10 60 0" stroke="#9BCBA8" stroke-width="6" fill="none" stroke-linecap="round"></path>
+              <path d="M70 140 h214" stroke="#5FA572" stroke-width="5" stroke-linecap="round"></path>
+              <path d="M210 70 q20 -10 40 4 l-8 20 q-16 -6 -30 0 z" fill="#CFE6D5" stroke="#145A28" stroke-width="2.5" stroke-linejoin="round"></path>
+              <path d="M222 98 l-4 18 M232 98 l0 20 M242 96 l4 18" stroke="#5FA572" stroke-width="3" stroke-linecap="round"></path>
+              <ellipse cx="116" cy="112" rx="15" ry="10" fill="#1F7A3A"></ellipse><circle cx="130" cy="104" r="6.5" fill="#1F7A3A"></circle>
+            </svg>
+            <p style="position: absolute; left: 12px; right: 12px; bottom: 10px; margin: 0; padding: 6px 12px; background: #15233B; border-radius: 10px; color: #FFFFFF; font-size: 17px; line-height: 24px; font-weight: 600; text-align: center;">Put dry grass on the floor every week.</p>
+          </div>
+          <div style="padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div role="slider" aria-label="Video position" aria-valuemin="0" aria-valuemax="180" aria-valuenow="72" aria-valuetext="1 minute 12 seconds of 3 minutes" tabindex="0" style="position: relative; height: 32px; display: flex; align-items: center;">
+                <span style="display: block; width: 100%; height: 14px; border-radius: 7px; background: #E8F0F9; box-shadow: inset 0 0 0 2px #C9DCEF;"></span>
+                <span style="position: absolute; left: 0; width: 40%; height: 14px; border-radius: 7px; background: #085CAA;"></span>
+                <span style="position: absolute; left: calc(40% - 16px); width: 32px; height: 32px; box-sizing: border-box; border: 5px solid #085CAA; border-radius: 16px; background: #FFFFFF;"></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 700;"><span>1:12</span><span>3:00</span></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 10px; align-items: center;">
+              <button style="height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 3px solid #085CAA; border-radius: 20px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 800;"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 3.5V8h4.5"></path><text x="12.5" y="15.2" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="7.5" font-weight="800" fill="#085CAA" stroke="none">10</text></svg>Back 10s</button>
+              <button style="height: 104px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 0; border-radius: 24px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="#FFFFFF"><rect x="5.5" y="4" width="5" height="16" rx="1.5"></rect><rect x="13.5" y="4" width="5" height="16" rx="1.5"></rect></svg>Pause</button>
+              <button style="height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 3px solid #085CAA; border-radius: 20px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 800;"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.4-5.7"></path><path d="M20 3.5V8h-4.5"></path><text x="11.5" y="15.2" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="7.5" font-weight="800" fill="#085CAA" stroke="none">10</text></svg>Forward 10s</button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+              <button aria-pressed="true" style="height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 3px solid #085CAA; border-radius: 18px; background: #E8F0F9; color: #064A8A; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 800;"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#064A8A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3"></rect><path d="M10.5 10.2a2.4 2.4 0 1 0 0 3.6M17.5 10.2a2.4 2.4 0 1 0 0 3.6"></path></svg>Captions on</button>
+              <button style="height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 800;"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M17 9a4.5 4.5 0 0 1 0 6"></path></svg>Sound</button>
+              <button style="height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 800;"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5"></path><path d="M15 4h5v5"></path><path d="M20 15v5h-5"></path><path d="M9 20H4v-5"></path></svg>Full screen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 18px; font-weight: 800; color: #085CAA;">C · Finished</span>
+        <div style="width: 360px; box-sizing: border-box; border: 3px solid #C9DCEF; border-radius: 26px; overflow: hidden; background: #FFFFFF;">
+          <div style="width: 354px; height: 199px; box-sizing: border-box; background: #0A3A6B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center;">
+            <span aria-hidden="true" style="width: 84px; height: 84px; border-radius: 42px; background: #1F7A3A; border: 5px solid #FFFFFF; box-sizing: border-box; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>
+            <span style="font-size: 26px; line-height: 32px; font-weight: 800; color: #FFFFFF;">Well done!</span>
+          </div>
+          <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600;">You finished this video.</p>
+            <p style="margin: -6px 0 6px; font-size: 15px; line-height: 22px; font-weight: 700; color: #145A28;">Quail housing · 2 of 5 done</p>
+            <button style="display: flex; align-items: center; justify-content: center; gap: 12px; height: 76px; border: 0; border-radius: 20px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 21px; font-weight: 800;"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"></rect><path d="M9 4V3h6v1"></path><path d="M8.5 13l2.5 2.5 4.5-5"></path></svg>Take the quiz</button>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+              <button style="height: 84px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 800;"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>Watch again</button>
+              <button style="height: 84px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 800;"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5v14l10-7z" fill="#085CAA"></path><path d="M19 5v14"></path></svg>Next video</button>
+            </div>
+            <p style="margin: 4px 0 0; font-size: 16px; line-height: 24px; color: #4A5568;">Next video: 3 of 5 in Chickens and quail.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="display: flex; gap: 32px; align-items: stretch;">
+    <section style="width: 820px; flex: none; box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08); display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 30px; line-height: 38px; font-weight: 800;">Quiz question · answer states</h2>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 16px; background: #EEF4FA; border-radius: 20px;">
+        <div style="flex: 1;">
+          <p style="margin: 0; font-size: 16px; font-weight: 700; color: #4A5568;">Quick quiz: keeping quail · Question 1</p>
+          <p style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 800;">Where should a quail house stand?</p>
+        </div>
+        <button style="flex: none; display: flex; align-items: center; gap: 8px; height: 64px; padding: 0 18px; border: 2px solid #8A6600; border-radius: 18px; background: #E4AA09; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>Listen</button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Default</span>
+          <button style="display: flex; align-items: center; gap: 14px; min-height: 80px; padding: 0 18px; border: 2px solid #6B87AD; border-radius: 20px; background: #FFFFFF; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 700; text-align: left;"><span aria-hidden="true" style="flex: none; width: 36px; height: 36px; box-sizing: border-box; border: 3px solid #4A5568; border-radius: 18px;"></span>On the wet ground</button></div>
+        <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Chosen</span>
+          <button aria-pressed="true" style="display: flex; align-items: center; gap: 14px; min-height: 80px; padding: 0 18px; border: 4px solid #085CAA; border-radius: 20px; background: #E8F0F9; color: #064A8A; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800; text-align: left;"><span aria-hidden="true" style="flex: none; width: 36px; height: 36px; border-radius: 18px; background: #085CAA; display: flex; align-items: center; justify-content: center;"><span style="width: 14px; height: 14px; border-radius: 7px; background: #FFFFFF;"></span></span>Raised off the ground</button></div>
+        <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Correct, with reason</span>
+          <div role="status" style="border: 4px solid #1F7A3A; border-radius: 20px; background: #E6F2E9; overflow: hidden;">
+            <div style="display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 0 18px; font-size: 19px; font-weight: 800; color: #145A28;"><span aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 20px; background: #1F7A3A; display: flex; align-items: center; justify-content: center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>Correct! Raised off the ground</div>
+            <p style="margin: 0; padding: 0 18px 16px 72px; font-size: 18px; line-height: 26px; color: #15233B;">A raised house stays dry, so the quail stay healthy.</p>
+          </div></div>
+        <div style="display: flex; flex-direction: column; gap: 8px;"><span style="font-size: 16px; font-weight: 700; color: #4A5568;">Try again, with reason</span>
+          <div role="status" style="border: 4px solid #B3122A; border-radius: 20px; background: #FDECEE; overflow: hidden;">
+            <div style="display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 0 18px; font-size: 19px; font-weight: 800; color: #B3122A;"><span aria-hidden="true" style="flex: none; width: 40px; height: 40px; border-radius: 20px; background: #C41E2A; display: flex; align-items: center; justify-content: center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>Try again · On the wet ground</div>
+            <p style="margin: 0; padding: 0 18px 16px 72px; font-size: 18px; line-height: 26px; color: #15233B;">Wet ground can make quail sick. Pick another answer.</p>
+          </div></div>
+      </div>
+      <button style="margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 12px; height: 72px; border: 0; border-radius: 20px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 20px; font-weight: 800;"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Check my answer</button>
+    </section>
+
+    <section style="flex: 1; min-width: 0; box-sizing: border-box; padding: 32px; background: #FFFFFF; border: 2px solid #D5E1EE; border-radius: 28px; box-shadow: 0 2px 8px rgba(21,35,59,0.08); display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 30px; line-height: 38px; font-weight: 800;">Messages · icon and words</h2>
+      <div role="status" style="display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; border: 3px solid #1F7A3A; border-radius: 20px; background: #E6F2E9;">
+        <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1F7A3A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M5 12l5 5 9-10"></path></svg>
+        <p style="margin: 0; font-size: 18px; line-height: 26px; color: #15233B;"><strong style="font-weight: 800; color: #145A28;">Saved.</strong> Your progress stays in this bag.</p>
+      </div>
+      <div role="note" style="display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; border: 3px solid #085CAA; border-radius: 20px; background: #E8F0F9;">
+        <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7.5v.2"></path></svg>
+        <p style="margin: 0; font-size: 18px; line-height: 26px; color: #15233B;"><strong style="font-weight: 800; color: #064A8A;">Good to know.</strong> Videos start only when you tap Play.</p>
+      </div>
+      <div role="note" style="display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border: 3px solid #D5DBE3; border-radius: 20px; background: #FFFFFF;">
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+          <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M5 8h14l-1 13H6z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path><path d="M10 13l4 4M14 13l-4 4"></path></svg>
+          <p style="margin: 0; font-size: 18px; line-height: 26px; color: #15233B;"><strong style="font-weight: 800;">Crops are not in this bag yet.</strong> Ask your facilitator.</p>
+        </div>
+        <a href="#rabbits" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; box-sizing: border-box; border: 3px solid #1F7A3A; border-radius: 18px; color: #1F7A3A; text-decoration: none; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="#1F7A3A"></path></svg>Watch Rabbits videos</a>
+      </div>
+      <div role="alert" style="display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border: 3px solid #B3122A; border-radius: 20px; background: #FDECEE;">
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+          <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#B3122A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M12 3l10 18H2z"></path><path d="M12 10v4.5"></path><path d="M12 18v.2"></path></svg>
+          <p style="margin: 0; font-size: 18px; line-height: 26px; color: #15233B;"><strong style="font-weight: 800; color: #B3122A;">Name is empty.</strong> Type your name, then tap Save.</p>
+        </div>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 0; border-radius: 18px; background: #C41E2A; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 800;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Type my name</button>
+      </div>
+    </section>
+  </div>
+
+  <footer style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; border-top: 2px solid #D5E1EE;">
+    <span style="font-size: 20px; font-weight: 800; color: #0A3A6B;">Wi dae make u sensebod</span>
+    <span style="display: flex; gap: 12px;">
+      <a href="V4-Home.dc.html" style="display: flex; align-items: center; height: 56px; padding: 0 20px; border-radius: 16px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: 800;">Open Home</a>
+      <a href="V4-SignIn.dc.html" style="display: flex; align-items: center; height: 56px; padding: 0 20px; border-radius: 16px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: 800;">Open Sign-in</a>
+      <a href="V4-Agriculture.dc.html" style="display: flex; align-items: center; height: 56px; padding: 0 20px; border-radius: 16px; background: #1F7A3A; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: 800;">Open Agriculture</a>
+    </span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":5000}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>V3 JSS</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,Arial,sans-serif;color:#15233B}
+a{color:#085CAA}a:hover{color:#064A8A}
+</style>
+</helmet>
+<div style="width: 390px; height: 3580px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F7FB; font-family: Poppins, Arial, sans-serif; color: #15233B;">
+
+  <nav aria-label="Go back" style="height: 76px; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: #FFFFFF; border-bottom: 2px solid #E8F0F9;">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 6px; height: 54px; padding: 0 16px 0 10px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 16px; background: #FFFFFF; color: #085CAA; font-size: 17px; font-weight: 700; text-decoration: none;">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>Back
+    </a>
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 8px; height: 54px; padding: 0 16px 0 12px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 16px; background: #FFFFFF; color: #085CAA; font-size: 17px; font-weight: 700; text-decoration: none;">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5l9-7.5 9 7.5"></path><path d="M5.5 10v10h13V10"></path><path d="M10 20v-5h4v5"></path></svg>Home
+    </a>
+    <img src="../../brand/sensebod-logo.png" alt="Sensebod" style="height: 30px; width: auto; margin-left: auto; display: block;">
+  </nav>
+
+  <section style="margin: 20px 16px 0; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 24px; overflow: hidden;">
+    <svg role="img" aria-label="A secondary school with a zinc roof and a flag; two students walk to class with their books" width="358" height="160" viewBox="0 0 358 160" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 160px;">
+      <rect width="358" height="160" fill="#E8F0F9"></rect>
+      <circle cx="292" cy="34" r="16" fill="#C9DCEF"></circle>
+      <rect y="130" width="358" height="30" fill="#C9DCEF"></rect>
+      <path d="M126 160 L134 130 H162 L172 160 Z" fill="#FFFFFF"></path>
+      <rect x="40" y="68" width="208" height="64" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+      <path d="M26 72 H262 L244 40 H44 Z" fill="#9DBFE3"></path>
+      <path d="M60 42 V70 M78 42 V70 M96 42 V70 M114 42 V70 M132 42 V70 M150 42 V70 M168 42 V70 M186 42 V70 M204 42 V70 M222 42 V70" stroke="#5B8FCC" stroke-width="2"></path>
+      <rect x="58" y="84" width="26" height="20" rx="2" fill="#064A8A"></rect>
+      <rect x="94" y="84" width="26" height="20" rx="2" fill="#064A8A"></rect>
+      <rect x="134" y="88" width="28" height="44" fill="#0A3A6B"></rect>
+      <rect x="174" y="84" width="26" height="20" rx="2" fill="#064A8A"></rect>
+      <rect x="210" y="84" width="26" height="20" rx="2" fill="#064A8A"></rect>
+      <line x1="334" y1="26" x2="334" y2="132" stroke="#5B8FCC" stroke-width="4" stroke-linecap="round"></line>
+      <rect x="336" y="26" width="20" height="14" fill="#085CAA"></rect>
+      <circle cx="280" cy="96" r="8" fill="#064A8A"></circle>
+      <rect x="272" y="105" width="16" height="20" rx="4" fill="#085CAA"></rect>
+      <rect x="286" y="108" width="9" height="12" rx="1" fill="#FFFFFF" stroke="#0A3A6B" stroke-width="2"></rect>
+      <path d="M276 125 v12 M284 125 v12" stroke="#0A3A6B" stroke-width="4" stroke-linecap="round"></path>
+      <circle cx="306" cy="100" r="7" fill="#064A8A"></circle>
+      <rect x="299" y="108" width="14" height="18" rx="4" fill="#085CAA"></rect>
+      <path d="M302 126 v11 M310 126 v11" stroke="#0A3A6B" stroke-width="4" stroke-linecap="round"></path>
+    </svg>
+    <div style="padding: 0 20px 22px; display: flex; flex-direction: column;">
+      <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -40px; width: 80px; height: 80px; border-radius: 50%; background: #085CAA; border: 5px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5l10-5 10 5-10 5z"></path><path d="M6 11.5v5c3.5 2.5 8.5 2.5 12 0v-5"></path><path d="M22 9.5v6"></path></svg>
+      </span>
+      <h1 style="margin: 8px 0 0; font-size: 32px; line-height: 38px; font-weight: 800; color: #15233B;">Junior secondary</h1>
+      <p style="margin: 2px 0 16px; font-size: 18px; line-height: 27px; color: #4A5568;">JSS 1 to JSS 3.</p>
+      <div style="display: flex; gap: 10px; align-items: stretch;">
+        <button style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; box-sizing: border-box; border: 2px solid #9A6E00; border-radius: 18px; background: #E4AA09; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;">
+          <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5v5h4l5 4.5v-14L7 9.5z"></path><path d="M16 9a4.5 4.5 0 0 1 0 6"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>
+          Listen
+        </button>
+        <div role="group" aria-label="Language" style="display: flex; border: 3px solid #085CAA; border-radius: 18px; overflow: hidden;">
+          <button aria-pressed="true" style="height: 54px; padding: 0 12px; border: 0; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;">English</button>
+          <button aria-pressed="false" style="height: 54px; padding: 0 12px; border: 0; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;">Krio</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="margin: 16px 16px 0; height: 64px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 6px; background: #FFFFFF; border: 2px solid #5B8FCC; border-radius: 999px;">
+    <span aria-hidden="true" style="flex: none; width: 48px; height: 48px; border-radius: 50%; background: #085CAA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800;">A</span>
+    <span style="flex: 1; font-size: 17px; line-height: 24px; color: #15233B;">Learning as <strong style="font-weight: 800;">Aminata</strong></span>
+    <a href="V3-SignIn.dc.html" style="display: flex; align-items: center; height: 48px; padding: 0 18px; border-radius: 999px; background: #E8F0F9; color: #085CAA; font-size: 16px; font-weight: 700; text-decoration: none;">Change</a>
+  </div>
+
+  <section aria-labelledby="jss-continue" style="margin: 20px 16px 0; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 24px; overflow: hidden;">
+    <svg role="img" aria-label="Lesson picture: a stone, a cup of water and a pot giving off steam, showing solid, liquid and gas" width="358" height="150" viewBox="0 0 358 150" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 150px;">
+      <rect width="358" height="150" fill="#E8F0F9"></rect>
+      <rect y="118" width="358" height="32" fill="#C9DCEF"></rect>
+      <path d="M118 118 q-4 -22 14 -28 q18 -6 28 6 q10 12 2 22 z" fill="#5B8FCC" stroke="#064A8A" stroke-width="2.5" stroke-linejoin="round"></path>
+      <path d="M188 72 h44 l-6 46 h-32 z" fill="#FFFFFF" stroke="#064A8A" stroke-width="3" stroke-linejoin="round"></path>
+      <path d="M191 88 h38 l-4 30 h-30 z" fill="#9DBFE3"></path>
+      <path d="M262 82 h64 v28 a8 8 0 0 1 -8 8 h-48 a8 8 0 0 1 -8 -8 z" fill="#085CAA"></path>
+      <path d="M256 82 h76" stroke="#064A8A" stroke-width="5" stroke-linecap="round"></path>
+      <path d="M278 70 q-8 -10 0 -20 q8 -10 0 -20 M294 70 q-8 -10 0 -20 q8 -10 0 -20 M310 70 q-8 -10 0 -20 q8 -10 0 -20" stroke="#9DBFE3" stroke-width="4" fill="none" stroke-linecap="round"></path>
+    </svg>
+    <div style="padding: 0 20px 22px; display: flex; flex-direction: column;">
+      <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -38px; width: 76px; height: 76px; border-radius: 50%; background: #085CAA; border: 5px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"></path><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"></path><path d="M7.5 15h9"></path></svg>
+      </span>
+      <p id="jss-continue" style="margin: 8px 0 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #085CAA;">Continue where you stopped</p>
+      <p style="margin: 0; font-size: 26px; line-height: 32px; font-weight: 800; color: #15233B;">Kinds of matter</p>
+      <p style="margin: 2px 0 16px; font-size: 17px; line-height: 24px; color: #4A5568;">Integrated Science<br>Lesson 4 of 12</p>
+      <a href="#continue-kinds-of-matter" style="height: 68px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 18px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 20px; font-weight: 800;">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 6l6 6-6 6"></path></svg>
+        Continue lesson
+      </a>
+    </div>
+  </section>
+
+  <section aria-labelledby="jss-step1" style="padding: 32px 16px 0; display: flex; flex-direction: column;">
+    <span style="align-self: flex-start; display: flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px; background: #E8F0F9; color: #085CAA; font-size: 16px; font-weight: 700;">Step 1 of 2</span>
+    <h2 id="jss-step1" style="margin: 8px 4px 0; font-size: 28px; line-height: 34px; font-weight: 800; color: #15233B;">Choose your class</h2>
+    <p style="margin: 4px 4px 16px; font-size: 18px; line-height: 27px; color: #4A5568;">Tap the class you are in.</p>
+    <div role="group" aria-label="Choose your class" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+      <button aria-pressed="false" style="height: 132px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid #5B8FCC; border-radius: 22px; background: #FFFFFF; color: #15233B; font-family: Poppins, Arial, sans-serif; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08);"><span style="font-size: 18px; line-height: 24px; font-weight: 700; color: #4A5568;">JSS</span><span style="font-size: 60px; line-height: 64px; font-weight: 800;">1</span></button>
+      <button aria-pressed="true" style="position: relative; height: 132px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 4px solid #085CAA; border-radius: 22px; background: #E8F0F9; color: #0A3A6B; font-family: Poppins, Arial, sans-serif; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08);">
+        <span aria-hidden="true" style="position: absolute; top: 6px; right: 6px; width: 32px; height: 32px; border-radius: 50%; background: #085CAA; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+        <span style="font-size: 18px; line-height: 24px; font-weight: 700; color: #0A3A6B;">JSS</span><span style="font-size: 60px; line-height: 64px; font-weight: 800;">2</span><span style="font-size: 16px; line-height: 22px; font-weight: 800; color: #085CAA;">Your class</span>
+      </button>
+      <button aria-pressed="false" style="height: 132px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid #5B8FCC; border-radius: 22px; background: #FFFFFF; color: #15233B; font-family: Poppins, Arial, sans-serif; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08);"><span style="font-size: 18px; line-height: 24px; font-weight: 700; color: #4A5568;">JSS</span><span style="font-size: 60px; line-height: 64px; font-weight: 800;">3</span></button>
+    </div>
+  </section>
+
+  <section aria-labelledby="jss-step2" style="padding: 32px 16px 0; display: flex; flex-direction: column;">
+    <span style="align-self: flex-start; display: flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px; background: #E8F0F9; color: #085CAA; font-size: 16px; font-weight: 700;">Step 2 of 2</span>
+    <h2 id="jss-step2" style="margin: 8px 4px 0; font-size: 28px; line-height: 34px; font-weight: 800; color: #15233B;">JSS 2 subjects</h2>
+    <p style="margin: 4px 4px 16px; font-size: 18px; line-height: 27px; color: #4A5568;">Choose a subject to study.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+
+      <a href="#english-language" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+        <svg role="img" aria-label="An open exercise book with writing and a pen" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+          <rect width="358" height="100" fill="#E8F0F9"></rect>
+          <rect y="84" width="358" height="16" fill="#C9DCEF"></rect>
+          <path d="M150 28 q30 -10 50 4 v52 q-20 -14 -50 -4 z" fill="#FFFFFF" stroke="#064A8A" stroke-width="2.5" stroke-linejoin="round"></path>
+          <path d="M250 28 q-30 -10 -50 4 v52 q20 -14 50 -4 z" fill="#FFFFFF" stroke="#064A8A" stroke-width="2.5" stroke-linejoin="round"></path>
+          <path d="M158 40 q18 -5 34 2 M158 52 q18 -5 34 2 M158 64 q18 -5 26 1 M208 42 q16 -7 34 -2 M208 54 q16 -7 34 -2 M208 66 q12 -5 22 -2" stroke="#5B8FCC" stroke-width="3" fill="none" stroke-linecap="round"></path>
+          <path d="M276 78 l38 -38 l8 8 l-38 38 l-12 4 z" fill="#085CAA" stroke="#064A8A" stroke-width="2.5" stroke-linejoin="round"></path>
+        </svg>
+        <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+          <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1L19 8l-3-3L5 16z"></path><path d="M14 7l3 3"></path></svg>
+            </span>
+            <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #085CAA; color: #FFFFFF; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg>Finished</span>
+          </div>
+          <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">English Language</span>
+          <span style="margin-top: 4px; font-size: 17px; line-height: 24px; font-weight: 600; color: #085CAA;">All 10 lessons done</span>
+        </div>
+      </a>
+
+      <a href="#mathematics" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+        <svg role="img" aria-label="A blackboard with a sum, a ruler and a set square" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+          <rect width="358" height="100" fill="#E8F0F9"></rect>
+          <rect y="84" width="358" height="16" fill="#C9DCEF"></rect>
+          <rect x="128" y="14" width="148" height="64" rx="6" fill="#0A3A6B" stroke="#9DBFE3" stroke-width="5"></rect>
+          <text x="202" y="54" text-anchor="middle" fill="#FFFFFF" font-family="Poppins, Arial, sans-serif" font-size="22" font-weight="700">2x + 4 = 10</text>
+          <path d="M294 82 L294 30 L334 82 Z" fill="#FFFFFF" stroke="#064A8A" stroke-width="3" stroke-linejoin="round"></path>
+          <path d="M302 74 L302 52 L318 74 Z" fill="#9DBFE3"></path>
+        </svg>
+        <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+          <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v6M4 7h6"></path><path d="M14 7h6"></path><path d="M5 15l4 4M9 15l-4 4"></path><path d="M14 15h6M14 19h6"></path></svg>
+            </span>
+            <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #F4F7FB; color: #4A5568; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3"><circle cx="12" cy="12" r="9"></circle></svg>Not started</span>
+          </div>
+          <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Mathematics</span>
+          <span style="margin-top: 4px; font-size: 17px; line-height: 24px; color: #4A5568;">Start at Lesson 1 of 14</span>
+        </div>
+      </a>
+
+      <a href="#integrated-science" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+        <svg role="img" aria-label="A glass flask with bubbles and a magnifying glass" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+          <rect width="358" height="100" fill="#E8F0F9"></rect>
+          <rect y="88" width="358" height="12" fill="#C9DCEF"></rect>
+          <path d="M190 12 h24 M194 12 v26 l-24 38 a5 5 0 0 0 4 8 h56 a5 5 0 0 0 4 -8 l-24 -38 v-26" fill="#FFFFFF" stroke="#064A8A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></path>
+          <path d="M180 62 h44 l10 16 a2 2 0 0 1 -2 3 h-60 a2 2 0 0 1 -2 -3 z" fill="#5B8FCC"></path>
+          <circle cx="198" cy="70" r="3.5" fill="#FFFFFF"></circle><circle cx="210" cy="74" r="2.5" fill="#FFFFFF"></circle><circle cx="204" cy="50" r="3" fill="#9DBFE3"></circle>
+          <circle cx="286" cy="46" r="18" fill="#FFFFFF" stroke="#064A8A" stroke-width="4"></circle>
+          <path d="M299 59 L316 76" stroke="#064A8A" stroke-width="7" stroke-linecap="round"></path>
+          <path d="M278 40 q6 -6 12 0" stroke="#9DBFE3" stroke-width="3" fill="none" stroke-linecap="round"></path>
+        </svg>
+        <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+          <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"></path><path d="M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"></path><path d="M7.5 15h9"></path></svg>
+            </span>
+            <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #E8F0F9; color: #085CAA; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Started</span>
+          </div>
+          <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Integrated Science</span>
+          <span style="margin-top: 4px; font-size: 17px; line-height: 24px; font-weight: 600; color: #085CAA;">Lesson 4 of 12</span>
+          <span role="img" aria-label="On lesson 4 of 12. 3 lessons done" style="margin-top: 8px; display: block; height: 12px; border-radius: 999px; background: #E8F0F9; overflow: hidden;"><span style="display: block; width: 25%; height: 12px; border-radius: 999px; background: #085CAA;"></span></span>
+        </div>
+      </a>
+
+      <a href="#social-studies" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+        <svg role="img" aria-label="Village houses with zinc roofs and two people talking on the road" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+          <rect width="358" height="100" fill="#E8F0F9"></rect>
+          <rect y="80" width="358" height="20" fill="#C9DCEF"></rect>
+          <rect x="130" y="48" width="54" height="34" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+          <path d="M122 50 H192 L180 30 H134 Z" fill="#9DBFE3"></path>
+          <path d="M144 31 V49 M157 31 V49 M170 31 V49" stroke="#5B8FCC" stroke-width="2"></path>
+          <rect x="150" y="62" width="14" height="20" fill="#0A3A6B"></rect>
+          <rect x="204" y="40" width="64" height="42" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+          <path d="M194 42 H278 L264 20 H208 Z" fill="#9DBFE3"></path>
+          <path d="M220 21 V41 M236 21 V41 M252 21 V41" stroke="#5B8FCC" stroke-width="2"></path>
+          <rect x="216" y="54" width="14" height="12" fill="#064A8A"></rect><rect x="242" y="54" width="14" height="12" fill="#064A8A"></rect>
+          <circle cx="298" cy="56" r="7" fill="#064A8A"></circle><rect x="291" y="64" width="14" height="18" rx="4" fill="#085CAA"></rect>
+          <circle cx="322" cy="58" r="7" fill="#064A8A"></circle><rect x="315" y="66" width="14" height="16" rx="4" fill="#5B8FCC"></rect>
+        </svg>
+        <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+          <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M2.5 12h19"></path><path d="M12 2.5c3 3 3 16 0 19c-3-3-3-16 0-19z"></path></svg>
+            </span>
+            <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #F4F7FB; color: #4A5568; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3"><circle cx="12" cy="12" r="9"></circle></svg>Not started</span>
+          </div>
+          <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Social Studies</span>
+          <span style="margin-top: 4px; font-size: 17px; line-height: 24px; color: #4A5568;">Start at Lesson 1 of 8</span>
+        </div>
+      </a>
+
+      <div aria-disabled="true" style="background: #F4F7FB; border: 2px dashed #6B7C93; border-radius: 22px; overflow: hidden; color: #15233B;">
+        <svg role="img" aria-label="Young crops in rows" width="354" height="100" viewBox="0 0 354 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+          <rect width="354" height="100" fill="#EEF1F5"></rect>
+          <path d="M0 70 Q120 58 240 66 T354 62 V100 H0 Z" fill="#D5DBE3"></path>
+          <path d="M150 90 v-18 M150 78 q-10 -2 -12 -10 q8 2 12 8 M150 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+          <path d="M206 90 v-18 M206 78 q-10 -2 -12 -10 q8 2 12 8 M206 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+          <path d="M262 90 v-18 M262 78 q-10 -2 -12 -10 q8 2 12 8 M262 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+          <path d="M318 90 v-18 M318 78 q-10 -2 -12 -10 q8 2 12 8 M318 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+        </svg>
+        <div style="padding: 0 18px 19px; display: flex; flex-direction: column;">
+          <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #4A5568; border: 4px solid #F4F7FB; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"></path><path d="M12 12c0-4.5 3-7.5 8-7.5 0 4.5-3 7.5-8 7.5z"></path><path d="M12 14.5c0-3.5-2.5-6-7-6 0 3.5 2.5 6 7 6z"></path><path d="M6 21h12"></path></svg>
+            </span>
+            <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #FFFFFF; color: #4A5568; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.2"></path></svg>Not in this bag</span>
+          </div>
+          <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Agricultural Science</span>
+          <span style="margin-top: 4px; font-size: 17px; line-height: 24px; color: #4A5568;">Not in this bag yet.<br>Ask your teacher.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <a href="#practice-quiz-integrated-science" style="margin: 28px 16px 0; display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 24px; overflow: hidden; text-decoration: none; color: #15233B;">
+    <svg role="img" aria-label="A student in school uniform looks at a big question mark" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+      <rect width="358" height="100" fill="#E8F0F9"></rect>
+      <rect y="84" width="358" height="16" fill="#C9DCEF"></rect>
+      <circle cx="206" cy="40" r="11" fill="#064A8A"></circle>
+      <rect x="194" y="52" width="24" height="30" rx="6" fill="#085CAA"></rect>
+      <rect x="214" y="58" width="12" height="16" rx="1.5" fill="#FFFFFF" stroke="#0A3A6B" stroke-width="2"></rect>
+      <path d="M200 82 v10 M212 82 v10" stroke="#0A3A6B" stroke-width="5" stroke-linecap="round"></path>
+      <path d="M252 12 h70 a10 10 0 0 1 10 10 v30 a10 10 0 0 1 -10 10 h-50 l-14 12 v-12 h-6 a10 10 0 0 1 -10 -10 v-30 a10 10 0 0 1 10 -10 z" fill="#FFFFFF" stroke="#064A8A" stroke-width="3" stroke-linejoin="round"></path>
+      <text x="278" y="52" fill="#085CAA" font-family="Poppins, Arial, sans-serif" font-size="36" font-weight="800">?</text>
+    </svg>
+    <div style="padding: 0 20px 22px; display: flex; flex-direction: column;">
+      <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -34px; width: 68px; height: 68px; border-radius: 50%; background: #085CAA; border: 5px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.3 9.3a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.8v.4"></path><path d="M12 17.3v.2"></path></svg>
+      </span>
+      <span style="margin-top: 8px; font-size: 16px; line-height: 24px; font-weight: 600; color: #4A5568;">Check what you learned</span>
+      <span style="font-size: 24px; line-height: 30px; font-weight: 800;">Practice quiz</span>
+      <span style="margin-top: 4px; font-size: 17px; line-height: 24px; color: #4A5568;">Integrated Science · JSS 2</span>
+      <span style="margin-top: 16px; height: 64px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 10px; border: 3px solid #085CAA; border-radius: 18px; color: #085CAA; font-size: 19px; font-weight: 800;">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.3 9.3a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.8v.4"></path><path d="M12 17.3v.2"></path></svg>
+        Start quiz
+      </span>
+    </div>
+  </a>
+
+  <div style="margin: 28px 16px 28px; display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: #E8F0F9; border-radius: 20px; box-sizing: border-box;">
+    <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M5 8h14l-1 13H6z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path><path d="M9 14l2 2 4-4"></path></svg>
+    <p style="margin: 0; font-size: 16px; line-height: 24px; color: #15233B;">These lessons are in this bag. <strong style="font-weight: 700;">No internet needed.</strong></p>
+  </div>
+
+  <footer style="margin-top: auto; padding: 28px 16px 32px; background: #FFFFFF; border-top: 2px solid #E8F0F9; display: flex; flex-direction: column; align-items: center; gap: 10px; box-sizing: border-box;">
+    <img src="../../brand/easystem-logo.png" alt="EasySTEM" style="height: 32px; width: auto; display: block;">
+    <p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #4A5568;">Wi dae make u sensebod</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":3580}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

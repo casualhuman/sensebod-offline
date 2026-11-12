@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>V3 Climate</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,Arial,sans-serif;color:#15233B}
+a{color:#085CAA}a:hover{color:#064A8A}
+</style>
+</helmet>
+<div style="width: 390px; height: 3020px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F7FB; font-family: Poppins, Arial, sans-serif; color: #15233B;">
+
+  <nav aria-label="Go back" style="height: 76px; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: #FFFFFF; border-bottom: 2px solid #E8F0F9;">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 6px; height: 54px; padding: 0 16px 0 10px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 16px; background: #FFFFFF; color: #085CAA; font-size: 17px; font-weight: 700; text-decoration: none;">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>Back
+    </a>
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 8px; height: 54px; padding: 0 16px 0 12px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 16px; background: #FFFFFF; color: #085CAA; font-size: 17px; font-weight: 700; text-decoration: none;">
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5l9-7.5 9 7.5"></path><path d="M5.5 10v10h13V10"></path><path d="M10 20v-5h4v5"></path></svg>Home
+    </a>
+    <img src="../../brand/sensebod-logo.png" alt="Sensebod" style="height: 30px; width: auto; margin-left: auto; display: block;">
+  </nav>
+
+  <section style="margin: 20px 16px 0; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 24px; overflow: hidden;">
+    <svg role="img" aria-label="A village by a river: houses with zinc roofs under a rain cloud, with the sun coming out" width="358" height="160" viewBox="0 0 358 160" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 160px;">
+      <rect width="358" height="160" fill="#E8F0F9"></rect>
+      <circle cx="300" cy="36" r="18" fill="#C9DCEF"></circle>
+      <path d="M0 112 Q90 84 180 108 T358 100 V160 H0 Z" fill="#C9DCEF"></path>
+      <path d="M168 44 a15 15 0 0 1 28 -9 a18 18 0 0 1 33 5 a13 13 0 0 1 2 26 h-62 a11 11 0 0 1 -1 -22 z" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></path>
+      <path d="M180 76 l-5 11 M196 76 l-5 11 M212 76 l-5 11 M228 76 l-5 11" stroke="#5B8FCC" stroke-width="3.5" stroke-linecap="round"></path>
+      <rect x="216" y="100" width="44" height="30" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+      <path d="M208 102 L238 74 L268 102 Z" fill="#085CAA"></path>
+      <rect x="232" y="110" width="12" height="20" fill="#064A8A"></rect>
+      <rect x="280" y="104" width="56" height="26" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+      <path d="M273 106 H343 L332 88 H284 Z" fill="#9DBFE3"></path>
+      <path d="M294 89 V105 M308 89 V105 M322 89 V105" stroke="#5B8FCC" stroke-width="2"></path>
+      <rect x="302" y="112" width="12" height="18" fill="#0A3A6B"></rect>
+      <path d="M0 134 Q60 126 120 136 T240 134 T358 132 V160 H0 Z" fill="#5B8FCC"></path>
+      <path d="M130 148 q10 -4 20 0 M210 146 q10 -4 20 0 M290 147 q10 -4 20 0" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+    </svg>
+    <div style="padding: 0 20px 22px; display: flex; flex-direction: column;">
+      <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -40px; width: 80px; height: 80px; border-radius: 50%; background: #085CAA; border: 5px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15h10a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.5 1.5A3.3 3.3 0 0 0 7 15z"></path><path d="M8.5 18.5l-1 2.5M12.5 18.5l-1 2.5M16.5 18.5l-1 2.5"></path></svg>
+      </span>
+      <h1 style="margin: 8px 0 0; font-size: 32px; line-height: 38px; font-weight: 800; color: #15233B;">Climate</h1>
+      <p style="margin: 2px 0 16px; font-size: 18px; line-height: 27px; color: #4A5568;">Weather, floods and our land.</p>
+      <div style="display: flex; gap: 10px; align-items: stretch;">
+        <button style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; box-sizing: border-box; border: 2px solid #9A6E00; border-radius: 18px; background: #E4AA09; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 800;">
+          <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5v5h4l5 4.5v-14L7 9.5z"></path><path d="M16 9a4.5 4.5 0 0 1 0 6"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>
+          Listen
+        </button>
+        <div role="group" aria-label="Language" style="display: flex; border: 3px solid #085CAA; border-radius: 18px; overflow: hidden;">
+          <button aria-pressed="true" style="height: 54px; padding: 0 12px; border: 0; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;">English</button>
+          <button aria-pressed="false" style="height: 54px; padding: 0 12px; border: 0; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;">Krio</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="margin: 16px 16px 0; height: 64px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 6px 0 6px; background: #FFFFFF; border: 2px solid #5B8FCC; border-radius: 999px;">
+    <span aria-hidden="true" style="flex: none; width: 48px; height: 48px; border-radius: 50%; background: #085CAA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800;">A</span>
+    <span style="flex: 1; font-size: 17px; line-height: 24px; color: #15233B;">Learning as <strong style="font-weight: 800;">Aminata</strong></span>
+    <a href="V3-SignIn.dc.html" style="display: flex; align-items: center; height: 48px; padding: 0 18px; border-radius: 999px; background: #E8F0F9; color: #064A8A; font-size: 16px; font-weight: 700; text-decoration: none;">Change</a>
+  </div>
+
+  <section aria-labelledby="v3c-continue" style="margin: 20px 16px 0; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 24px; overflow: hidden;">
+    <svg role="img" aria-label="Lesson picture: a house with a zinc roof beside a river that is rising, and rain falling from a cloud" width="358" height="150" viewBox="0 0 358 150" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 150px;">
+      <rect width="358" height="150" fill="#E8F0F9"></rect>
+      <path d="M232 40 a13 13 0 0 1 24 -8 a16 16 0 0 1 29 4 a11 11 0 0 1 2 22 h-54 a10 10 0 0 1 -1 -18 z" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></path>
+      <path d="M244 66 l-4 10 M258 66 l-4 10 M272 66 l-4 10" stroke="#5B8FCC" stroke-width="3.5" stroke-linecap="round"></path>
+      <rect x="132" y="66" width="70" height="44" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+      <path d="M122 70 H212 L198 46 H136 Z" fill="#9DBFE3"></path>
+      <path d="M148 47 V69 M162 47 V69 M176 47 V69 M190 47 V69" stroke="#5B8FCC" stroke-width="2"></path>
+      <rect x="160" y="82" width="16" height="28" fill="#064A8A"></rect>
+      <rect x="140" y="78" width="12" height="11" fill="#064A8A"></rect>
+      <rect x="184" y="78" width="12" height="11" fill="#064A8A"></rect>
+      <path d="M0 104 Q60 96 120 106 T240 104 T358 102 V150 H0 Z" fill="#5B8FCC"></path>
+      <path d="M0 124 H358" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6 6"></path>
+      <path d="M60 118 q10 -4 20 0 M230 120 q10 -4 20 0 M300 116 q10 -4 20 0" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+      <path d="M90 100 V70 M81 79 l9 -9 l9 9" stroke="#0A3A6B" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <div style="padding: 0 20px 22px; display: flex; flex-direction: column;">
+      <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -38px; width: 76px; height: 76px; border-radius: 50%; background: #085CAA; border: 5px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"><path d="M8 5.5v13l10.5-6.5z"></path></svg>
+      </span>
+      <p id="v3c-continue" style="margin: 8px 0 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #064A8A;">Continue where you stopped</p>
+      <p style="margin: 0; font-size: 26px; line-height: 32px; font-weight: 800; color: #15233B;">Floods: stay safe</p>
+      <p style="margin: 2px 0 16px; font-size: 17px; line-height: 24px; color: #4A5568;">Picture lesson · Lesson 1 of 3</p>
+      <a href="V3-Climate-Lesson.dc.html" style="height: 68px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 18px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 20px; font-weight: 800;">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"><path d="M8 5.5v13l10.5-6.5z"></path></svg>
+        Continue lesson
+      </a>
+    </div>
+  </section>
+
+  <h2 style="margin: 28px 20px 16px; font-size: 28px; line-height: 36px; font-weight: 800; color: #15233B;">Choose a topic</h2>
+
+  <div style="padding: 0 16px; display: flex; flex-direction: column; gap: 16px;">
+
+    <a href="#rainy-and-dry-seasons" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+      <svg role="img" aria-label="Two halves: on the left, rain falls and makes a puddle; on the right, the sun shines on dry, cracked ground" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+        <rect width="358" height="100" fill="#E8F0F9"></rect>
+        <rect y="80" width="358" height="20" fill="#C9DCEF"></rect>
+        <path d="M120 40 a12 12 0 0 1 22 -7 a14 14 0 0 1 26 4 a10 10 0 0 1 2 20 h-49 a9 9 0 0 1 -1 -17 z" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></path>
+        <path d="M132 63 l-4 9 M146 63 l-4 9 M160 63 l-4 9" stroke="#5B8FCC" stroke-width="3.5" stroke-linecap="round"></path>
+        <ellipse cx="146" cy="88" rx="28" ry="5" fill="#5B8FCC"></ellipse>
+        <path d="M214 10 V96" stroke="#9DBFE3" stroke-width="2.5" stroke-dasharray="6 6"></path>
+        <circle cx="272" cy="40" r="16" fill="#FFFFFF" stroke="#5B8FCC" stroke-width="3"></circle>
+        <path d="M272 14 v-6 M272 72 v-6 M246 40 h-6 M304 40 h-6 M254 22 l-4 -4 M290 58 l4 4 M290 22 l4 -4 M254 58 l-4 4" stroke="#5B8FCC" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M240 86 l8 6 l10 -4 M276 92 l6 -6 l10 4 M310 86 l6 5" stroke="#5B8FCC" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+        <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+          <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3.5"></circle><path d="M9 20h8a3.5 3.5 0 0 0 .3-7 4.5 4.5 0 0 0-8.6 1.2A2.9 2.9 0 0 0 9 20z"></path></svg>
+          </span>
+          <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #085CAA; color: #FFFFFF; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg>Finished</span>
+        </div>
+        <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Rainy and dry seasons</span>
+        <span style="margin-top: 4px; font-size: 17px; line-height: 24px; font-weight: 600; color: #064A8A;">All done. Well done!</span>
+      </div>
+    </a>
+
+    <a href="V3-Climate-Lesson.dc.html" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+      <svg role="img" aria-label="A house with a zinc roof; the river beside it is rising, with an arrow pointing up" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+        <rect width="358" height="100" fill="#E8F0F9"></rect>
+        <rect x="150" y="44" width="50" height="32" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+        <path d="M142 46 H208 L198 28 H152 Z" fill="#9DBFE3"></path>
+        <path d="M164 29 V45 M176 29 V45 M188 29 V45" stroke="#5B8FCC" stroke-width="2"></path>
+        <rect x="168" y="56" width="12" height="20" fill="#064A8A"></rect>
+        <path d="M268 30 a10 10 0 0 1 18 -6 a12 12 0 0 1 22 3 a9 9 0 0 1 2 17 h-41 a8 8 0 0 1 -1 -14 z" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></path>
+        <path d="M278 52 l-3 7 M290 52 l-3 7 M302 52 l-3 7" stroke="#5B8FCC" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M0 70 Q60 64 120 72 T240 70 T358 72 V100 H0 Z" fill="#5B8FCC"></path>
+        <path d="M60 86 q10 -4 20 0 M220 88 q10 -4 20 0 M300 86 q10 -4 20 0" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+        <path d="M232 62 V34 M224 42 l8 -8 l8 8" stroke="#0A3A6B" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+        <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+          <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-6.5 8 6.5"></path><path d="M6.5 9.5V14h11V9.5"></path><path d="M3 18.5c1.5-1.3 3-1.3 4.5 0s3 1.3 4.5 0 3-1.3 4.5 0 3 1.3 4.5 0"></path></svg>
+          </span>
+          <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #E8F0F9; color: #064A8A; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#064A8A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Started</span>
+        </div>
+        <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Floods: stay safe</span>
+        <span style="margin-top: 4px; font-size: 17px; line-height: 24px; font-weight: 600; color: #064A8A;">On lesson 1 of 3</span>
+        <span role="img" aria-label="On lesson 1 of 3, halfway through" style="margin-top: 8px; display: block; height: 12px; border-radius: 999px; background: #E8F0F9; overflow: hidden;"><span style="display: block; width: 17%; height: 12px; border-radius: 999px; background: #085CAA;"></span></span>
+      </div>
+    </a>
+
+    <a href="#keeping-our-land-and-water-clean" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+      <svg role="img" aria-label="A girl puts a plastic bottle in a rubbish bin beside a clean river; a clean water drop" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+        <rect width="358" height="100" fill="#E8F0F9"></rect>
+        <rect y="76" width="358" height="24" fill="#C9DCEF"></rect>
+        <path d="M0 88 Q60 84 120 90 T240 88 T358 88 V100 H0 Z" fill="#5B8FCC"></path>
+        <path d="M144 42 h28 l-3 38 h-22 z" fill="#FFFFFF" stroke="#064A8A" stroke-width="2.5" stroke-linejoin="round"></path>
+        <rect x="140" y="34" width="36" height="7" rx="3" fill="#085CAA"></rect>
+        <path d="M153 50 v22 M163 50 v22" stroke="#9DBFE3" stroke-width="2.5" stroke-linecap="round"></path>
+        <circle cx="206" cy="30" r="8" fill="#064A8A"></circle>
+        <path d="M198 40 h16 l4 30 h-24 z" fill="#085CAA"></path>
+        <path d="M200 46 L182 38" stroke="#064A8A" stroke-width="5" stroke-linecap="round"></path>
+        <rect x="174" y="30" width="7" height="13" rx="2" fill="#FFFFFF" stroke="#064A8A" stroke-width="2"></rect>
+        <path d="M202 70 v8 M210 70 v8" stroke="#0A3A6B" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M290 18 c8 10 12 16 12 22 a12 12 0 0 1 -24 0 c0 -6 4 -12 12 -22 z" fill="#FFFFFF" stroke="#085CAA" stroke-width="3" stroke-linejoin="round"></path>
+        <path d="M284 41 l4 4 l7 -8" stroke="#085CAA" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+        <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+          <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.5 4.5 6 7.8 6 11a6 6 0 0 1-12 0c0-3.2 2.5-6.5 6-11z"></path><path d="M9.3 14.2l2 2 3.5-4"></path></svg>
+          </span>
+          <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #F4F7FB; color: #4A5568; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3"><circle cx="12" cy="12" r="9"></circle></svg>Not started</span>
+        </div>
+        <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Keeping our land and water clean</span>
+        <span style="margin-top: 4px; font-size: 17px; line-height: 24px; color: #4A5568;">Picture lessons</span>
+      </div>
+    </a>
+
+    <a href="#heat-and-health" style="display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 22px; overflow: hidden; text-decoration: none; color: #15233B;">
+      <svg role="img" aria-label="On a hot, sunny day a man sits in the shade of a zinc-roof shelter and drinks a cup of water" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+        <rect width="358" height="100" fill="#E8F0F9"></rect>
+        <rect y="84" width="358" height="16" fill="#C9DCEF"></rect>
+        <circle cx="300" cy="36" r="16" fill="#FFFFFF" stroke="#5B8FCC" stroke-width="3"></circle>
+        <path d="M300 10 v-6 M300 68 v-6 M274 36 h-6 M332 36 h-6 M282 18 l-4 -4 M318 54 l4 4 M318 18 l4 -4 M282 54 l-4 4" stroke="#5B8FCC" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M140 36 H244 L232 20 H152 Z" fill="#9DBFE3"></path>
+        <path d="M164 21 V35 M180 21 V35 M196 21 V35 M212 21 V35 M228 21 V35" stroke="#5B8FCC" stroke-width="2"></path>
+        <path d="M152 36 V84 M232 36 V84" stroke="#5B8FCC" stroke-width="5" stroke-linecap="round"></path>
+        <rect x="170" y="74" width="36" height="8" rx="3" fill="#5B8FCC"></rect>
+        <circle cx="188" cy="50" r="8" fill="#064A8A"></circle>
+        <path d="M180 60 h16 l3 16 h-22 z" fill="#085CAA"></path>
+        <path d="M194 66 L202 58" stroke="#064A8A" stroke-width="4" stroke-linecap="round"></path>
+        <rect x="200" y="46" width="9" height="12" rx="1.5" fill="#FFFFFF" stroke="#064A8A" stroke-width="2"></rect>
+        <path d="M212 70 h12 v12 h-12 z" fill="#FFFFFF" stroke="#064A8A" stroke-width="2"></path>
+        <rect x="214" y="66" width="8" height="4" fill="#064A8A"></rect>
+      </svg>
+      <div style="padding: 0 20px 20px; display: flex; flex-direction: column;">
+        <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+          <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #085CAA; border: 4px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14.5V5a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"></path><path d="M12 10v6"></path></svg>
+          </span>
+          <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #F4F7FB; color: #4A5568; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3"><circle cx="12" cy="12" r="9"></circle></svg>Not started</span>
+        </div>
+        <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Heat and health</span>
+        <span style="margin-top: 4px; font-size: 17px; line-height: 24px; color: #4A5568;">Picture lessons</span>
+      </div>
+    </a>
+
+    <div aria-disabled="true" style="background: #F4F7FB; border: 2px dashed #6B7C93; border-radius: 22px; overflow: hidden; color: #15233B;">
+      <svg role="img" aria-label="Young crops in rows under a cloud and the sun" width="352" height="100" viewBox="0 0 352 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+        <rect width="352" height="100" fill="#EEF1F5"></rect>
+        <path d="M0 70 Q120 58 240 66 T352 62 V100 H0 Z" fill="#D5DBE3"></path>
+        <circle cx="300" cy="28" r="12" fill="none" stroke="#7D8899" stroke-width="3"></circle>
+        <path d="M232 34 a9 9 0 0 1 16 -5 a11 11 0 0 1 20 3 a8 8 0 0 1 1 15 h-36 a7 7 0 0 1 -1 -13 z" fill="#EEF1F5" stroke="#7D8899" stroke-width="3"></path>
+        <path d="M150 90 v-18 M150 78 q-10 -2 -12 -10 q8 2 12 8 M150 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+        <path d="M206 90 v-18 M206 78 q-10 -2 -12 -10 q8 2 12 8 M206 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+        <path d="M262 90 v-18 M262 78 q-10 -2 -12 -10 q8 2 12 8 M262 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+        <path d="M318 90 v-18 M318 78 q-10 -2 -12 -10 q8 2 12 8 M318 76 q10 -4 12 -12 q-8 4 -12 10" stroke="#7D8899" stroke-width="3" fill="none" stroke-linecap="round"></path>
+      </svg>
+      <div style="padding: 0 18px 19px; display: flex; flex-direction: column;">
+        <div style="height: 50px; display: flex; justify-content: space-between; align-items: flex-start;">
+          <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -32px; width: 64px; height: 64px; flex: none; border-radius: 50%; background: #4A5568; border: 4px solid #F4F7FB; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"></path><path d="M12 12c0-4.5 3-7.5 8-7.5 0 4.5-3 7.5-8 7.5z"></path><path d="M12 14.5c0-3.5-2.5-6-7-6 0 3.5 2.5 6 7 6z"></path><path d="M6 21h12"></path></svg>
+          </span>
+          <span style="margin-top: 10px; display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px 0 10px; border-radius: 999px; background: #FFFFFF; color: #4A5568; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.2"></path></svg>Not in this bag</span>
+        </div>
+        <span style="margin-top: 6px; font-size: 24px; line-height: 30px; font-weight: 800;">Growing food when the weather changes</span>
+        <span style="margin-top: 4px; font-size: 17px; line-height: 24px; color: #4A5568;">Not in this bag yet. Ask your facilitator.</span>
+      </div>
+    </div>
+  </div>
+
+  <a href="#quiz-floods" style="margin: 28px 16px 0; display: block; background: #FFFFFF; border: 2px solid #5B8FCC; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); border-radius: 24px; overflow: hidden; text-decoration: none; color: #15233B;">
+    <svg role="img" aria-label="A house beside a river, and a big question mark" width="358" height="100" viewBox="0 0 358 100" preserveAspectRatio="xMidYMid slice" style="display: block; width: 100%; height: 100px;">
+      <rect width="358" height="100" fill="#E8F0F9"></rect>
+      <rect x="160" y="48" width="44" height="28" fill="#FFFFFF" stroke="#9DBFE3" stroke-width="3"></rect>
+      <path d="M152 50 H212 L203 34 H161 Z" fill="#9DBFE3"></path>
+      <path d="M172 35 V49 M182 35 V49 M192 35 V49" stroke="#5B8FCC" stroke-width="2"></path>
+      <rect x="176" y="58" width="12" height="18" fill="#064A8A"></rect>
+      <path d="M0 76 Q60 70 120 78 T240 76 T358 78 V100 H0 Z" fill="#5B8FCC"></path>
+      <path d="M60 90 q10 -4 20 0 M200 92 q10 -4 20 0" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+      <path d="M252 10 h70 a10 10 0 0 1 10 10 v30 a10 10 0 0 1 -10 10 h-50 l-14 12 v-12 h-6 a10 10 0 0 1 -10 -10 v-30 a10 10 0 0 1 10 -10 z" fill="#FFFFFF" stroke="#064A8A" stroke-width="3" stroke-linejoin="round"></path>
+      <text x="278" y="50" fill="#085CAA" font-family="Poppins, Arial, sans-serif" font-size="36" font-weight="800">?</text>
+    </svg>
+    <div style="padding: 0 20px 22px; display: flex; flex-direction: column;">
+      <span aria-hidden="true" style="position: relative; z-index: 1; margin-top: -34px; width: 68px; height: 68px; border-radius: 50%; background: #085CAA; border: 5px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(21, 35, 59, 0.08); display: flex; align-items: center; justify-content: center;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.3 9.3a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.8v.4"></path><path d="M12 17.3v.2"></path></svg>
+      </span>
+      <span style="margin-top: 8px; font-size: 16px; line-height: 24px; font-weight: 600; color: #4A5568;">Check what you learned</span>
+      <span style="font-size: 24px; line-height: 30px; font-weight: 800;">Quick quiz: floods</span>
+      <span style="margin-top: 16px; height: 64px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 10px; border: 3px solid #085CAA; border-radius: 18px; color: #085CAA; font-size: 19px; font-weight: 800;">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.3 9.3a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.8v.4"></path><path d="M12 17.3v.2"></path></svg>
+        Start quiz
+      </span>
+    </div>
+  </a>
+
+  <div style="margin: 28px 16px 28px; display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: #E8F0F9; border-radius: 20px; box-sizing: border-box;">
+    <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M5 8h14l-1 13H6z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path><path d="M9 14l2 2 4-4"></path></svg>
+    <p style="margin: 0; font-size: 16px; line-height: 24px; color: #15233B;">Everything here is in this bag. <strong style="font-weight: 700;">No internet needed.</strong></p>
+  </div>
+
+  <footer style="margin-top: auto; padding: 28px 16px 32px; background: #FFFFFF; border-top: 2px solid #E8F0F9; display: flex; flex-direction: column; align-items: center; gap: 10px; box-sizing: border-box;">
+    <img src="../../brand/easystem-logo.png" alt="EasySTEM" style="height: 32px; width: auto; display: block;">
+    <p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #4A5568;">Wi dae make u sensebod</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":3020}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

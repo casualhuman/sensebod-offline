@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>D Components</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,Arial,sans-serif;color:#15233B}
+a{color:#085CAA}a:hover{color:#064A8A}
+</style>
+</helmet>
+<div style="width: 1440px; min-height: 3520px; box-sizing: border-box; background: #F5F8FC; padding: 48px; display: flex; flex-direction: column; gap: 32px; font-family: Poppins, Arial, sans-serif; color: #15233B;">
+
+  <header style="display: flex; align-items: center; gap: 28px;">
+    <img src="../../brand/sensebod-logo.png" alt="Sensebod" style="height: 36px; width: auto; display: block; background: #FFFFFF; padding: 8px 12px; border-radius: 12px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h1 style="margin: 0; font-size: 30px; line-height: 38px; font-weight: 800;">Big Tiles — component library</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 24px; color: #4A5568;">Direction D. Picture first, few words. Blue and white everywhere; green only for Agriculture; gold only on the Listen button.</p>
+    </div>
+  </header>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px;">
+    <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+      <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Colour tokens</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #085CAA; color: #FFFFFF; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 6.73:1</div><span style="font-size: 15px; font-weight: 700;">Brand blue #085CAA</span><span style="font-size: 15px; color: #4A5568;">All portal tiles, main buttons</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #064A8A; color: #FFFFFF; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 8.92:1</div><span style="font-size: 15px; font-weight: 700;">Dark blue #064A8A</span><span style="font-size: 15px; color: #4A5568;">Hover, links</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #0A3A6B; color: #FFFFFF; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 11.47:1</div><span style="font-size: 15px; font-weight: 700;">Deep blue #0A3A6B</span><span style="font-size: 15px; color: #4A5568;">Pressed, video frame</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #1F7A3A; color: #FFFFFF; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 5.38:1</div><span style="font-size: 15px; font-weight: 700;">Agriculture #1F7A3A</span><span style="font-size: 15px; color: #4A5568;">Agriculture only; also "correct"</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #E4AA09; color: #15233B; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 7.53:1</div><span style="font-size: 15px; font-weight: 700;">Gold #E4AA09</span><span style="font-size: 15px; color: #4A5568;">Listen button only, ink text</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #15233B; color: #FFFFFF; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 15.73:1</div><span style="font-size: 15px; font-weight: 700;">Ink #15233B</span><span style="font-size: 15px; color: #4A5568;">Text, focus ring</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #4A5568; color: #FFFFFF; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 7.53:1</div><span style="font-size: 15px; font-weight: 700;">Grey #4A5568</span><span style="font-size: 15px; color: #4A5568;">Second text on white</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #E6EFF8; color: #085CAA; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 5.79:1</div><span style="font-size: 15px; font-weight: 700;">Tint #E6EFF8</span><span style="font-size: 15px; color: #4A5568;">Borders; tile subtitles on blue</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #EEF4FA; color: #085CAA; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 6.07:1</div><span style="font-size: 15px; font-weight: 700;">Tint #EEF4FA</span><span style="font-size: 15px; color: #4A5568;">Info boxes, guest bar</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #EEF1F5; color: #4A5568; border: 2px dashed #4A5568; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 6.64:1</div><span style="font-size: 15px; font-weight: 700;">Not ready #EEF1F5</span><span style="font-size: 15px; color: #4A5568;">Not in this bag, locked</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #E8F4EC; color: #1F7A3A; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 4.76:1</div><span style="font-size: 15px; font-weight: 700;">Correct #E8F4EC</span><span style="font-size: 15px; color: #4A5568;">With check icon + words</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 72px; border-radius: 14px; background: #FFF1E5; color: #9A4A00; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; font-size: 16px; font-weight: 700;">Aa 5.66:1</div><span style="font-size: 15px; font-weight: 700;">Try again #FFF1E5</span><span style="font-size: 15px; color: #4A5568;">Text #9A4A00 + icon + words</span></div>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Type scale — Poppins</h2>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EEF4FA; padding-bottom: 10px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Page title 30 / 800</span><span style="font-size: 30px; line-height: 36px; font-weight: 800;">Agriculture</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EEF4FA; padding-bottom: 10px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Heading 28 / 800</span><span style="font-size: 28px; line-height: 34px; font-weight: 800;">Save my progress</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EEF4FA; padding-bottom: 10px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Section 22 / 700</span><span style="font-size: 22px; line-height: 30px; font-weight: 700;">Choose a topic</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EEF4FA; padding-bottom: 10px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Tile label 21 / 800</span><span style="font-size: 21px; line-height: 26px; font-weight: 800;">Primary school</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EEF4FA; padding-bottom: 10px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Button 18 / 700</span><span style="font-size: 18px; line-height: 26px; font-weight: 700;">Save and start learning</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EEF4FA; padding-bottom: 10px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Instruction 18 / 400</span><span style="font-size: 18px; line-height: 27px;">Tap a picture to start.</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px; border-bottom: 2px solid #EEF4FA; padding-bottom: 10px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Body 16 / 400</span><span style="font-size: 16px; line-height: 24px;">No password. No phone number.</span></div>
+      <div style="display: flex; align-items: baseline; gap: 16px;"><span style="width: 150px; flex: none; font-size: 15px; color: #4A5568;">Tile subtitle 15 / 500</span><span style="font-size: 15px; line-height: 21px; font-weight: 500;">Class 1 to Class 6 (smallest size used)</span></div>
+    </section>
+  </div>
+
+  <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Buttons — 56 to 64px tall, icon + named action</h2>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Primary · default</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 0; border-radius: 18px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Save and start</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Primary · pressed</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 0; border-radius: 18px; background: #0A3A6B; color: #FFFFFF; box-shadow: inset 0 4px 0 #15233B; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Save and start</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Primary · keyboard focus</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 0; border-radius: 18px; background: #085CAA; color: #FFFFFF; outline: 4px solid #15233B; outline-offset: 3px; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Save and start</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Primary · working</span>
+        <button aria-busy="true" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 0; border-radius: 18px; background: #064A8A; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"></path></svg>Saving your name…</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Primary · not ready</span>
+        <button aria-disabled="true" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 2px dashed #4A5568; border-radius: 18px; background: #EEF1F5; color: #4A5568; font-family: Poppins, Arial, sans-serif; font-size: 17px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Watch video first</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Secondary</span>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-7 8-7s8 3 8 7"></path></svg>Learn as a guest</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Listen (the only gold)</span>
+        <button style="align-self: flex-start; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 24px; border: 0; border-radius: 16px; background: #E4AA09; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M16 8.5a5 5 0 0 1 0 7"></path><path d="M19 5.5a9 9 0 0 1 0 13"></path></svg>Listen</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Back + Home</span>
+        <div style="display: flex; gap: 10px;">
+          <a href="#" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 56px; border-radius: 16px; border: 2px solid #085CAA; color: #085CAA; text-decoration: none; font-size: 17px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>Back</a>
+          <a href="#" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 56px; border-radius: 16px; border: 2px solid #085CAA; color: #085CAA; text-decoration: none; font-size: 17px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg>Home</a>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Language switch (words)</span>
+        <div role="group" aria-label="Language" style="align-self: flex-start; display: flex; border: 2px solid #085CAA; border-radius: 14px; overflow: hidden;">
+          <button aria-pressed="true" style="height: 52px; min-width: 96px; border: 0; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;">English</button>
+          <button aria-pressed="false" style="height: 52px; min-width: 80px; border: 0; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 600;">Krio</button>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Person chip</span>
+        <a href="#" style="align-self: flex-start; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 16px 0 10px; border-radius: 16px; border: 2px solid #085CAA; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 16px; font-weight: 700;"><span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 18px; background: #085CAA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800;">A</span>Aminata · Change</a>
+      </div>
+    </div>
+  </section>
+
+  <div style="display: grid; grid-template-columns: 520px minmax(0, 1fr); gap: 32px;">
+    <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Portal tile</h2>
+      <p style="margin: 0; font-size: 16px; line-height: 24px; color: #4A5568;">Same blue for every portal. Agriculture is the only green tile. The fifth portal spans both columns.</p>
+      <div style="display: grid; grid-template-columns: repeat(2, 173px); gap: 12px;">
+        <a href="#" style="min-height: 204px; box-sizing: border-box; padding: 16px; border-radius: 22px; background: #085CAA; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
+          <svg aria-hidden="true" width="84" height="84" viewBox="0 0 48 48" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12c6-2 13-2 19 3v25c-6-4-13-5-19-3z"></path><path d="M43 12c-6-2-13-2-19 3v25c6-4 13-5 19-3z"></path><path d="M10 20c3-1 6 0 9 1M10 27c3-1 6 0 9 1M29 21c3-1 6-2 9-1M29 28c3-1 6-2 9-1"></path></svg>
+          <span style="font-size: 21px; line-height: 26px; font-weight: 800;">Primary school</span>
+          <span style="font-size: 15px; line-height: 21px; font-weight: 500; color: #E6EFF8;">Class 1 to Class 6</span>
+        </a>
+        <a href="#" style="min-height: 204px; box-sizing: border-box; padding: 16px; border-radius: 22px; background: #1F7A3A; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
+          <svg aria-hidden="true" width="84" height="84" viewBox="0 0 48 48" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 42V20"></path><path d="M24 30c-9 0-14-5-14-13 9 0 14 5 14 13z"></path><path d="M24 22c0-9 5-14 14-14 0 9-5 14-14 14z"></path><path d="M7 42h34"></path></svg>
+          <span style="font-size: 21px; line-height: 26px; font-weight: 800;">Agriculture</span>
+          <span style="font-size: 15px; line-height: 21px; font-weight: 500; color: #FFFFFF;">Animals, crops and selling</span>
+        </a>
+      </div>
+      <a href="#" style="width: 358px; min-height: 124px; box-sizing: border-box; padding: 16px 20px; border-radius: 22px; background: #085CAA; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 18px; outline: 4px solid #15233B; outline-offset: 3px;">
+        <svg aria-hidden="true" width="88" height="88" viewBox="0 0 48 48" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><circle cx="15" cy="14" r="5"></circle><path d="M15 3v2M4 14h2M7 6l1.5 1.5M23 6l-1.5 1.5"></path><path d="M16 36h19a7 7 0 0 0 0-14 10 10 0 0 0-19-1 7.5 7.5 0 0 0 0 15z"></path><path d="M19 41l-2 4M27 41l-2 4M35 41l-2 4"></path></svg>
+        <span style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 24px; line-height: 30px; font-weight: 800;">Climate</span><span style="font-size: 15px; line-height: 21px; font-weight: 500; color: #E6EFF8;">Weather, floods and our land</span></span>
+      </a>
+      <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Wide tile shown with keyboard focus ring (ink, 4px).</span>
+    </section>
+
+    <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Topic tile — 4 states</h2>
+      <p style="margin: 0; font-size: 16px; line-height: 24px; color: #4A5568;">State is always an icon + words, never colour alone. Inside Agriculture the same tiles are green.</p>
+      <div style="display: grid; grid-template-columns: repeat(4, 173px); gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Not started</span>
+          <a href="#" style="min-height: 232px; box-sizing: border-box; padding: 14px 12px; border-radius: 22px; background: #085CAA; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
+            <svg aria-hidden="true" width="76" height="76" viewBox="0 0 48 48" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18c-3-7-3-13 0-14 3 1 4 7 3 14"></path><path d="M22 18c1-7 4-12 7-11 2 2 0 8-4 13"></path><circle cx="19" cy="24" r="7"></circle><path d="M24 30c3-2 7-3 11-2 6 2 8 8 6 13H14c-2-3-1-7 2-9"></path><circle cx="42" cy="34" r="2"></circle></svg>
+            <span style="font-size: 19px; line-height: 24px; font-weight: 800;">Rabbits</span>
+            <span style="display: flex; align-items: center; gap: 4px; padding: 1px 10px; border-radius: 10px; border: 2px solid #FFFFFF; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6"><circle cx="12" cy="12" r="9"></circle></svg>Not started</span>
+            <span style="font-size: 15px; line-height: 20px; font-weight: 600;">4 videos</span>
+          </a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Started</span>
+          <a href="#" style="min-height: 232px; box-sizing: border-box; padding: 14px 12px; border-radius: 22px; background: #085CAA; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
+            <svg aria-hidden="true" width="76" height="76" viewBox="0 0 48 48" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="33" cy="12" r="5"></circle><path d="M31 6.5c1-2 3-2 4 0"></path><path d="M38 12l4 1.5-4 1.5"></path><path d="M29 16c-8 0-19 3-21 11 3 8 10 12 18 12 9 0 13-7 12-15-1-4-3-8-9-8z"></path><path d="M16 27c4 3 9 3 12 0"></path><path d="M21 39v6M29 39v6"></path></svg>
+            <span style="font-size: 19px; line-height: 24px; font-weight: 800;">Chickens and quail</span>
+            <span style="display: flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; background: #FFFFFF; color: #085CAA; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.6"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 0 18z" fill="#085CAA"></path></svg>Started</span>
+            <span style="font-size: 15px; line-height: 20px; font-weight: 600;">1 of 5 done</span>
+          </a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Finished</span>
+          <a href="#" style="min-height: 232px; box-sizing: border-box; padding: 14px 12px; border-radius: 22px; background: #085CAA; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
+            <svg aria-hidden="true" width="76" height="76" viewBox="0 0 48 48" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4h12"></path><path d="M19 4v7l-5 7v25h20V18l-5-7V4"></path><path d="M14 26h20"></path></svg>
+            <span style="font-size: 19px; line-height: 24px; font-weight: 800;">Milk and dairy cows</span>
+            <span style="display: flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; background: #FFFFFF; color: #085CAA; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Finished</span>
+            <span style="font-size: 15px; line-height: 20px; font-weight: 600;">Well done!</span>
+          </a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Not in this bag</span>
+          <div aria-disabled="true" style="min-height: 232px; box-sizing: border-box; padding: 14px 12px; border-radius: 22px; background: #EEF1F5; border: 2px dashed #4A5568; color: #4A5568; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;">
+            <svg aria-hidden="true" width="76" height="76" viewBox="0 0 48 48" fill="none" stroke="#4A5568" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 44V10"></path><path d="M24 18c-5-2-7-6-7-10 5 1 7 5 7 10z"></path><path d="M24 18c5-2 7-6 7-10-5 1-7 5-7 10z"></path><path d="M24 29c-5-2-7-6-7-10 5 1 7 5 7 10z"></path><path d="M24 29c5-2 7-6 7-10-5 1-7 5-7 10z"></path></svg>
+            <span style="font-size: 19px; line-height: 24px; font-weight: 800; color: #15233B;">Crops</span>
+            <span style="font-size: 15px; line-height: 20px; font-weight: 700;">Not in this bag yet.</span>
+            <span style="font-size: 15px; line-height: 20px; font-weight: 500;">Ask your facilitator to add it.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 32px;">
+    <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+      <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Progress — words first</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.6"><circle cx="12" cy="12" r="9"></circle></svg>Not started · 0 of 4 videos done</span>
+        <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;"><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.6"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 0 18z" fill="#085CAA"></path></svg>Started · 1 of 5 videos done</span>
+        <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px;"><div style="height: 14px; border-radius: 7px; background: #085CAA;"></div><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div><div style="height: 14px; border-radius: 7px; border: 2px solid #085CAA; box-sizing: border-box;"></div></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Finished · 5 of 5 videos done</span>
+        <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px;"><div style="height: 14px; border-radius: 7px; background: #085CAA;"></div><div style="height: 14px; border-radius: 7px; background: #085CAA;"></div><div style="height: 14px; border-radius: 7px; background: #085CAA;"></div><div style="height: 14px; border-radius: 7px; background: #085CAA;"></div><div style="height: 14px; border-radius: 7px; background: #085CAA;"></div></div>
+      </div>
+      <p style="margin: 0; font-size: 15px; line-height: 22px; color: #4A5568;">One block per video, so it can be counted without reading numbers.</p>
+    </section>
+
+    <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Messages</h2>
+      <div role="status" style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px; background: #E8F4EC; border: 2px solid #1F7A3A;">
+        <span aria-hidden="true" style="width: 44px; height: 44px; flex: none; border-radius: 22px; background: #1F7A3A; display: flex; align-items: center; justify-content: center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>
+        <p style="margin: 0; font-size: 16px; line-height: 24px; color: #15233B;"><strong style="color: #1F7A3A;">Saved.</strong> Your progress is kept in this bag.</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px; background: #EEF4FA; border: 2px solid #085CAA;">
+        <span aria-hidden="true" style="width: 44px; height: 44px; flex: none; border-radius: 22px; background: #085CAA; display: flex; align-items: center; justify-content: center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"><path d="M12 11v6"></path><path d="M12 7h0"></path></svg></span>
+        <p style="margin: 0; font-size: 16px; line-height: 24px; color: #15233B;"><strong style="color: #085CAA;">Good to know.</strong> Everything here is in this bag. No internet needed.</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px; background: #EEF1F5; border: 2px dashed #4A5568;">
+        <span aria-hidden="true" style="width: 44px; height: 44px; flex: none; border-radius: 22px; background: #FFFFFF; border: 2px solid #4A5568; box-sizing: border-box; display: flex; align-items: center; justify-content: center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4A5568" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 13H6z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg></span>
+        <p style="margin: 0; flex: 1; font-size: 16px; line-height: 24px; color: #15233B;"><strong>Crops is not in this bag yet.</strong> Ask your facilitator to add it.</p>
+        <a href="#" style="flex: none; display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 18px; border-radius: 16px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 17px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>See other topics</a>
+      </div>
+    </section>
+  </div>
+
+  <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Video player — at phone width (360px)</h2>
+      <p style="margin: 0; font-size: 16px; line-height: 24px; color: #4A5568;">Never plays by itself. One big Play. While playing, every control is a big button with its name under the icon. Times are sample values for this library only.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 360px); gap: 48px; align-items: start;">
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 16px; font-weight: 700; color: #4A5568;">(a) Ready</span>
+        <div style="width: 360px; border-radius: 24px; border: 2px solid #E6EFF8; overflow: hidden; background: #FFFFFF;">
+          <div style="position: relative; width: 356px; height: 200px; background: #E6EFF8;">
+            <svg role="img" aria-label="Picture from the video: a quail house with two quail" width="356" height="200" viewBox="0 0 356 200" fill="none" stroke="#085CAA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+              <path d="M84 84L178 34l94 50"></path><path d="M102 76v94h152V76"></path><path d="M122 98h112v72H122z"></path><path d="M141 98v72M160 98v72M179 98v72M198 98v72M217 98v72" stroke-width="2"></path><path d="M122 122h112M122 146h112" stroke-width="2"></path><path d="M40 170h276"></path>
+              <ellipse cx="62" cy="158" rx="16" ry="11"></ellipse><circle cx="76" cy="145" r="6"></circle><ellipse cx="294" cy="158" rx="16" ry="11"></ellipse><circle cx="280" cy="145" r="6"></circle>
+            </svg>
+            <button style="position: absolute; left: 88px; top: 68px; width: 180px; height: 64px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 32px; background: #085CAA; color: #FFFFFF; box-shadow: 0 0 0 6px #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 700;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M7 4v16l13-8z"></path></svg>Play video</button>
+          </div>
+          <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <h3 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Quail housing</h3>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span style="padding: 4px 12px; border-radius: 10px; background: #085CAA; color: #FFFFFF; font-size: 15px; font-weight: 700;">Video 2 of 5</span>
+              <span style="font-size: 16px; font-weight: 600; color: #4A5568;">Chickens and quail</span>
+            </div>
+            <p style="margin: 0; font-size: 16px; line-height: 24px; color: #4A5568;">Tap Play video to start.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 16px; font-weight: 700; color: #4A5568;">(b) Playing, captions on</span>
+        <div style="width: 360px; border-radius: 24px; border: 2px solid #E6EFF8; overflow: hidden; background: #FFFFFF;">
+          <div style="position: relative; width: 356px; height: 200px; background: #0A3A6B;">
+            <svg role="img" aria-label="Video picture: a quail house with two quail" width="356" height="200" viewBox="0 0 356 200" fill="none" stroke="#C9DDF2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+              <path d="M84 70L178 20l94 50"></path><path d="M102 62v84h152V62"></path><path d="M122 82h112v64H122z"></path><path d="M141 82v64M160 82v64M179 82v64M198 82v64M217 82v64" stroke-width="2"></path><path d="M40 146h276"></path>
+              <ellipse cx="62" cy="134" rx="16" ry="11"></ellipse><circle cx="76" cy="121" r="6"></circle><ellipse cx="294" cy="134" rx="16" ry="11"></ellipse><circle cx="280" cy="121" r="6"></circle>
+            </svg>
+            <p style="position: absolute; left: 12px; right: 12px; bottom: 10px; margin: 0; padding: 6px 10px; border-radius: 8px; background: #15233B; color: #FFFFFF; text-align: center; font-size: 16px; line-height: 22px; font-weight: 600;">Keep the floor of the quail house dry.</p>
+          </div>
+          <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 700;"><span>1:24</span><span style="color: #4A5568;">4:10</span></div>
+              <div role="slider" aria-label="Video position" aria-valuemin="0" aria-valuemax="250" aria-valuenow="84" aria-valuetext="1 minute 24 seconds of 4 minutes 10 seconds" tabindex="0" style="position: relative; height: 32px; display: flex; align-items: center;">
+                <div style="width: 100%; height: 14px; border-radius: 7px; background: #E6EFF8;"></div>
+                <div style="position: absolute; left: 0; width: 34%; height: 14px; border-radius: 7px; background: #085CAA;"></div>
+                <div style="position: absolute; left: calc(34% - 16px); width: 32px; height: 32px; border-radius: 16px; background: #FFFFFF; border: 5px solid #085CAA; box-sizing: border-box;"></div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 10px; align-items: center;">
+              <button style="height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 2px solid #085CAA; border-radius: 20px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>Back 10s</button>
+              <button style="height: 104px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 0; border-radius: 24px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 17px; font-weight: 700;"><svg aria-hidden="true" width="44" height="44" viewBox="0 0 24 24" fill="#FFFFFF"><rect x="6" y="4" width="4.5" height="16" rx="1.5"></rect><rect x="13.5" y="4" width="4.5" height="16" rx="1.5"></rect></svg>Pause</button>
+              <button style="height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 2px solid #085CAA; border-radius: 20px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"></path><path d="M21 3v6h-6"></path></svg>Forward 10s</button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+              <button aria-pressed="true" style="height: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 2px solid #085CAA; border-radius: 18px; background: #E6EFF8; color: #064A8A; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#064A8A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 11h4M13 11h4M7 15h10"></path></svg>Captions on</button>
+              <button style="height: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M16 8.5a5 5 0 0 1 0 7"></path><path d="M19 5.5a9 9 0 0 1 0 13"></path></svg>Sound</button>
+              <button style="height: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 15px; font-weight: 700;"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5"></path><path d="M15 4h5v5"></path><path d="M20 15v5h-5"></path><path d="M9 20H4v-5"></path></svg>Full screen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-size: 16px; font-weight: 700; color: #4A5568;">(c) Finished</span>
+        <div style="width: 360px; border-radius: 24px; border: 2px solid #E6EFF8; overflow: hidden; background: #FFFFFF;">
+          <div role="status" style="width: 356px; height: 200px; box-sizing: border-box; padding: 20px; background: #085CAA; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center;">
+            <span aria-hidden="true" style="width: 72px; height: 72px; border-radius: 36px; background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>
+            <p style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 800;">Well done! You finished this video.</p>
+          </div>
+          <div style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <div>
+              <h3 style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 800;">Quail housing</h3>
+              <p style="margin: 0; font-size: 16px; line-height: 24px; color: #4A5568;">Video 2 of 5 · Chickens and quail</p>
+            </div>
+            <a href="#" style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border-radius: 18px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 19px; font-weight: 700;"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 1-1 1.7v.5"></path><path d="M12 17h0"></path></svg>Take the quiz</a>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+              <button style="height: 60px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>Watch again</button>
+              <a href="#" style="height: 60px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="#085CAA"><path d="M5 5v14l10-7z"></path><rect x="16" y="5" width="3" height="14" rx="1"></rect></svg>Next video</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: #FFFFFF; border: 2px solid #E6EFF8; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 20px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 800;">Quiz — question and answer states</h2>
+    <div style="display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 48px; align-items: start;">
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <span style="font-size: 16px; font-weight: 700; color: #4A5568;">Quick quiz: keeping quail · Question 1 of 3</span>
+        <h3 style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 800;">What does a good quail house need?</h3>
+        <button style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; text-align: left; border: 2px solid #4A5568; border-radius: 18px; background: #FFFFFF; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 17px; font-weight: 600;"><span aria-hidden="true" style="width: 26px; height: 26px; flex: none; border-radius: 13px; border: 3px solid #4A5568; box-sizing: border-box;"></span>Water on the floor</button>
+        <button aria-pressed="true" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; text-align: left; border: 3px solid #085CAA; border-radius: 18px; background: #EEF4FA; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 17px; font-weight: 700;"><span aria-hidden="true" style="width: 26px; height: 26px; flex: none; border-radius: 13px; border: 3px solid #085CAA; box-sizing: border-box; display: flex; align-items: center; justify-content: center;"><span style="width: 12px; height: 12px; border-radius: 6px; background: #085CAA;"></span></span>A dry floor and fresh air</button>
+        <button style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; text-align: left; border: 2px solid #4A5568; border-radius: 18px; background: #FFFFFF; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 17px; font-weight: 600;"><span aria-hidden="true" style="width: 26px; height: 26px; flex: none; border-radius: 13px; border: 3px solid #4A5568; box-sizing: border-box;"></span>No roof</button>
+        <button style="display: flex; align-items: center; justify-content: center; gap: 10px; height: 64px; border: 0; border-radius: 18px; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 19px; font-weight: 700;"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Check my answer</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Default</span>
+          <div style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; border: 2px solid #4A5568; border-radius: 18px; background: #FFFFFF; font-size: 17px; font-weight: 600;"><span aria-hidden="true" style="width: 26px; height: 26px; flex: none; border-radius: 13px; border: 3px solid #4A5568; box-sizing: border-box;"></span>A dry floor and fresh air</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Chosen</span>
+          <div style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; border: 3px solid #085CAA; border-radius: 18px; background: #EEF4FA; font-size: 17px; font-weight: 700;"><span aria-hidden="true" style="width: 26px; height: 26px; flex: none; border-radius: 13px; border: 3px solid #085CAA; box-sizing: border-box; display: flex; align-items: center; justify-content: center;"><span style="width: 12px; height: 12px; border-radius: 6px; background: #085CAA;"></span></span><span style="flex: 1;">A dry floor and fresh air</span><span style="padding: 2px 10px; border-radius: 10px; background: #085CAA; color: #FFFFFF; font-size: 15px; font-weight: 700;">Your choice</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Correct, with reason</span>
+          <div role="status" style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border: 3px solid #1F7A3A; border-radius: 18px; background: #E8F4EC;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; color: #1F7A3A;"><span aria-hidden="true" style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #1F7A3A; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>Correct!</div>
+            <p style="margin: 0; font-size: 17px; line-height: 25px; font-weight: 700; color: #15233B;">A dry floor and fresh air</p>
+            <p style="margin: 0; font-size: 16px; line-height: 24px; color: #15233B;">Quail stay healthy when the floor is dry and air can move through the house.</p>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 15px; font-weight: 600; color: #4A5568;">Try again, with reason</span>
+          <div role="status" style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border: 3px solid #9A4A00; border-radius: 18px; background: #FFF1E5;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; color: #9A4A00;"><span aria-hidden="true" style="width: 32px; height: 32px; flex: none; border-radius: 16px; background: #9A4A00; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.7"></path><path d="M4 4v4h4"></path></svg></span>Not quite. Try again.</div>
+            <p style="margin: 0; font-size: 17px; line-height: 25px; font-weight: 700; color: #15233B;">Water on the floor</p>
+            <p style="margin: 0; font-size: 16px; line-height: 24px; color: #15233B;">A wet floor can make quail sick. Watch the video again, then choose.</p>
+            <button style="align-self: flex-start; display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 18px; border: 2px solid #085CAA; border-radius: 16px; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="#085CAA"><path d="M7 4v16l13-8z"></path></svg>Watch the video again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="margin-top: auto; display: flex; align-items: center; gap: 16px;">
+    <img src="../../brand/easystem-logo.png" alt="EasySTEM" style="height: 32px; width: auto; display: block;">
+    <p style="margin: 0; font-size: 16px; font-weight: 600; color: #4A5568;">Wi dae make u sensebod</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3520}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

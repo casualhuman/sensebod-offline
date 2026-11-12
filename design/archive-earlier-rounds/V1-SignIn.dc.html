@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,Arial,sans-serif;color:#15233B}
+a{color:#085CAA}a:hover{color:#064A8A}
+</style>
+</helmet>
+<div style="width: 390px; height: 1740px; box-sizing: border-box; display: flex; flex-direction: column; background: #F4F7FB; font-family: Poppins, Arial, sans-serif; color: #15233B;">
+
+  <header style="flex: none; display: flex; flex-direction: column; gap: 12px; padding: 12px 16px 16px; background: #FFFFFF; border-bottom: 2px solid #C9DCEF; box-sizing: border-box;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 52px;">
+      <img src="../../brand/sensebod-logo.png" alt="Sensebod" style="height: 32px; width: auto; display: block;">
+      <div role="group" aria-label="Language" style="display: flex; border: 3px solid #085CAA; border-radius: 16px; overflow: hidden;">
+        <button aria-pressed="true" style="height: 46px; min-width: 84px; padding: 0 12px; border: 0; background: #085CAA; color: #FFFFFF; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;">English</button>
+        <button aria-pressed="false" style="height: 46px; min-width: 64px; padding: 0 12px; border: 0; background: #FFFFFF; color: #085CAA; font-family: Poppins, Arial, sans-serif; font-size: 16px; font-weight: 700;">Krio</button>
+      </div>
+    </div>
+    <nav aria-label="Go back" style="display: flex; gap: 12px;">
+      <a href="Main.dc.html" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 16px; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 18px; font-weight: 800;">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5L7.5 12l7.5 7.5"></path></svg>
+        Back</a>
+      <a href="Main.dc.html" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; height: 60px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 16px; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 18px; font-weight: 800;">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5L12 4l9 7.5"></path><path d="M5.5 10v10h13V10"></path><path d="M10 20v-5.5h4V20"></path></svg>
+        Home</a>
+    </nav>
+  </header>
+
+  <section style="flex: none; display: flex; flex-direction: column; gap: 8px; padding: 28px 20px; box-sizing: border-box;">
+    <h1 style="margin: 0; font-size: 30px; line-height: 36px; font-weight: 800; color: #15233B;">Save my progress</h1>
+    <p style="margin: 0; font-size: 18px; line-height: 28px; color: #4A5568;">So you can continue next time.</p>
+    <button style="margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; height: 64px; border: 0; border-radius: 18px; background: #E4AA09; color: #15233B; font-family: Poppins, Arial, sans-serif; font-size: 20px; font-weight: 800;">
+      <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#15233B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9v6h4l5 4.5v-15L7.5 9z" fill="#15233B"></path><path d="M16 8.5a5 5 0 0 1 0 7"></path><path d="M19 5.5a9 9 0 0 1 0 13"></path></svg>
+      Listen to this page
+    </button>
+  </section>
+
+  <section aria-labelledby="returning" style="flex: none; margin: 0 16px; padding: 20px; background: #FFFFFF; border: 2px solid #C9DCEF; border-radius: 24px; box-shadow: 0 2px 8px rgba(21,35,59,0.08); display: flex; flex-direction: column; gap: 14px; box-sizing: border-box;">
+    <h2 id="returning" style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 800;">Used this phone before? Tap your name</h2>
+    <a href="V1-Agriculture.dc.html" style="display: flex; align-items: center; gap: 14px; min-height: 84px; padding: 10px 12px; box-sizing: border-box; border: 2px solid #6B87A8; border-radius: 18px; background: #FFFFFF; color: #15233B; text-decoration: none;">
+      <span aria-hidden="true" style="flex: none; width: 60px; height: 60px; border-radius: 16px; background: #085CAA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800;">A</span>
+      <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+        <span style="font-size: 18px; line-height: 26px; font-weight: 800;">Aminata Kamara</span>
+        <span style="font-size: 16px; line-height: 24px; color: #4A5568;">Learner · JSS 2</span>
+      </span>
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12h15"></path><path d="M13 5.5l6.5 6.5-6.5 6.5"></path></svg>
+    </a>
+    <a href="V1-Agriculture.dc.html" style="display: flex; align-items: center; gap: 14px; min-height: 84px; padding: 10px 12px; box-sizing: border-box; border: 2px solid #6B87A8; border-radius: 18px; background: #FFFFFF; color: #15233B; text-decoration: none;">
+      <span aria-hidden="true" style="flex: none; width: 60px; height: 60px; border-radius: 16px; background: #085CAA; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800;">M</span>
+      <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+        <span style="font-size: 18px; line-height: 26px; font-weight: 800;">Mohamed Sesay</span>
+        <span style="font-size: 16px; line-height: 24px; color: #4A5568;">Farmer</span>
+      </span>
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><path d="M4.5 12h15"></path><path d="M13 5.5l6.5 6.5-6.5 6.5"></path></svg>
+    </a>
+  </section>
+
+  <form style="flex: none; margin: 20px 16px 0; padding: 20px; background: #FFFFFF; border: 2px solid #C9DCEF; border-radius: 24px; box-shadow: 0 2px 8px rgba(21,35,59,0.08); display: flex; flex-direction: column; gap: 20px; box-sizing: border-box;">
+    <h2 style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 800;">New here? Two quick questions</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <label for="v1-name" style="font-size: 18px; line-height: 26px; font-weight: 700;">1. What is your name?</label>
+      <input id="v1-name" type="text" autocomplete="given-name" placeholder="For example: Fatmata" style="height: 64px; box-sizing: border-box; padding: 0 16px; border: 3px solid #4A5568; border-radius: 16px; font-family: Poppins, Arial, sans-serif; font-size: 18px; color: #15233B; background: #FFFFFF;">
+    </div>
+
+    <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 12px;">
+      <legend style="padding: 0; margin-bottom: 12px; font-size: 18px; line-height: 26px; font-weight: 700;">2. Who are you?</legend>
+      <label style="position: relative; display: flex; align-items: center; gap: 14px; min-height: 80px; padding: 8px 14px 8px 10px; box-sizing: border-box; border: 3px solid #085CAA; border-radius: 18px; background: #085CAA; color: #FFFFFF;">
+        <input type="radio" name="v1-role" checked style="position: absolute; opacity: 0; width: 1px; height: 1px;">
+        <span aria-hidden="true" style="flex: none; width: 56px; height: 56px; border-radius: 14px; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 5.5c3.2-1 6.4-.8 9.5 1.2v13.5c-3.1-2-6.3-2.2-9.5-1.2z"></path><path d="M21.5 5.5c-3.2-1-6.4-.8-9.5 1.2v13.5c3.1-2 6.3-2.2 9.5-1.2z"></path></svg>
+        </span>
+        <span style="flex: 1; font-size: 20px; line-height: 28px; font-weight: 800;">Learner</span>
+        <span style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; background: #FFFFFF; color: #085CAA; font-size: 16px; font-weight: 800;">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+          Chosen</span>
+      </label>
+      <label style="position: relative; display: flex; align-items: center; gap: 14px; min-height: 80px; padding: 8px 14px 8px 10px; box-sizing: border-box; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #15233B;">
+        <input type="radio" name="v1-role" style="position: absolute; opacity: 0; width: 1px; height: 1px;">
+        <span aria-hidden="true" style="flex: none; width: 56px; height: 56px; border-radius: 14px; background: #085CAA; display: flex; align-items: center; justify-content: center;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="13" height="10" rx="1.5"></rect><circle cx="18.5" cy="10" r="2.5"></circle><path d="M14.5 21v-3.5c0-2 1.8-3.5 4-3.5s4 1.5 4 3.5V21"></path></svg>
+        </span>
+        <span style="flex: 1; font-size: 20px; line-height: 28px; font-weight: 800;">Teacher</span>
+      </label>
+      <label style="position: relative; display: flex; align-items: center; gap: 14px; min-height: 80px; padding: 8px 14px 8px 10px; box-sizing: border-box; border: 3px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #15233B;">
+        <input type="radio" name="v1-role" style="position: absolute; opacity: 0; width: 1px; height: 1px;">
+        <span aria-hidden="true" style="flex: none; width: 56px; height: 56px; border-radius: 14px; background: #085CAA; display: flex; align-items: center; justify-content: center;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3"></circle><path d="M4.5 21v-7.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5V21"></path><path d="M18.5 21v-8"></path><path d="M18.5 15.5c-2.5 0-4-1.5-4-4 2.5 0 4 1.5 4 4z"></path><path d="M18.5 13c0-2.5 1.5-4 4-4 0 2.5-1.5 4-4 4z"></path></svg>
+        </span>
+        <span style="flex: 1; font-size: 18px; line-height: 26px; font-weight: 800;">Parent, farmer or other</span>
+      </label>
+    </fieldset>
+
+    <p style="margin: 0; display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 18px; background: #E8F0F9; font-size: 16px; line-height: 24px; color: #15233B;">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex: none;"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2"></rect><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"></path></svg>
+      <span>No password. No phone number. Your name stays in this bag.</span>
+    </p>
+
+    <a href="V1-Agriculture.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 12px; height: 68px; border-radius: 18px; background: #085CAA; color: #FFFFFF; text-decoration: none; font-size: 20px; font-weight: 800;">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+      Save and start learning</a>
+  </form>
+
+  <a href="Main.dc.html" style="flex: none; margin: 20px 16px 28px; display: flex; align-items: center; justify-content: center; gap: 12px; height: 68px; box-sizing: border-box; border: 2px solid #085CAA; border-radius: 18px; background: #FFFFFF; color: #085CAA; text-decoration: none; font-size: 20px; font-weight: 800;">
+    <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#085CAA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12h15"></path><path d="M13 5.5l6.5 6.5-6.5 6.5"></path></svg>
+    Skip — learn as a guest</a>
+
+  <footer style="margin-top: auto; flex: none; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 16px 32px; background: #FFFFFF; border-top: 2px solid #C9DCEF; box-sizing: border-box;">
+    <img src="../../brand/easystem-logo.png" alt="EasySTEM" style="height: 32px; width: auto; display: block;">
+    <p style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 800; color: #4A5568;">Wi dae make u sensebod</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1740}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -4,6 +4,24 @@ This folder belongs to **stream 2**. It builds: Home, Save my progress, portal p
 
 Stream 1 created only `routes.tsx` (a working placeholder) and this note. Everything else in here is yours.
 
+## What is here now
+
+| File | What |
+|---|---|
+| `routes.tsx` | Route table. Home is eager; Save my progress, Get help now and the browsing screen are lazy |
+| `screens/Home.tsx` | Home, the gateway (board Main) |
+| `screens/SaveProgress.tsx` | Save my progress (V3-SignIn) |
+| `screens/Browse.tsx` | The three `/portal/…` URLs in one component, so it stays mounted from portal to class |
+| `screens/Help.tsx` | Child protection: Get help now (CPB-Help). Contacts are bracketed placeholders |
+| `views/PortalViews.tsx` | Who are you? (CPB-Who), topics (AGB-Agriculture, CLB-Climate), class then subjects (V3-Primary, V3-JSS) |
+| `views/SeriesView.tsx` | Lesson list of a series with filter and progress (CPB-Child, CPB-Parent, CPB-Elder) |
+| `views/ChildProtectionExtras.tsx` | Per-audience sections after the lesson list |
+| `components.tsx`, `icons.tsx`, `lib.ts`, `progress.ts` | Local pieces, icons, helpers, progress hooks |
+| `learner.css` | Local styles, prefix `lrn-` |
+| `learner.test.tsx`, `lib.test.ts` | Screen and journey tests on the mock API |
+
+Decisions, deviations and open items: `docs/reports/stream-2-learner-browsing.md`.
+
 ## The one rule: add screens in `routes.tsx`
 
 The app router (`src/app/features.ts`, owned by stream 1) lazy-loads **this folder's `routes.tsx`** the first time someone opens one of its URLs. You never edit the app router. To add a screen:

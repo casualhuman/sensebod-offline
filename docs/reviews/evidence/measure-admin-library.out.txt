@@ -1,0 +1,15 @@
+Library, Child protection @ 1100: scrollWidth 1354  ** HORIZONTAL OVERFLOW ** 263 element(s) past the edge, first: table.adm-table right=1354 width=1030 ; thead. right=1354 width=1030 ; tr. right=1354 width=1030 ; th. right=1129 width=150 ; th. right=1206 width=77
+Library, Child protection @ 1280: scrollWidth 1354  ** HORIZONTAL OVERFLOW ** 101 element(s) past the edge, first: table.adm-table right=1354 width=1030 ; thead. right=1354 width=1030 ; tr. right=1354 width=1030 ; th. right=1354 width=149 ; tbody. right=1354 width=1030
+Library, Child protection @ 1366: scrollWidth 1366
+Library, Child protection @ 1440: scrollWidth 1440
+Library, Child protection @ 1536: scrollWidth 1536
+Library, Child protection, one series @ 1100: scrollWidth 1310  ** HORIZONTAL OVERFLOW ** 76 element(s) past the edge, first: table.adm-table right=1310 width=986 ; thead. right=1310 width=986 ; tr. right=1310 width=986 ; th. right=1162 width=77 ; th. right=1310 width=149
+Library, Child protection, one series @ 1280: scrollWidth 1310  ** HORIZONTAL OVERFLOW ** 25 element(s) past the edge, first: table.adm-table right=1310 width=986 ; thead. right=1310 width=986 ; tr. right=1310 width=986 ; th. right=1310 width=149 ; tbody. right=1310 width=986
+Library, Child protection, one series @ 1366: scrollWidth 1366
+Library, Child protection, one series @ 1440: scrollWidth 1440
+Library, Child protection, one series @ 1536: scrollWidth 1536
+Library, Agriculture @ 1100: scrollWidth 1294  ** HORIZONTAL OVERFLOW ** 356 element(s) past the edge, first: table.adm-table right=1294 width=970 ; thead. right=1294 width=970 ; tr. right=1294 width=970 ; th. right=1145 width=77 ; th. right=1294 width=149
+Library, Agriculture @ 1280: scrollWidth 1294  ** HORIZONTAL OVERFLOW ** 105 element(s) past the edge, first: table.adm-table right=1294 width=970 ; thead. right=1294 width=970 ; tr. right=1294 width=970 ; th. right=1294 width=149 ; tbody. right=1294 width=970
+Library, Agriculture @ 1366: scrollWidth 1366
+Library, Agriculture @ 1440: scrollWidth 1440
+Library, Agriculture @ 1536: scrollWidth 1536

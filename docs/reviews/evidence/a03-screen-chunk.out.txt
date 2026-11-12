@@ -1,0 +1,5 @@
+Browse chunk blocked, tapped Agriculture → /portal/agriculture :: This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home (chunk requests so far: 1)
+network restored, phone Back → / :: Kushɛ! Welcome | What do you want to learn today? | Tap a big picture to start. | Listen to this page | You ar
+tapped Agriculture again (network is fine) → /portal/agriculture :: This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home
+  new requests for the chunk: 0; page loads: 0
+tapped "Try again" → /portal/agriculture :: Agriculture | Animals, crops and selling | Listen | English | Krio | You are a guest | Add name | Choose a top (page loads since: 1)

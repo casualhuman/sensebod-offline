@@ -1,0 +1,28 @@
+## 1. Position saved on pause, and on leaving while playing (A-17)
+
+clicked Play video
+playing for 4 s: {"currentTime":3.7,"paused":false,"hasSrc":true,"error":null}
+clicked Pause
+control, PUTs after Pause: ["/api/v1/learners/learner-1001/progress/cp-child-staying-safe-1 {\"state\":\"started\",\"positionSeconds\":3}"]
+clicked Play video
+playing again, not paused: {"currentTime":6.9,"paused":false,"hasSrc":true,"error":null}
+clicked Back
+now at: /portal/child-protection/cp-child/cp-child-staying-safe
+PUTs after leaving with Back while playing: []   ** NO POSITION SAVED **
+
+## 2. The video file does not arrive when Play is tapped (A-16)
+
+clicked Play video
+connection to the file fails (Wi-Fi dropped) → video: {"currentTime":0,"paused":true,"hasSrc":true,"error":4}
+  the learner is told: This video cannot play on this phone | This phone cannot show this kind of video. Ask your facilitator, or try another phone.
+  a "Try again" button is offered: false
+clicked Play video
+the bag answers 503 (busy, or its media rate limit) → video: {"currentTime":0,"paused":true,"hasSrc":true,"error":4}
+  the learner is told: This video cannot play on this phone | This phone cannot show this kind of video. Ask your facilitator, or try another phone.
+  a "Try again" button is offered: false
+
+## 3. "Leave this page" on a Child protection lesson that is loading or failed (A-18)
+
+loaded: {"leaveThisPage":true,"main":"Lesson 1 · Watch | My body belongs to me | Length: | [length] | Needs sound | Captions | Listen | English | Krio | Play "}
+lesson request answered 503: {"leaveThisPage":false,"main":"This lesson did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home"}
+finished screen, lesson request answered 503: {"leaveThisPage":false,"main":"This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home"}

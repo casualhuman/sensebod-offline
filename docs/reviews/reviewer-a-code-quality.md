@@ -1,314 +1,259 @@
-# Reviewer A (Code quality) — Pass 1: foundation
+# Reviewer A (Code quality) — Final report
 
-12 Nov 2026. Scope: the Stream 1 foundation only, as it stands on `main` at `affbf44` (`app/src/shared/**`, `app/src/app/**`, the lint and test configuration, and the conventions imposed on streams 2–4). Streams 2–4 are not in this snapshot and are not reviewed here. Reviewer B covers dependencies, bundle, offline and network verification, fonts and assets, performance and memory measurement, legacy browsers, security and deployment config; those rows are marked as theirs below.
+12 Nov 2026. Scope: `main` at `9339fbd` (all four streams and fix round 1 merged). Part 1 re-verifies the pass-1 findings A-01 to A-15. Part 2 is the first review of `app/src/features/learner` (stream 2), `app/src/features/lessons` (stream 3) and `app/src/features/admin` (stream 4). Reviewer B covers dependencies, bundle, offline and network verification, fonts and assets, performance and memory, legacy browsers, security and deployment; those rows are marked as theirs.
 
-All findings are addressed to **stream-1**. Nothing in the application was changed by this review; everything written is under `docs/reviews/`.
+Nothing in the application was changed by this review. Everything written is under `docs/reviews/`.
 
 ## A. Executive summary
 
-**Decision for the foundation, within Reviewer A's focus: PASS WITH CONDITIONS.** This is a decision that streams 2–4 can keep building on the foundation. It is not a release approval: no Raspberry Pi and no Android device were available, and release readiness depends on Reviewer B's areas and on the second pass.
+**Decision within Reviewer A's focus: FAIL, on one High finding (A-16). Not ready for release yet.** The rule in section 23 leaves no other outcome while a High finding is open. The gap is small: A-16 is a local fix in one hook, and with it and the four Medium findings fixed and re-verified the result in this focus would be PASS WITH CONDITIONS. Release readiness of the product as a whole is INSUFFICIENT EVIDENCE whatever happens here, because nothing has run on a Raspberry Pi, an Android 8 device or Chrome 58.
 
-**Overall assessment.** The foundation is small, readable and carefully made. The shared components follow the V3-Components board closely (sizes, radii, colours and states were spot-checked against the board's own values and match), every colour pair in the shared CSS meets its contrast target (recomputed, section D), semantics and labels are mostly right, reduced motion is opt-in, and typecheck, lint, 61 tests and the production build all pass. The defects are concentrated in the three pieces every screen leans on: the data hook, the router and the error boundary.
+**Overall assessment.** The code is careful and consistent across all four streams. The fix round did what it claimed: 11 of the 15 pass-1 findings are closed, 3 are partly closed with Low residue, and 1 (A-10) is open by decision. The three features use the shared client, `useApi`, the shared components and the tokens correctly; there are no cross-feature imports, no `any`, no `@ts-ignore`, and three justified `eslint-disable` lines in the whole of `src/features`. Timers, listeners, object URLs, uploads and media elements are released on unmount. Double-submit protection in admin is real (a ref lock plus one idempotency key per submission). Wording matches the boards on every string sampled (20 of 20, section F), and the deviations the engineers listed are real and reasoned.
 
-**Findings: 0 Critical, 1 High, 7 Medium, 7 Low.**
+The defects found are where unit tests in jsdom cannot see: the behaviour of a real media element, a real 401 in the middle of work, and widths nobody measured.
+
+**New findings: 0 Critical, 1 High, 4 Medium, 5 Low.**
+
+| | Critical | High | Medium | Low |
+|---|---|---|---|---|
+| Stream 2 (learner) | 0 | 0 | 0 | 2 (A-21, A-25) |
+| Stream 3 (lessons) | 0 | 1 (A-16) | 2 (A-17, A-18) | 1 (A-23) |
+| Stream 4 (admin) | 0 | 0 | 2 (A-19, A-20) | 2 (A-22, A-24) |
 
 **Major risks**
 
-1. **A failed code download is permanent for that page load (A-03, High).** After one failed download of a feature chunk, every later in-app visit to that feature shows the error again and never retries, and "Go to Home" does nothing when the failed chunk is the learner feature. Only "Try again" (a full reload) recovers, and a reload while the bag's Wi-Fi is still down replaces the app with the browser's own error page. Confirmed in the production build.
-2. **`useApi` shows an old answer under new inputs for one committed render (A-01)**, and **the router keeps a screen's state when only a path parameter changes (A-02)**. Together they make "lesson → next lesson" on the single `/lesson/:lessonId` route hazardous for stream 3: answers and player state carry over, and screen effects see lesson A's data with lesson B's id.
-3. **The default `Idempotency-Key` gives no protection (A-04).** A new key is generated inside every call, so a retried "Save and start learning" creates a second learner.
-4. **Narrow phones (A-06).** The inner page header is 39px wider than a 320px screen and has 1px to spare at 360px.
-5. **The floor rules for CSS are not enforced by anything, and the hook lint rules cannot fail the build (A-07).** The most likely Android 8 regressions from three parallel streams (flex `gap`, `aspect-ratio`, `inset`) will pass every check.
+1. **A video or sound file that does not arrive when Play is tapped is reported as "This video cannot play on this phone … try another phone", with no Try again (A-16, High).** Confirmed in Chrome on the production build for a dropped connection and for a 503 from the bag. It is the most likely failure on the bag's Wi-Fi, on the product's main content type, and the advice given is wrong.
+2. **The place in a video or story is not saved when the learner leaves while it is playing (A-17).** Confirmed in Chrome. The unit test passes only because jsdom's `load()` is a stub.
+3. **A Child protection lesson that is loading or failed to load has no "Leave this page" (A-18).** Confirmed in Chrome.
+4. **An admin session that ends during editing throws away the unsaved work (A-19).** Confirmed with a test.
+5. **The admin Library scrolls sideways between 1100 and 1353px wide (A-20)**, which includes 1280px laptops and tablets in landscape.
 
 **Critical blockers:** none found in this focus.
 
-**Performance observations:** nothing measured on target hardware (Not Tested). In source, no render-path problem was found in the shared components; the one confirmed request-loop hazard is A-05 (`useQuery()` as a dependency).
+**Performance observations:** nothing measured on target hardware (Not Tested; Reviewer B). In source: no render-path problem found; time updates are throttled to two renders a second; no polling in the learner features; admin polls upload processing every 3 s, bounded at 60 polls per file. Avoidable requests: A-21.
 
-**Compatibility status:** Not Tested by this reviewer (Reviewer B). The shared CSS and JS were read against the floor rules in `docs/ARCHITECTURE.md` section 3.7 and no violation was found in stream 1's own code.
+**Compatibility status:** Not Tested by this reviewer. The CSS floor check and strict lint now pass over 89 files.
 
-**Offline compliance status:** Not Tested by this reviewer (Reviewer B). A-03 is the one offline-recovery defect found from the source side.
+**Offline compliance status:** Not Tested by this reviewer. A-16 and the A-03 residue are the offline-recovery defects seen from the source side.
 
-**Product risks that are not code defects** (already disclosed by stream 1, repeated because they affect the people this is for): every Listen button says "No sound here yet" because no recordings exist; the Krio switch changes no text; lesson cards print the board placeholder `[length]` (A-10).
+**Product risks that are not code defects:** every Listen button says "No sound here yet" (no recordings exist); the Krio switch changes no text; lesson cards print `[length]` (A-10); the Child protection help page shows five bracketed contact placeholders, correctly as plain text and never as links, but the page cannot help a child until the content owner fills them.
 
 ## B. Verification results
 
 | Category | Status | Findings |
 |---|---|---|
-| React best practices | Partial | Components are well scoped and typed. Defects in the data hook (A-01), route remounting (A-02), the error boundary's recovery (A-03) and an unstable hook result (A-05). |
-| TypeScript quality | Pass | Strict with `noUncheckedIndexedAccess`; no `any`, no `@ts-ignore`; one justified `eslint-disable` (`useApi.ts:61`). API answers and stored session data are cast, not validated (A-09, Low). |
-| Dependency hygiene | Not Tested | Reviewer B. Runtime dependencies are `react` and `react-dom` only (read from `package.json`). |
-| Offline operation | Not Tested | Reviewer B. See A-03 for recovery after a dropped connection. |
+| React best practices | Partial | Components well scoped; state local; effects cleaned up. Defects: unmount order in the media hook (A-17), work lost on a 401 (A-19), one small race (A-24). |
+| TypeScript quality | Pass | Strict, no `any`, no `@ts-ignore`. Three `eslint-disable` lines in features, each justified (`admin/session.tsx:89`, `admin/screens/Upload.tsx:67`, plus `shared/api/useApi.ts:86`). Type assertions are few and local (prefixed fullscreen APIs, `error as { status }`). |
+| Dependency hygiene | Not Tested | Reviewer B. |
+| Offline operation | Not Tested | Reviewer B. See A-16 and A-03. |
 | Local asset hosting | Not Tested | Reviewer B. |
-| Performance | Not Tested | No target hardware. Source review only: A-05 (request loop hazard), A-12 (cache defeated by progress saves). |
-| Legacy browser compatibility | Not Tested | Reviewer B. Enforcement gap for the CSS floor rules: A-07. |
-| Accessibility | Partial | Contrast, labels, landmarks, focus handling after navigation and touch targets verified in current Chrome. Fails at 320px width (A-06); smaller issues in A-13. No screen reader was run; nothing verified on Android. |
-| Security | Not Tested | Reviewer B. |
+| Performance | Not Tested | No target hardware. |
+| Legacy browser compatibility | Not Tested | Reviewer B. Enforcement gap of pass 1 is closed (A-07 items 1 to 4). |
+| Accessibility | Partial | Labels, roles, live regions, focus moves, reduced motion (opt-in) and "never colour alone" are right on every screen sampled. 16px minimum text holds on 30 pages. Defects: A-18; small targets and smaller items in A-23, A-24, A-25. No screen reader was run; nothing verified on Android. |
+| Security | Not Tested | Reviewer B. Seen in passing: return addresses are restricted to in-app paths in both features; packages run in `sandbox="allow-scripts"`; nothing about the admin session is stored. |
 | Deployment readiness | Not Tested | Reviewer B. |
-| Design fidelity (shared components, tokens, shell) | Pass | Spot-checked against `V3-Components.dc.html` and `CPB-Child.dc.html`: button heights 72/64/56, radii 18–20, type sizes, chip, badge, message, filter and header values match the boards. By eye only in a current browser; no pixel comparison. |
-| API client and data hook | Partial | Timeouts, cancellation, typed errors and no auto-retry are correct and tested. Defects: A-01, A-04, A-12. |
-| Test quality | Partial | 61 tests, all meaningful, none trivial. The most depended-on code has no tests at all (A-08). |
-| Conventions for streams 2–4 | Partial | The feature boundary rules work (verified). Gaps and contradictions: A-07, A-15. |
+| API integration | Partial | Shared client and `useApi` used throughout; cancellation and stale-answer handling correct; no retries, no polling for learners. Defects: A-19, A-22; avoidable requests A-21. |
+| Forms and admin work | Partial | Validation, double-submit lock, idempotency keys, kept input on failure, typed draft kept on the phone, `beforeunload` warning: all present and tested. Defects: A-19, A-22. |
+| Quiz and player logic | Partial | Rules are pure functions with tests; scoring, retry, "cannot skip a question", resume and release are right. Defects: A-16, A-17. |
+| CSS architecture | Pass | One prefix per feature, tokens only, shared classes reused, no duplication of shared components beyond the local variants the reports declare. A-20 is the one layout defect. |
+| Design fidelity | Pass | Wording 20 of 20 strings found on the named boards; listed deviations spot-checked and real. By eye and by text only; no pixel comparison. |
+| Test quality | Partial | 347 tests, behaviour-level, none trivial. Gaps in section F. |
+| Team conventions | Pass | No cross-feature imports (lint), no edits outside lanes found, no dependency added. Obsolete workarounds: A-21, A-23. |
 
 ## C. Detailed findings
 
-Evidence files are in `docs/reviews/evidence/`. The `*.evidence.test.*` files are written so that each **passes while the defect is present**; run them from `app/` with `npx vitest run --config ../docs/reviews/evidence/vitest.evidence.config.mjs` (result at review time: 6 files, 9 tests, all passing, so all defects present).
+Evidence is in `docs/reviews/evidence/`. Scripts ending `.mjs` drive headless Chrome against `vite preview` of the production build; their output is beside them as `.out.txt`. The `*.evidence.test.*` files pass while the defect is present; run them from `app/` with `npx vitest run --config ../docs/reviews/evidence/vitest.evidence.config.mjs`.
 
-### A-03 — A failed feature download is never retried; recovery needs a full reload
+### C1. Reverification of pass 1
+
+| ID | Pass-1 severity | Status | Evidence of the result |
+|---|---|---|---|
+| A-01 `useApi` stale render | Medium | **Closed** | `a01-…evidence.test.tsx` now fails for the right reason (no commit with the new id and the old data). `useApi.ts:93-98` decides freshness during render. No regression seen: reload keeps data, failure after success keeps data, 10 new tests. |
+| A-02 state kept across path params | Medium | **Closed** | `a02-…evidence.test.tsx` fails. `router.tsx:182-189`, key = pattern + named params; wildcard excluded; `instance` opt-out used once (`learner/routes.tsx:26-28`), and `Browse` handles changing params itself (keys its children, checks ids). |
+| A-03 failed chunk never retried | High | **Partly closed; residue Low** | Feature chunks: closed. `a03-…evidence.test.tsx` fails; `measure-layout.final.out.txt` section 3 reaches the real screens after recovery. Screen chunks: see below. |
+| A-04 idempotency key per call | Medium | **Closed** | First test of `a04-…evidence.test.ts` fails (same key, same learner); the control test passes. `client.ts:288-316`. See the note on its limits below. |
+| A-05 `useQuery` identity | Medium | **Closed** | Both tests fail (same object; 1 request). `router.tsx:162-165`. |
+| A-06 header at 320px | Medium | **Closed in emulation** | `measure-layout.final.out.txt` and `measure-features.out.txt`: `scrollWidth` equals the viewport on 30 pages at 320, 360, 390 and 800. Not checked on a real 320px phone. |
+| A-07 conventions not enforced | Medium | **Partly closed; residue Low** | Items 1 to 4 closed: `lint-probes.mjs` gives an error for each probe; `check-css` runs in `npm run lint` over 89 files. Item 5 (unhandled promises) open by the engineer's choice. New gap: nothing flags `React.lazy` in a routes file (probe 5: 0 errors). |
+| A-08 untested core | Medium | **Closed** | Test files now exist for every piece named; 347 tests pass. |
+| A-09 session trusts storage | Low | **Closed** | Both tests in `a09-…evidence.test.ts` fail. |
+| A-10 bracket placeholders | Low | **Open (by decision)** | `measure-layout.final.out.txt`: "Length: [length]" still on lesson pages. Waiting for the design and content owner. Detail below. |
+| A-11 `lang="kri"` over English | Low | **Closed** | No write to `documentElement.lang` remains in `src`. |
+| A-12 cache | Low | **Closed** | `client.ts:113-120`, `:235-244`; documents corrected for in-flight sharing. Progress is never cached, so keeping the content cache across progress saves shows no stale state. |
+| A-13 small accessibility items | Low | **Closed** | All seven checked in source; logo link is a 48px target; no small target reported on learner or lesson pages. |
+| A-14 duplicate history entry | Low | **Closed** | `router.tsx:94-97`. |
+| A-15 contradictory documents | Low | **Partly closed; residue Low** | ARCHITECTURE corrected. Still stale: `features/learner/README.md:33-44, 64` and `features/admin/README.md:15-26, 46` (`lazy()` and the long prefixes). `.sb-motion-ok` and `.sb-listen-note` are still unused. Owners: stream 2 and stream 4 for their READMEs, stream 1 for the two classes. |
+
+**A-03 residue — screen chunks made with `React.lazy` (Low; owners stream 2 and stream 4)**
+
+- **Location:** `app/src/features/learner/routes.tsx:19, 23, 25` (3 screens); `app/src/features/admin/routes.tsx:25-45` (16 screens). The lessons feature has no screen chunks.
+- **Evidence:** `a03-screen-chunk.out.txt`: `Browse` chunk blocked → error screen; network restored, phone Back → Home; the same card tapped again → error screen again, 0 new requests, 0 page loads; "Try again" → one page load → the portal opens.
+- **Impact:** Recovery works through the error screen, so this is no longer High. A learner who leaves with the phone's Back button sees the error once more on the next visit before "Try again" clears it.
+- **Recommendation:** replace `lazy(` with `lazyScreen(` from `@shared/router` in the two routes files (same signature). Stream 1: add a `no-restricted-imports` entry for `lazy` from `react` in `src/features/**` so it cannot come back.
+- **Validation:** rerun `a03-screen-chunk.mjs`; the second tap must open the portal.
+
+**Regression check of the fix round.** No regression found in `lazyScreen`, `recover.ts`, the boundary, `useApi`, route instances or the lint rules. Two limits of the A-04 fix to keep in mind, not counted as findings: (1) a key is kept for 10 minutes after a try that got no answer, so an admin who deletes the draft that did arrive and then submits the identical body again inside that time is answered according to the server's idempotency rule, which the contract does not define for deleted records; (2) two people who type the same name and role on one phone within 5 seconds share one record. Both are narrow and documented by the engineer.
+
+**A-07 item 5 (Low, stream 1), A-10 (Low, stream 1 with the design owner):** unchanged from pass 1. A-10: `app/src/shared/components/lessonTypes.tsx` (`formatLength`, `formatPages`) and `LessonTags.tsx`; the smallest change is to leave the fact out when the value is `null` and never show a length for `check` and `try`.
+
+### C2. New findings
+
+### A-16 — A media file that does not arrive is reported as "cannot play on this phone", with no way to try again
 
 - **Severity:** High
-- **Category:** React, offline recovery
-- **Owner:** stream-1
-- **Location:** `app/src/app/App.tsx:77-97` (`featureScreens` caches one `React.lazy` per feature for the life of the page), `:99-109` (`resetKey={pathname}`), `:63` (`onRetry` is `window.location.reload()`), `:65-67` ("Go to Home" is an in-app link). The same applies to every `lazy(() => import('./screens/X'))` that `docs/ARCHITECTURE.md:72-79` and the feature READMEs tell streams 2–4 to write at module level.
-- **Problem:** `React.lazy` keeps a rejected import forever. The boundary clears its error when the path changes, then renders the same rejected lazy component, which throws again. So after one failed download: (a) every later in-app visit to that feature fails without a new request, even with the network back; (b) when the failed chunk is the learner feature, "Go to Home" on the error screen changes nothing (the path is already `/` or the target is in the same feature); (c) the only recovery is "Try again", a full reload, and if the bag's Wi-Fi is still down at that moment the browser's own offline page replaces the app.
-- **Evidence:** `evidence/a03-chunk-failure-recovery.evidence.test.tsx` (the download is attempted exactly once across three navigations). Production build in headless Chrome, `evidence/measure-layout.out.txt` section 3: lessons chunk blocked → error screen; block removed → "Go to Home" works → the same lesson opened again in-app → error screen again. Learner chunk blocked on first load → block removed → "Go to Home" → still the error screen. Point (c) was not run (it follows from `location.reload()` with no network and no service worker).
-- **Impact:** The bag's Wi-Fi is expected to be unstable and shared by many devices. Each feature, and each lazy screen streams 2–4 add, is one more download that can hit a blip. A learner who taps the friendlier "Go to Home" ends up with lessons that will not open for the rest of the session, with no hint that a reload is needed; one who taps "Try again" during the outage loses the app to a browser error page that has no Sensebod wording.
-- **Recommendation:** Keep the full reload as the recovery (in the SystemJS build a failed module may also stay cached in the loader, so an in-place `import()` retry is not safe to assume), but make every way out do it, and never reload into an outage:
-  1. In `ScreenBoundary`, before reloading, ask the bag for the shell (`fetch('/', { cache: 'no-store' })` with the client's timeout). Reload only on success; otherwise stay on the error screen and show the "cannot reach the bag" sentence.
-  2. When the boundary has caught an error, render "Go to Home" as a plain `<a href="/">` (a full page load) through the same check, not as an in-app `ButtonLink`.
-  3. Optionally, drop the cached entry (`featureScreens.delete(feature.id)`) when its load rejects, and give streams a shared `lazyScreen()` helper so screen-level chunks are treated the same way; verify against the production build before relying on it.
-- **Validation:** `node docs/reviews/evidence/measure-layout.mjs` section 3 against `vite preview`: after the block is removed, "Go to Home" and a second visit to the lesson must both reach the real screen; with everything blocked, "Try again" must leave the Sensebod error screen in place. `a03-…evidence.test.tsx` must fail (rewrite it as a regression test in `src/app/App.test.tsx`).
+- **Category:** Offline recovery, player logic
+- **Owner:** stream-3
+- **Location:** `app/src/features/lessons/media/useMedia.ts:253-264` (`onError`); message at `app/src/features/lessons/media/MediaControls.tsx:174-178`.
+- **Problem:** Only `MediaError` code 2 is treated as a network problem. When the file cannot be fetched at all at the moment Play is tapped (connection refused or dropped, HTTP 503 or 404), Chrome reports code 4 (`MEDIA_ERR_SRC_NOT_SUPPORTED`), the same code as an unplayable format. The hook then tries the next source and ends in `unsupported`, which shows "This video cannot play on this phone. This phone cannot show this kind of video. Ask your facilitator, or try another phone." and offers no button.
+- **Evidence:** `lessons-media.out.txt` section 2, production build in Chrome: file blocked → `error: 4`, that message, "Try again offered: false"; file answered with 503 → the same.
+- **Impact:** A blip of the bag's Wi-Fi, or the Pi refusing a media request while many phones start videos, is the commonest failure for the main content type. The learner is told their phone is the problem and to find another one. The only recovery is to leave the lesson and open it again, which nothing suggests. Listen and Read-along audio share the hook.
+- **Recommendation:** Decide by what the phone said beforehand, not by the error code alone. If `canPlayType` accepted the source (or it has no `mimeType`) and no data ever arrived (`element.readyState === 0` / `networkState === NETWORK_NO_SOURCE`), report `network` and keep "Try again"; reserve `unsupported` for a failure after data arrived (code 3, or code 4 with `readyState > 0`) once every source has been tried. Alternatively give the `unsupported` note a "Try again" as well.
+- **Validation:** rerun `lessons-media.mjs`: both cases in section 2 must show "The video stopped … Try again", and Try again must play once the block is removed. Add a unit test with `error.code = 4` and `readyState = 0`.
 
-### A-01 — `useApi` commits one render with the new inputs, the old answer and `loading: false`
+### A-17 — The place is not saved when a learner leaves a video or story that is playing
 
 - **Severity:** Medium
-- **Category:** React hooks, stale state
-- **Owner:** stream-1
-- **Location:** `app/src/shared/api/useApi.ts:35-45` (the old answer is cleared inside the effect, after the render with the new `deps` has already committed) and `:65`.
-- **Problem:** When `deps` change, the hook returns the previous `data`, `error` and `loading: false` for one committed render, then clears them from the effect. The hook's own comment (`:38`, "new inputs must not show the old answer") and `docs/ARCHITECTURE.md:136` promise the opposite, so screens will not guard against it.
-- **Evidence:** `evidence/a01-useapi-stale-render.evidence.test.tsx`: the committed log contains `{ id: 'b', data: 'lesson-a', loading: false }`, and a screen effect of the usual shape ("if loaded, save progress") runs once with id `b` and lesson `a`.
-- **Impact:** One painted frame of the previous lesson, series or library page under the new URL with no loading state (slow phones make the frame long). Worse, any effect in a screen that pairs the route id with the loaded data acts once on a mismatched pair: progress saved against the wrong lesson, the wrong title, the wrong media started. It is reachable on the main learner journey because of A-02.
-- **Recommendation:** Decide freshness during render, not in the effect. Keep the inputs the answer belongs to in the state and compare them on every render:
+- **Category:** React effects (cleanup order), progress
+- **Owner:** stream-3
+- **Location:** `app/src/features/lessons/media/useMedia.ts:286-296` (cleanup detaches the source and calls `load()`); `app/src/features/lessons/players/WatchPlayer.tsx:114-119`; `app/src/features/lessons/players/ListenPlayer.tsx:41-46`.
+- **Problem:** Both players save the position in an effect cleanup that reads `element.currentTime`. That effect is declared after `useMedia`'s effect, so on unmount `useMedia`'s cleanup runs first, removes `src` and calls `load()`, which resets `currentTime` to 0. The players' cleanup then sees 0 and saves nothing.
+- **Evidence:** `lessons-media.out.txt` section 1: after Pause a `PUT … {"state":"started","positionSeconds":3}` is sent (control); after 7 s of playing and a tap on Back, no `PUT` at all. The existing unit tests cannot see it because `load` is a `vi.fn()`.
+- **Impact:** Leaving mid-video without pausing first is the usual way to leave. "Carry on from where you stopped" then offers an older place or none.
+- **Recommendation:** Save inside `useMedia`'s own cleanup before the source is detached: read `element.currentTime` first and call `optionsRef.current.onPause(time)` when the element was started and has not ended; then remove the two player effects.
+- **Validation:** rerun `lessons-media.mjs` section 1: a `PUT` with `positionSeconds` near 7 after Back. Make the test stub of `load` reset `currentTime` to 0 so the unit test guards it.
 
-  ```ts
-  const [state, setState] = useState({ key: deps, data: undefined, error: null, loading: true });
-  const fresh = sameInputs(state.key, deps);            // length + Object.is per item
-  // in the effect: setState({ key: deps, ... }) on start, success and failure
-  return { data: fresh ? state.data : undefined, error: fresh ? state.error : null, loading: fresh ? state.loading : true, reload };
-  ```
-
-  "Try again" keeps `key` unchanged, so it still keeps the old answer on screen.
-- **Validation:** `a01-…evidence.test.tsx` must fail; add it (inverted) to a new `useApi.test.tsx` together with the cases in A-08.
-
-### A-02 — A screen keeps its state when only a path parameter changes
+### A-18 — A Child protection lesson that is loading, or failed to load, has no "Leave this page"
 
 - **Severity:** Medium
-- **Category:** Router, React state
-- **Owner:** stream-1
-- **Location:** `app/src/shared/router/router.tsx:154-164` (`<Screen />` is rendered without a key).
-- **Problem:** Going from `/lesson/a` to `/lesson/b` matches the same route, so React keeps the same component instance: every `useState`, `useRef` and running effect of the screen survives into the next lesson. The foundation prescribes exactly this shape ("One route, `/lesson/:lessonId`, serves every type", with `lesson.next` for "Up next"; stream-1 report section 7), and nothing in `docs/ARCHITECTURE.md` or the feature READMEs mentions it.
-- **Evidence:** `evidence/a02-route-param-state.evidence.test.tsx`: an answer chosen in lesson `a` is still chosen after `navigate('/lesson/b')`.
-- **Impact:** Quiz answers, "finished" flags, playback position and open panels leak from one lesson into the next unless every stream remembers to reset them by hand. The same applies to `/portal/:portalId/:groupId` (a filter chosen in one topic stays on in the next).
-- **Recommendation:** Key the screen on the matched pattern and its named parameters, leaving the wildcard out so stream 4 can keep one stateful screen across `/admin/*` sub-steps:
+- **Category:** Accessibility and safety rule (HANDOFF: every Child protection screen has Leave this page, Back, Home and Listen)
+- **Owner:** stream-3
+- **Location:** `app/src/features/lessons/screens/LessonScreen.tsx:119`; `app/src/features/lessons/screens/LessonDoneScreen.tsx:165`.
+- **Problem:** `quickExit` is true only once the lesson has loaded, because `/lesson/:id` does not say which portal it belongs to. While loading, and on the error screen, the quick exit is absent. The finished screen opened without a finish record ("This lesson is not finished yet") also has no Listen control on a phone.
+- **Evidence:** `lessons-media.out.txt` section 3: loaded → `leaveThisPage: true`; lesson request answered 503 → `false` on both screens. `measure-features.out.txt`: "Finished screen (CP), opened directly: MISSING: listen".
+- **Impact:** The failed state is the one a child stays on longest (reading, trying again). The quick exit also replaces the history entry; without it, Home leaves the lesson one Back away.
+- **Recommendation:** Fail safe from what is already known: show the quick exit while the lesson is unknown when the session says the reader is in Child protection (`useSession().childProtectionAudience !== null`, set by stream 2's lesson list and cleared by Leave this page). Add `ListenBar` to the "not finished yet" state.
+- **Validation:** rerun `lessons-media.mjs` section 3 after opening a Child protection lesson list first; add a unit test for the error state.
 
-  ```tsx
-  const key = match.route.path + '|' + Object.keys(match.params).filter((k) => k !== '*').map((k) => match.params[k]).join('|');
-  return <ParamsContext.Provider value={match.params}><Screen key={key} /></ParamsContext.Provider>;
-  ```
-
-  Document the rule in ARCHITECTURE section 3.1 either way.
-- **Validation:** `a02-…evidence.test.tsx` must fail; add a router test that a wildcard-only change does not remount.
-
-### A-04 — The default `Idempotency-Key` changes on every call, so a retry creates a second record
+### A-19 — An admin session that ends during editing discards the unsaved work
 
 - **Severity:** Medium
+- **Category:** Forms, preservation of user work
+- **Owner:** stream-4
+- **Location:** `app/src/features/admin/session.tsx:78-84` and `:123-127` (`RequireAdmin` navigates to sign-in on status `out`, unmounting the screen); `app/src/features/admin/lib/hooks.ts:51` (`useAction` routes a 401 there and shows no error).
+- **Problem:** When Save answers 401 (session expired, bag restarted), the editor is unmounted, the facilitator signs in and is returned to the same address, and the editor loads again from the bag. Everything typed is gone and nothing says so. This affects Questions, Try it setup, Series order, Place and Notes; only "Type it yourself" survives, because it keeps a copy on the phone.
+- **Evidence:** `a19-admin-session-expiry-loses-work.evidence.test.tsx` (passes): a rewritten question is replaced by the original after signing in again, and the button reads "Nothing to save".
+- **Impact:** Facilitators type on phones, slowly, and the bag is switched off and on in the field. A set of quiz questions can be twenty minutes of work.
+- **Recommendation:** Keep the screen mounted when a session is lost in the middle of work: in `RequireAdmin`, once children have been shown, render the sign-in form in place of them visually (children kept in the tree under `hidden`) and reveal them again on success, with no navigation. Navigation to `/admin/sign-in` stays for the first load. Then let `useAction` show "Sign in again, then tap Save. Your changes are still on this page."
+- **Validation:** the evidence test must fail (typed text still present after signing in); add it inverted to `flows.test.tsx`.
+
+### A-20 — The admin Library scrolls sideways between 1100 and 1353px
+
+- **Severity:** Medium
+- **Category:** CSS, usability
+- **Owner:** stream-4
+- **Location:** `app/src/features/admin/admin.css:1003-1024` (`.adm-table`, laptop layout from 1100px); `app/src/features/admin/screens/Library.tsx:356`.
+- **Problem:** With the side menu, the lesson table needs up to 1354px. From 1100 to 1353px the whole page scrolls sideways and the last column, the row actions, starts off screen.
+- **Evidence:** `measure-admin-library.out.txt`: `scrollWidth` 1354 (Child protection), 1310 (one series) and 1294 (Agriculture) at 1100 and 1280; no overflow from 1366. The engineer's report says only 1440 was checked.
+- **Impact:** 1280×800 laptops and 10-inch tablets in landscape get the laptop layout with the Publish, Edit and Delete column hidden to the right.
+- **Recommendation:** Keep the stacked card layout of the table up to the width the table needs (move its breakpoint from 1100 to about 1360px), or wrap the table in a container with `overflow-x: auto` and let the title column shrink (`min-width: 0`, wrapping text).
+- **Validation:** rerun `measure-admin-library.mjs`: no overflow line at 1100 and 1280.
+
+### A-21 — Workarounds that fix round 1 made obsolete still cost requests and tie screens to English titles and seeded ids
+
+- **Severity:** Low
+- **Category:** Network efficiency, maintainability
+- **Owner:** stream-2
+- **Location and problem:**
+  - `app/src/features/learner/views/PortalViews.tsx:257-271`: one `getSeries` per subject that has a quiz on every class page; `SeriesSummary.quiz` now carries the lesson. If one of those requests fails, all quiz cards disappear silently.
+  - `app/src/features/learner/screens/Browse.tsx:25-41`: an extra `getGroup` per lesson list; `SeriesDetail.group.seriesCount` now answers it.
+  - `app/src/features/learner/icons.tsx:193-218`: icons chosen by regular expressions on English titles; `Group.icon` and `SeriesSummary.icon` exist.
+  - `app/src/features/learner/views/ChildProtectionExtras.tsx:88-113`: audiences recognised by seeded ids; `Group.audience` exists.
+  - `app/src/features/learner/views/PortalViews.tsx:27-55`: local `AudienceCard`; `PortalCard` now takes `actionLabel` (the tablet layout request is still open, so this one may stay).
+  - The guards "useApi can show the previous answer" (`Browse.tsx:43-45` and others) are now redundant; harmless.
+- **Evidence:** the fields are in `app/src/shared/api/types.ts:92-118, 165` and the mock sends them (`mock/handler.test.ts:86-101`).
+- **Recommendation:** use the new fields and delete the five `TODO(stream-1)` notes; stream 1 then makes the fields required.
+- **Validation:** request log of a class page shows one group request and no series requests; tests still pass.
+
+### A-22 — The idempotency key of a typed lesson and of a notes lesson is not renewed when its content changes
+
+- **Severity:** Low
 - **Category:** API integration, data integrity
-- **Owner:** stream-1
-- **Location:** `app/src/shared/api/learner.ts:48-51`, `app/src/shared/api/admin.ts:76-79` and `:108-111`, `app/src/shared/api/client.ts:239-242`; guidance in `docs/ARCHITECTURE.md:137` ("call the function directly").
-- **Problem:** `createLearner`, `createLesson` and `createSeries` call `newRequestKey()` inside the function. A second call for the same submission therefore carries a different key and is a new request to the server. The contract (`docs/API-CONTRACT.md:23`) says the key exists for "double taps, retries after a Wi-Fi drop"; the doc comment at `learner.ts:48` says "Safe to repeat". Neither is true unless the screen passes its own key, which no document tells it to do. The existing test (`client.test.ts:81-85`) passes only because it bypasses `createLearner` and sets `k1` by hand.
-- **Evidence:** `evidence/a04-idempotency-key.evidence.test.ts`: two calls to `createLearner` with the same form send two different keys and return two different learner ids; with one caller-supplied key they return the same learner.
-- **Impact:** The realistic sequence on a slow Pi: the POST arrives, the answer is lost or passes the 15 s timeout, the screen says "cannot reach the bag", the learner taps again. The bag now holds two learners with the same name (the phone remembers only the second), or two draft lessons or two series for an admin.
-- **Recommendation:** Make the key belong to the submission, not to the call. Either require it (`createLearner(input, { idempotencyKey })` with no default, so forgetting it is a type error) or give streams a small helper, for example `const save = useSubmission(createLearner)`, that creates one key when the form is first submitted, reuses it for every retry and renews it only after success or when the input changes. State the rule in ARCHITECTURE section 3.4.
-- **Validation:** The first test in `a04-…evidence.test.ts` must fail; add a test through the real helper that a timed-out submission followed by "Try again" yields one learner.
+- **Owner:** stream-4
+- **Location:** `app/src/features/admin/screens/TypeLesson.tsx:69-77` with `app/src/features/admin/lib/typedLesson.ts:35, 136`; `app/src/features/admin/screens/Notes.tsx:44, 79-86`.
+- **Problem:** The key is fixed for the life of the draft. If the answer to "create lesson" is lost, the facilitator edits the text (or adds a page) and taps Next again, the bag answers with the first version, the app moves on and clears the local draft. The edits are lost without a word. The engineer's report lists this as open item 4 and says it needs server work; it does not.
+- **Evidence:** code reading; stream 2's form renews its key on every change (`learner/screens/SaveProgress.tsx:176-179`).
+- **Recommendation:** renew `requestKey` whenever title, blocks, voice or the page list change after a failed try. The cost is a possible second draft, which is visible under "Waiting to be placed" and can be deleted; that is the better failure.
+- **Validation:** flow test: lost answer, edit, Next → the placed lesson has the edited text.
 
-### A-05 — `useQuery()` returns a new object on every render
-
-- **Severity:** Medium
-- **Category:** React hooks, unstable reference
-- **Owner:** stream-1
-- **Location:** `app/src/shared/router/router.tsx:141-143`.
-- **Problem:** `new URLSearchParams(...)` is created on every call. As a dependency (`useApi(load, [query])`, or any `useEffect` on `query`) it changes on every render, the request runs again, its answer sets state, and the component renders again: an endless request loop. ESLint cannot catch it because `useApi`'s dependency list is not checked (A-07).
-- **Evidence:** `evidence/a05-usequery-identity.evidence.test.tsx`: two renders at the same URL give two different objects, and `useApi(load, [query])` issues more than 10 requests in 150 ms with the URL unchanged.
-- **Impact:** A filtered list with the filter in the URL is the natural design for the admin library and the learner filter (`navigate(..., { keepScroll: true })` exists for it). Written the obvious way it hammers the Pi from every device showing that screen, which is the failure the "no automatic retries" rule was meant to prevent.
-- **Recommendation:** `const { search } = useLocation(); return useMemo(() => new URLSearchParams(search), [search]);`
-- **Validation:** Both tests in `a05-…evidence.test.tsx` must fail.
-
-### A-06 — The page header does not fit a 320px-wide phone and has no margin at 360px
-
-- **Severity:** Medium
-- **Category:** CSS, last-mile usability
-- **Owner:** stream-1
-- **Location:** `app/src/shared/shell/shell.css:20-31`, `:40-50`, `:55-73`, `:112-123`; `app/src/shared/shell/PageShell.tsx:121-131`.
-- **Problem:** The single-row inner header (Back, Home, logo) needs 359px: 16 + 108 + 10 + 116 + 10 + 99. Nothing in the row may shrink or drop out. At 320px the row is 39px too wide and the page scrolls sideways (or the browser zooms the whole page out). At 360px, the commonest Android width, the logo ends 1px from the screen edge, inside the 16px gutter, so a wider fallback font or a longer translated word for "Back" overflows there too. On the Child protection layout at 320px the header rows fit but the page is 326px wide: the Listen-plus-language row (`.sb-listen-bar`) is 6px too wide.
-- **Evidence:** Production build, headless Chrome: `evidence/measure-header-320.out.txt` (row geometry: `barClientWidth 320`, `barScrollWidth 359`; logo from 259 to 359) and `evidence/measure-layout.out.txt` section 1 (`scrollWidth 359` at 320px on the lesson, not-found and admin screens; `326` on the Child protection lesson; no overflow at 360, 390 or 800). Measured with Poppins loaded, in current desktop Chrome, not on a phone.
-- **Impact:** 480×854 screens at 1.5× (320 CSS px wide) are common on the entry-level Android phones this product is for. Every inner screen is affected. The boards are drawn at 390px only, so this is not a deviation from a board; it is the missing handling below the design width.
-- **Recommendation:** Below 360px, drop what is redundant instead of letting the row overflow: hide `.sb-shell__logo-link` in the single-row header (`@media (max-width: 359px)`; the Home button next to it does the same job), allow the nav buttons to shrink (`min-width: 0`, smaller side padding), and let `.sb-listen-bar` wrap or the language switch drop under the Listen button. Give the row a few pixels of slack at 360px (for example 8px between items).
-- **Validation:** `node docs/reviews/evidence/measure-layout.mjs`: no "HORIZONTAL OVERFLOW" line at 320px on any page; then check on a real 320px-wide phone.
-
-### A-07 — The conventions imposed on streams 2–4 are only partly enforced
-
-- **Severity:** Medium
-- **Category:** Lint configuration, maintainability, compatibility
-- **Owner:** stream-1
-- **Location:** `app/eslint.config.js:44-55` and `:57-62`; `app/package.json:14` (`"lint": "eslint ."`); `docs/ARCHITECTURE.md:169-183`.
-- **Problem and evidence** (ESLint run on probe snippets through `--stdin`, nothing written to `app/`):
-  1. **CSS floor rules have no check at all.** The table of banned CSS (`gap` on flex, `aspect-ratio`, `inset`, `clamp()`, `:has()`, container queries, `color-mix()`) is documentation only; ESLint does not read CSS, `build.cssTarget` does not reject these, and `scripts/postbuild.mjs` does not look for them. Stream 1's report says so for flex `gap` ("documented, not lint-enforced"). The boards the streams copy from use flex `gap` throughout.
-  2. **`react-hooks/exhaustive-deps` is a warning and warnings do not fail lint.** A `useEffect` with a missing dependency: 1 warning, exit code 0.
-  3. **`useApi`'s dependency list is not checked.** `useApi((signal) => getSeries(id, { signal }), [])` with `id` missing: no message.
-  4. **Shared code may import a feature.** `import { routes } from '../../features/learner/routes'` from `src/shared/components/`: no message.
-  5. Unhandled promises are not checked (no type-aware rules). A bare `fetch(...)` statement: no message.
-  The rules that do exist work: a cross-feature import, a `@mock` import and `String.replaceAll` in a feature file each produced an error.
-- **Impact:** The foundation's answer to Android 8 is "follow these rules", and three engineers are writing CSS in parallel from boards that break them. A flex `gap` or `aspect-ratio` that slips in is invisible on every machine available to the team and only shows as collapsed spacing or squashed pictures on the oldest phones. Stale-closure bugs from missing dependencies pass "lint green" the same way.
-- **Recommendation:** No new dependency is needed.
-  1. Add a CSS floor check to `scripts/postbuild.mjs` (or a `lint:css` script run by `npm run lint`): scan `src/**/*.css` for `aspect-ratio`, `inset:`, `clamp(`, `min(`/`max(` in values, `:has(`, `@container`, `color-mix(`, nested rules, and for `gap` in a rule that has `display: flex` or `inline-flex`; fail with the file and line.
-  2. `"lint": "eslint . --max-warnings 0"`.
-  3. `'react-hooks/exhaustive-deps': ['warn', { additionalHooks: '(useApi)' }]` and remove the need for the disable comment in `useApi.ts` if possible.
-  4. Add `**/features/**` to the restricted imports for `src/shared/**`.
-- **Validation:** Re-run the same probes: each of 1–4 must now fail lint or the build.
-
-### A-08 — The code every screen depends on has no tests
-
-- **Severity:** Medium
-- **Category:** Test quality
-- **Owner:** stream-1
-- **Location:** No test file exists for `app/src/shared/api/useApi.ts`, `app/src/shared/session/session.ts` and `storage.ts`, `app/src/shared/shell/listen.ts`, `uploadFile` in `app/src/shared/api/client.ts:255-301`, the `ScreenBoundary` in `app/src/app/App.tsx:41-75`, or the lazy path of `app/src/shared/components/Illustration.tsx:31-58`.
-- **Problem:** The 61 existing tests are good: they assert behaviour, roles and words, not implementation. But they cover the leaves (components, `matchPath`, the client's happy and error paths) and skip the stateful pieces. `useApi` is used by every screen and has no test for a change of inputs, a slow answer arriving after a newer one, "Try again", or unmount; A-01 would have been caught by the first of these. The error boundary, the one place that handles a dropped connection during navigation, is untested; A-03 would have been caught.
-- **Evidence:** File listing and reading of all six test files; `grep` for `useApi`, `ScreenBoundary`, `forgetLearner`, `startListening`, `uploadFile` in `*.test.*` finds only the indirect use of `useApi` through the feature stubs.
-- **Impact:** Three streams will change how these pieces are exercised; stream 1 will be asked to change them in response. Without tests, a fix for one stream can silently break another.
-- **Recommendation:** Add focused tests, no new tooling:
-  - `useApi`: inputs change (no old answer, see A-01); two answers arriving out of order; `reload` keeps data and clears the error on success; failure after success keeps data and sets error; unmount before the answer; the no-`AbortController` path (delete the global for one test).
-  - `ScreenBoundary`: a rejected feature load shows the error screen; the recovery chosen for A-03; a render error in a screen is contained and clears on navigation.
-  - Session: at most 8 names, most recent first; `forgetLearner` of the current learner; storage that throws on read and on write; malformed stored data (A-09); `clearSensitiveChoices` keeps the learner.
-  - `listen.ts`: only one source at a time; `error` and a rejected `play()` mark the source as failed; unmount stops playback.
-  - `uploadFile`: progress, abort (`kind: 'aborted'`), HTTP error body mapped to `fields`, 2xx with an unreadable body.
-  - Focus moves to `<main>` after in-app navigation and not on first load (`PageShell.tsx:68-75`).
-- **Validation:** The new tests fail against the current code where a defect exists (A-01, A-03) and pass after the fixes.
-
-### A-09 — The session store trusts whatever is in `localStorage`
+### A-23 — Smaller items in the lesson players
 
 - **Severity:** Low
-- **Category:** TypeScript, error handling
-- **Owner:** stream-1
-- **Location:** `app/src/shared/session/session.ts:33-41`, `app/src/shared/session/storage.ts:8-22`.
-- **Problem:** `readStored` returns `JSON.parse(raw) as T` unchecked. A stored value of `null` makes `load()` throw (`stored.learner` on `null`); `useSession()` is called by `LanguageSwitch` in the page shell of every screen, including the error screen, so the result is a blank page on every start until site data is cleared. A learner or list entry of the wrong shape is accepted and fails later, wherever a screen reads `.name` or `.id`.
-- **Evidence:** `evidence/a09-session-corrupt-storage.evidence.test.ts`.
-- **Impact:** Unlikely today (the app only writes well-formed data under a versioned key), but phones are shared and long-lived, and the next schema change makes old data "malformed". The cost of the failure is total.
-- **Recommendation:** In `load()`, accept only a plain object; keep `learner` only if it has string `id` and `name`; filter `knownLearners` the same way; fall back to the empty session on anything else.
-- **Validation:** Both tests in `a09-…evidence.test.ts` must fail.
-
-### A-10 — Bracket placeholders are printed on lesson cards
-
-- **Severity:** Low (release-gating content decision, not a coding error)
-- **Category:** Design fidelity, usability
-- **Owner:** stream-1 (with the design and content owner)
-- **Location:** `app/src/shared/components/lessonTypes.tsx:41-54`, `app/src/shared/components/LessonTags.tsx:79-90`; locked in by `app/src/shared/components/components.test.tsx:85-97` and `:111`.
-- **Problem:** A lesson with no known length shows the literal text `[length]`, and a Read lesson with no page count shows `[pages] pages`. This is faithful to the boards, which print the same brackets, but `HANDOFF.md` section 8 lists `[length]` under "Placeholders to fill". Check and Try it lessons have no length to fill in, and still show it.
-- **Evidence:** `evidence/measure-layout.out.txt` section 4: the quiz lesson's facts row reads "Length: [length]"; all five lessons of `cp-child-staying-safe` in the mock have `length: null`.
-- **Impact:** A first-time reader is shown a clock icon followed by a bracketed English word on every card.
-- **Recommendation:** Before release, get a decision from the design owner; the smallest change is to leave the fact out when the value is `null`, and never show a length for `check` or `try`.
-- **Validation:** Kitchen sink and a series list show no bracketed text.
-
-### A-11 — Choosing Krio sets `<html lang="kri">` over English text, and the setting is lost on reload
-
-- **Severity:** Low
-- **Category:** Accessibility
-- **Owner:** stream-1
-- **Location:** `app/src/shared/session/session.ts:88-91`; `app/index.html:2`.
-- **Problem:** `setLanguage('kri')` marks the whole document as Krio while every string on screen is still English, and nothing applies the stored language at start-up, so after a reload the document says `en` while the session says `kri`.
-- **Evidence:** Code reading; `grep` finds one write to `documentElement.lang` and none at boot.
-- **Impact:** A screen reader may pick the wrong voice or pronunciation rules for English text. Small today; it becomes a real defect the day translations arrive and the attribute is wrong after every reload.
-- **Recommendation:** Do not change `documentElement.lang` until translated text exists; when it does, set it from the session in `main.tsx` before rendering as well as in `setLanguage`.
-- **Validation:** Unit test on `setLanguage` and on start-up with a stored `kri`.
-
-### A-12 — The GET cache and in-flight sharing do less than documented
-
-- **Severity:** Low
-- **Category:** API client, network efficiency
-- **Owner:** stream-1
-- **Location:** `app/src/shared/api/client.ts:104-110`, `:196-229`.
-- **Problem:** (1) Every write clears the whole cache (`:224-228`), including each `saveLessonProgress`, so the "Back is instant" cache is emptied every time a learner's progress is saved, which is exactly when they go back to the lesson list. (2) In-flight sharing is skipped whenever a `signal` is passed (`:205`), and the documented `useApi` pattern always passes one on browsers with `AbortController`, so "identical GETs in flight are shared" (ARCHITECTURE section 8) holds only on Chrome below 66. (3) Cached objects are handed out by reference; a screen that sorts or edits an answer in place changes it for the next reader. (4) Eviction removes the oldest insertion even when the key being written is already present.
-- **Evidence:** Code reading; `client.test.ts:73-79` asserts behaviour (1) as intended.
-- **Impact:** More requests to the Pi than the design intends, most of all while many learners are finishing lessons. No wrong data.
-- **Recommendation:** Clear the content cache only for writes that change content (admin calls), not for learner and progress writes; state in the docs that cached answers must be treated as read-only; either share in-flight requests with a subscriber count or correct the claim in the document.
-- **Validation:** Extend `client.test.ts`: a progress save followed by `getSeries` makes no new content request.
-
-### A-13 — Smaller accessibility and semantics issues in shared components
-
-- **Severity:** Low
-- **Category:** Accessibility
-- **Owner:** stream-1
+- **Owner:** stream-3
 - **Location and problem:**
-  - `app/src/shared/shell/shell.css:40-50`: the logo link in the inner header is a 99×30px target (113×34 from tablet width), under the 48px rule the foundation sets for everyone else. It duplicates the Home button beside it. Measured: `evidence/measure-layout.out.txt` section 1.
-  - `app/src/shared/components/Cards.tsx:53`: `aria-disabled` on a plain `<div>` has no effect and is not allowed on an element without a role. The card's own words ("Not in bag") already carry the meaning; remove the attribute.
-  - `app/src/shared/components/Illustration.tsx:57`: the lazy placeholder has `role="img"` and no name when `alt` is empty; give it `aria-hidden="true"` in that case.
-  - `app/src/shared/components/Cards.tsx:195` with `LessonTags.tsx:82`: `FactsRow` puts a `<ul>` inside a `<span>` inside the card's `<a>`. Browsers cope, but it is invalid nesting and screen readers announce a list inside a link; inside a card render the facts as spans.
-  - `app/src/shared/components/Forms.tsx:116-143`: `role="radiogroup"` with every row a tab stop and no arrow keys. Fine for touch and TalkBack; a keyboard user on a laptop gets radios that do not behave like radios. Either add arrow-key handling or use `aria-pressed` buttons in a `group`, as the filter does.
-  - `app/src/shared/shell/ListenButton.tsx:48` and `:55`: the button changes its words to "Stop" and also sets `aria-pressed="true"`, which reads as "Stop, pressed". Use one or the other.
-  - `app/src/shared/components/Illustration.tsx:59-70`: no handling of a picture that fails to load; the browser's broken-image mark and the alt text are drawn over the tint. Hide the image on `error` so the card keeps its tint.
-- **Evidence:** Code reading; target sizes measured in Chrome. No screen reader was run.
-- **Validation:** Unit tests on roles and attributes; re-run `measure-layout.mjs` for target sizes.
+  - `screens/LessonDoneScreen.tsx:90`: after a refresh, if the progress request fails the screen shows "Opening…" for ever (`useSeriesProgress` reports failure as "unknown"). Show the lesson link after an error.
+  - `players/TryItPackage.tsx:53`: the `HEAD` check has no time limit and no cancellation; a hung request leaves "Opening…" spinning. Use `AbortController` with the client's timeout.
+  - `lessons.css:486-510`: the seek bar is 32px high with a 32px thumb, under the 48px rule (`measure-features.out.txt`: "Video time 248x32"). Back 10s and Forward 10s are full size, so there is another way; give the input a 48px hit height with the track centred.
+  - `players/WatchPlayer.tsx:69-82`: a saved learner resuming an interactive video is told "carry on from where you stopped (0:30)" and is then taken back to the first question, because answered questions are not remembered. Either say so or mark questions before the resume point as passed.
+  - `quiz/Answers.tsx:54-62, 81`: `role="radiogroup"` without arrow keys, the same point A-13 fixed in the shared `ChoiceGroup`.
+  - `media/useMedia.ts:17-20, 282`: deep import of `@shared/shell/listen` and a test on the first character of its snapshot string. Stream 1 has not exported the subscription yet; the request is still open.
+  - `lessons.css:31-38`: `TODO(stream-1)` wrap rule for the Listen bar, obsolete since A-06 was fixed.
+- **Evidence:** code reading; the seek bar measured.
 
-### A-14 — `navigate()` and `Link` add a history entry for the URL the learner is already on
-
-- **Severity:** Low
-- **Category:** Router
-- **Owner:** stream-1
-- **Location:** `app/src/shared/router/router.tsx:78-83`.
-- **Problem:** A tap on a link to the current URL (for example "Home" in the not-found screen's body after "Home" in the header, or a card tapped twice on a slow phone) pushes a duplicate entry, so the browser's Back appears to do nothing once per duplicate.
-- **Evidence:** Code reading: `pushState` is unconditional.
-- **Recommendation:** Use `replaceState` when `to` equals the current `pathname + search + hash`.
-- **Validation:** Router test: two navigations to the same URL leave `history.length` one higher, not two.
-
-### A-15 — The documents streams 2–4 follow contradict each other in places
+### A-24 — Smaller items in admin
 
 - **Severity:** Low
-- **Category:** Maintainability, conventions
-- **Owner:** stream-1
+- **Owner:** stream-4
 - **Location and problem:**
-  - CSS class prefix: `docs/ARCHITECTURE.md:167` says `lrn-`, `les-`, `adm-`; `app/src/features/*/README.md:46` say `learner-`, `lessons-`, `admin-`.
-  - Loading and error states: the example in `docs/ARCHITECTURE.md:127-133` returns `<LoadingState />` and `<ErrorState />` on their own, with no page shell, so a learner on a failed screen has no Back, Home or quick exit; the READMEs (`:41`) say every screen is wrapped in `PageShell`; the stubs in `features/*/routes.tsx` do the right thing (states inside the shell). The architecture example should match the stubs. On Child protection screens this matters: "Leave this page" must be present while a screen is loading or has failed.
-  - `docs/ARCHITECTURE.md:136` states the `useApi` guarantee that A-01 disproves, and section 8 states the sharing that A-12 disproves.
-  - `app/src/shared/components/feedback.css:64-93` uses the raw blue palette for the default (info) message and `card.css:27` uses `--sb-page-blue`, while section 3.7 tells streams to use role tokens so screens "turn green by themselves". Confirm with the design owner whether an info message on an Agriculture screen is meant to stay blue, then either switch to role tokens or note the exception.
-- **Evidence:** The cited lines.
-- **Recommendation:** Correct the documents in one pass together with the fixes above.
+  - `screens/TypeLesson.tsx:100-115`: choosing a second recording while the first is uploading aborts the first; its late rejection handler then sets `voiceHandle.current = null` and the state to `none`, hiding the new upload's progress and making it impossible to cancel on unmount. Compare the handle before clearing.
+  - `lib/uploadQueue.ts:258-261`: a failed poll stops watching and leaves "being prepared" on screen with no end.
+  - Inline text links under 48px: "Go to the learning site" 176×23 (`screens/SignIn.tsx`), "See everything in the Library" 253×25 (Home), "Use Upload an animation" 203×23 (Upload). Measured in `measure-layout.final.out.txt` and `measure-features.out.txt`.
+  - `routes.tsx:42-43`: `/admin/series` and `/admin/series/:seriesId` are two routes without a shared `instance`, so choosing a series remounts the screen. Harmless today; note it if state is added.
+  - `README.md:15-26, 46`: still tells readers to use `lazy()` and the `admin-` prefix (A-15).
+- **Evidence:** code reading and the measurements named.
 
-### Suspected risks (not confirmed, not counted as findings)
+### A-25 — Smaller items in learner browsing
 
-- **SystemJS may also cache a failed module load**, which would make an in-place `import()` retry fail even with a new `React.lazy`. Not isolated in this pass; it is why A-03 recommends keeping the reload and checking reachability first.
-- **The sticky Child protection header is 144–150px tall on a phone** (measured at 360 and 320px wide), which is the approved design (the board's header is sticky with both rows). On a 320×569 screen with the browser's own bars, or in landscape, it takes a large share of the viewport. To be judged on a real phone, not changed on a reviewer's opinion.
-- **Scroll position after the browser's Back**: `navigate()` scrolls to the top, but Back relies on the browser restoring the position before the screen's data has arrived. Likely to land at the top of long lists. Not tested.
-- **API answers are cast to their types, not validated** (`client.ts:178`). Acceptable without a backend; when one exists, a drifted response becomes a render error caught by the boundary ("This page did not open"), with no hint of the cause.
+- **Severity:** Low
+- **Owner:** stream-2
+- **Location and problem:**
+  - `components.tsx:39-54`: the "not in this bag" screen under a Child protection address has Leave this page, Back and Home but no Listen (`measure-features.out.txt`).
+  - `views/PortalViews.tsx:168, 200, 320-328`: the module-level flag `showSubjectsNext` stays set if the class request fails, so a later, unrelated load scrolls and moves focus. Clear it on error or keep it in a ref.
+  - `README.md:33-44, 64`: stale `lazy()` and `learner-` lines (A-15).
+- **Evidence:** code reading and the measurement named.
 
-### Recommendations (not defects)
+### Suspected risks (not confirmed, not counted)
 
-- `useApi` has no way to skip a request (for example "progress only when a learner is chosen"). Document the pattern `(signal) => (learner ? getProgress(learner.id, undefined, { signal }) : Promise.resolve(null))`, or add an `enabled` option, before each stream invents its own.
-- There is no shared helper for actions (save, publish): each stream will write its own working / error / double-tap state around `<Button working>`. The helper suggested in A-04 would cover it.
-- `app/src/shared/styles/base.css:89-93` (`.sb-motion-ok`) sets a duration with no property and is unused; remove it or make it the documented transition helper.
+- **Interactive video, seek before the length is known** (`WatchPlayer.tsx:138-154` with `useMedia.ts:164-178`): Forward 10s while the file is still loading stores a pending seek past a question; the question opens, but the pending seek is applied on `loadedmetadata`. Narrow timing window; not reproduced.
+- **`notReady` buttons are `disabled`** (`shared/components/Button.tsx:86`): the message "Type your name first." in `SaveProgress.tsx:149-151` can then only be reached by Enter in the field, and a browser may skip implicit submission when the default button is disabled. Not tested on Android keyboards.
+- **28 lesson cards in one list** (Feed and animal health): scrolling cost on an old phone is unknown. Reviewer B.
+- The pass-1 risks about the 144–150px sticky Child protection header, scroll position after browser Back, and unvalidated API answers stand as written then.
 
 ## D. Performance results
 
-No performance measurement was possible on target hardware, and performance measurement belongs to Reviewer B. The only numbers taken by this reviewer are layout and contrast checks.
+No performance measurement was possible on target hardware, and it belongs to Reviewer B. Numbers below are layout checks and the build's own size report.
 
-| Metric | Baseline | Current | Target | Status | Device and conditions |
+| Metric | Baseline (pass 1) | Current | Target | Status | Device and conditions |
 |---|---|---|---|---|---|
-| Cold start, time to usable screen, interaction latency, memory | none | Not Tested | to be set on hardware | Not Tested | No Raspberry Pi, no Android device |
-| Start JavaScript, gzip (`npm run size`) | none (new codebase) | 94.0 KB | 200 KB | Pass | Build on the development Mac; Reviewer B verifies independently |
-| Critical resources for the first screen, gzip (`npm run size`) | none | 115.2 KB | 350 KB | Pass | Same |
-| Horizontal overflow, inner header, 320px wide | none | 359px content in a 320px viewport | none | **Fail** (A-06) | Headless desktop Chrome, production build via `vite preview`, Poppins loaded |
-| Horizontal overflow at 360, 390, 800px | none | none | none | Pass | Same |
-| Interactive targets under 48px | none | 1 kind: header logo link 99×30 | 48px | Fail, minor (A-13) | Same; 50 controls on the kitchen sink, 4–9 on each app page |
-| Smallest text | none | 16px | 16px | Pass | Same |
-| Text and edge contrast, 36 pairs recomputed from `tokens.css` | `brand/tokens.json` | text 5.38–14.6 : 1; tappable edges 3.13–3.91 : 1; focus ring 10.3–10.7 : 1 | 4.5 text, 3.0 edges | Pass | WCAG formula, computed; matches the ratios stated in `brand/tokens.json` |
-| Focus after in-app navigation | none | moves to `#sb-main`, scroll at top | as documented | Pass | Headless desktop Chrome |
+| Cold start, interaction latency, memory, video on a phone | none | Not Tested | to be set on hardware | Not Tested | No Raspberry Pi, no Android device |
+| Start JavaScript, gzip (`npm run size`) | 94.0 KB | 101.5 KB | 200 KB | Pass | Build on the development Mac; Reviewer B verifies |
+| Critical resources for the first screen, gzip | 115.2 KB | 122.6 KB | 350 KB | Pass | Same |
+| Largest lazy chunk, gzip | 1.0 KB | 20.6 KB (`feature-lessons`) | 60 KB | Pass | Same |
+| Horizontal overflow, learner and lesson pages, 320 / 360 / 390 / 800 | 359px at 320 (A-06) | none on 18 pages | none | Pass | Headless desktop Chrome, production build, device emulation |
+| Horizontal overflow, admin, 320 / 390 / 800 | not built | none on 12 pages | none | Pass | Same |
+| Horizontal overflow, admin Library, 1100–1353 | not built | 1294–1354px content | none | **Fail** (A-20) | Same, 1100 / 1280 / 1366 / 1440 / 1536 |
+| Smallest text | 16px | 16px on 30 pages | 16px | Pass | Same |
+| Touch targets under 48px | 1 kind | seek bar 32px high; 3 inline admin links | 48px | Fail, minor (A-23, A-24) | Same |
+| Child protection controls on every such screen | not built | present on 10 of 12 loaded states measured (Listen missing on two: A-18, A-25); Leave this page missing on the lesson error states (A-18) | all four | Partial | Same |
 
 ## E. Dependency and asset inventory
 
-Reviewer B's area; not audited here. Noted in passing for them, not investigated:
+Reviewer B's area; not audited. Noted in passing for them, not investigated:
 
-- ESLint bans `replaceAll`, `.at()` and `Object.fromEntries` "because they are not polyfilled", while the same document says the build adds the core-js polyfills the code uses; one of the two statements is probably out of date.
-- `tsconfig.app.json:9` puts `vitest/globals` and `@testing-library/jest-dom` types into application code, so `describe` or `expect` in a non-test file would typecheck.
-- `<img loading="lazy">` in `Illustration.tsx:60-66` sets `src` before `loading`; harmless in Chrome, a known problem only in older Firefox.
+- `TryItPackage.tsx:53` sends a `HEAD` request to `/media/tryit/…/index.html`; the Pi must answer `HEAD` there and the CSP must allow the frame.
+- `bagReachable()` (`shared/router/recover.ts:50`) relies on `GET /?reach=…` being answered with the app page by the deployed server.
+- The pass-1 notes on `tsconfig.app.json` test types in app code and on the ESLint ban list versus polyfills still stand.
 
-Definite unused items found while reading the shared CSS: `.sb-motion-ok` (`base.css:89-93`) and `.sb-listen-note` (`shell.css:124-130`) are not referenced by any component. A few bytes each; candidates for removal after checking that no stream uses them.
+Definite unused items: `.sb-motion-ok` (`base.css:90`), `.sb-listen-note` (`shell.css:129`).
 
 ## F. Testing results
 
@@ -316,51 +261,49 @@ Run in this worktree on macOS, Node 23.10, after `npm ci`.
 
 | Check | Command | Result |
 |---|---|---|
-| Install | `npm ci` | Completed (audit notice for dev tooling only; Reviewer B) |
-| Typecheck | `npm run typecheck` | Pass, exit 0 |
-| Lint | `npm run lint` | Pass, exit 0, no output |
-| Unit tests | `npm test` | Pass: 6 files, 61 tests |
-| Production build | `npm run build` | Pass, including the postbuild checks |
-| Size budgets | `npm run size` | Pass: 94.0 / 200 KB, 115.2 / 350 KB, 1.0 / 60 KB |
-| Reviewer repro tests | `npx vitest run --config ../docs/reviews/evidence/vitest.evidence.config.mjs` | 6 files, 9 tests pass, meaning the defects of A-01, A-02, A-03, A-04, A-05 and A-09 are present |
-| Lint rule probes | `npx eslint --stdin --stdin-filename …` on four snippets | Boundary and floor rules fire; gaps listed in A-07 |
-| Layout, targets, focus, chunk recovery | `node docs/reviews/evidence/measure-layout.mjs` (headless Chrome, production build and dev kitchen sink, 320 / 360 / 390 / 800px) | Output in `evidence/measure-layout.out.txt` |
-| Header geometry at 320 and 360px | `node docs/reviews/evidence/measure-header-320.mjs` | Output in `evidence/measure-header-320.out.txt` |
-| Design fidelity | Values extracted from `V3-Components.dc.html` and `CPB-Child.dc.html`, compared with the shared CSS | Match on every value checked |
+| Install | `npm ci` | Completed |
+| Typecheck | `npm run typecheck` | Pass |
+| Lint | `npm run lint` | Pass: 0 problems, 0 warnings; `check-css: ok · 89 file(s)` |
+| Unit tests | `npm test` | Pass: 22 files, 347 tests |
+| Production build | `npm run build` | Pass, postbuild checks ok |
+| Size budgets | `npm run size` | Pass: 101.5 / 200, 122.6 / 350, 20.6 / 60 KB |
+| Pass-1 repro tests | evidence vitest config | 8 of 9 now fail, each for the reason its finding names (A-01, A-02, A-03, A-04 first test, A-05 ×2, A-09 ×2); the A-04 control passes |
+| New repro test | `a19-…evidence.test.tsx` | Passes: defect present |
+| Lint probes | `node ../docs/reviews/evidence/lint-probes.mjs` from `app/` | Probes 1 to 4: one error each. Probe 5 (`React.lazy` in a feature): 0 errors |
+| Pass-1 layout and recovery script | `measure-layout.mjs` → `measure-layout.final.out.txt` | No overflow; focus on `sb-main`, `scrollY` 0; both recovery cases reach the real screen |
+| Screen-chunk recovery | `a03-screen-chunk.mjs` | Second visit fails again without a request; "Try again" recovers |
+| Media behaviour | `lessons-media.mjs` | A-16, A-17, A-18 confirmed |
+| Feature pages | `measure-features.mjs` | 30 pages × up to 4 widths; results in section D |
+| Admin Library widths | `measure-admin-library.mjs` | A-20 confirmed |
+| Wording against boards | `grep -F` of 20 on-screen strings in `design/boards/*.dc.html` | 20 found on the boards the engineers name ("Which class are you in?" is split across markup on V3-Primary; "Which class" and "Tap your class." found) |
+| Listed deviations | spot checks | Stream 3 no. 1 (no "Check my answer" on AGB-Agri-Quiz, present on V3-Components): real. Stream 4 no. 19 (`[How to reset — confirm]` on ADM-SignIn replaced by a sentence): real; note that this fills a placeholder with wording nobody confirmed. Stream 2 nos. 1 to 3 follow from the contract fields (see A-21 for the ones now available). |
 
-Evidence files (`docs/reviews/evidence/`): `vitest.evidence.config.mjs`, `a01-useapi-stale-render.evidence.test.tsx`, `a02-route-param-state.evidence.test.tsx`, `a03-chunk-failure-recovery.evidence.test.tsx`, `a04-idempotency-key.evidence.test.ts`, `a05-usequery-identity.evidence.test.tsx`, `a09-session-corrupt-storage.evidence.test.ts`, `measure-layout.mjs` with `measure-layout.out.txt`, `measure-header-320.mjs` with `measure-header-320.out.txt`. None is wired into the app or its test run.
+**Test quality.** The feature tests render real route tables against the mock API and assert words, roles and requests; the rule tests cover the quiz, hotspot, placement, question and upload-queue logic as pure functions. Critical cases missing:
+
+- Lessons: media stubs never reset `currentTime` on `load()` and never raise error code 4 with no data, so A-16 and A-17 pass unseen; no test of the Child protection quick exit in loading and error states (the existing test checks the loaded state only).
+- Admin: no test of a 401 during Save with unsaved input (A-19); the "session ends" test only covers a navigation; nothing between 1100 and 1440px.
+- Learner: no test that a failed quiz-series request leaves the class page usable; otherwise the important journeys are covered.
 
 **Not tested**
 
-- Any physical Android phone or tablet, any Android WebView, Chrome 58 or any other old browser. Every browser result above is from current desktop Chrome in headless mode with device emulation.
-- Any Raspberry Pi; nginx or Caddy; behaviour with many devices.
-- Screen readers (TalkBack), switch access, real touch input, the virtual keyboard over form fields.
-- "Try again" (full reload) while the network is down: reasoned in A-03, not run.
-- The dev-only kitchen sink in an old browser; visual fidelity by pixel comparison.
-- Real audio through the Listen button (no recordings exist), and `uploadFile` against a real server.
-- The API contract against a backend (none exists).
-- Streams 2–4 (not in this snapshot).
+- Any physical Android phone or tablet, Android WebView, Chrome 58; any Raspberry Pi, nginx or Caddy. Every browser result is current desktop Chrome, headless, with device emulation.
+- Screen readers, switch access, real touch, the virtual keyboard over forms and over the admin's sticky action bar.
+- Real media: only the 20 s sample clip; no long video, no real codec failure, no captions timing.
+- Real uploads, `capture` inputs, photo rotation on a camera photo, a real backend honouring idempotency keys and sessions.
+- Not reached in this pass, so no statement is made about them: line-by-line reading of `ReadPlayer`, `TryItHotspots`, `PictureLesson`, `Finished`, `LessonParts` (skimmed), and of the admin screens `Library`, `Series`, `Picture`, `Animation`, `TryIt`, `Done`, `Home`, `Menu` and `AdminFrame` (measured in the browser and grepped for timers, listeners and suppressions, not read in full); admin and lesson CSS against the boards value by value; tablet and laptop layouts by eye; keyboard-only operation.
 
 ## G. Prioritised remediation plan
 
-All items are for stream-1. Order follows section 19G of the reviewer instructions; items 1–3 change behaviour that streams 2–4 are coding against now, so they should land first.
-
-1. **Release blockers:** none in this focus.
-2. **Security and data integrity:** A-04 (idempotency key per submission). A-01 with A-02 (stale answer and surviving state on "next lesson").
-3. **Offline functionality failures:** A-03 (recovery after a failed download).
-4. **Legacy browser compatibility:** A-07 item 1 (an automatic check for the CSS floor rules) before streams 2–4 merge their CSS.
-5. **Major performance problems:** A-05 (request loop through `useQuery`). A-12 is minor.
-6. **Maintainability:** A-07 items 2–4, A-08 (tests for `useApi`, the boundary, the session and Listen stores, uploads), A-15 (documents), A-09.
-7. **Minor code quality and usability:** A-06 (320px header; small change, visible on the cheapest phones, do it with the shell work), A-10, A-11, A-13, A-14.
-
-### What streams 2–4 should know now
-
-- **Stream 3:** until A-02 is fixed, `/lesson/a` → `/lesson/b` keeps your component and all its state. Reset on `lessonId`, or put your player in a child rendered with `key={lessonId}`. Until A-01 is fixed, do not pair `useParams()` ids with `useApi` data in effects; use the ids inside the loaded object (`lesson.id`).
-- **Streams 2 and 4:** for `createLearner`, `createLesson` and `createSeries`, create one key with `newRequestKey()` when the form is first submitted, keep it (a ref) across retries, and pass it as `{ idempotencyKey }`. The default does not protect you (A-04).
-- **Everyone:** do not put the result of `useQuery()` in a dependency list; depend on `useLocation().search` or on the strings you read from it (A-05). `useApi`'s dependency list is not checked by lint; check it by hand (A-07). Lint and the build will not catch flex `gap`, `aspect-ratio`, `inset`, `clamp()` or `:has()` in your CSS (A-07). Keep loading and error states inside `PageShell`, as the stubs do, not as the example in ARCHITECTURE section 3.4 shows (A-15). Lay screens out to work at 320px wide, not only at the 390px board width (A-06). Cached API answers are shared objects: do not sort or edit them in place (A-12).
+1. **Release blockers:** none Critical. **Must fix before release: A-16** (stream 3).
+2. **Security and data integrity:** A-19 (stream 4, work lost on 401); A-17 (stream 3, position not saved); A-22 (stream 4, key not renewed).
+3. **Offline functionality failures:** A-16 again; A-03 residue (streams 2 and 4: `lazyScreen`; stream 1: lint rule).
+4. **Legacy browser compatibility:** nothing new from this focus.
+5. **Major performance problems:** none found in source. A-21 (stream 2) removes avoidable requests.
+6. **Maintainability:** A-21; A-07 item 5 and A-15 residue (stream 1 and the README owners); the test gaps in section F.
+7. **Usability and minor quality:** A-18 (stream 3, should land with A-16), A-20 (stream 4), A-23, A-24, A-25, A-10 (design owner).
 
 ## Release decision
 
-**PASS WITH CONDITIONS**, for the Stream 1 foundation within Reviewer A's focus.
+**FAIL within Reviewer A's focus, on one unresolved High finding (A-16).** No Critical finding. The source is in good order and the pass-1 conditions were met: every pass-1 High and Medium finding is closed or reduced to Low residue. A-16 is a contained fix in `useMedia.ts`; the four Medium findings (A-17 to A-20) are each a local change with a reproduction ready to re-run. Once A-16 is fixed and re-verified the decision in this focus becomes PASS WITH CONDITIONS, the conditions being A-17 to A-20 and the content decisions (A-10, the Child protection contacts).
 
-No Critical finding. One High finding (A-03) and seven Medium findings are confirmed with reproductions; all have small, local fixes and none requires a redesign or a new dependency. The conditions: A-03, A-01, A-02, A-04 and A-05 are fixed and A-07 item 1 is in place before the stream 2–4 branches are merged, and each is re-verified by this reviewer (a finding is closed only on re-verification). This is not a statement about release readiness of the product: device, Pi, offline, compatibility, performance and security verification are outside this focus or were not possible here, and are listed above as Not Tested.
+This is not a statement that the product can ship after that: device, Pi, offline, compatibility, performance and security verification are outside this focus or were not possible here, and for the product as a whole the evidence is insufficient until they are done.

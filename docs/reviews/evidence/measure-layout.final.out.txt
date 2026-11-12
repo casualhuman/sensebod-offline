@@ -1,0 +1,47 @@
+## 1. Overflow, touch targets (< 48px), smallest text
+
+Home (learner stub, PageShell home) @ 320px: scrollWidth 320; controls 10; smallest text 16px (button.sb-lang__option "English")
+Home (learner stub, PageShell home) @ 360px: scrollWidth 360; controls 10; smallest text 16px (button.sb-lang__option "English")
+Home (learner stub, PageShell home) @ 390px: scrollWidth 390; controls 10; smallest text 16px (button.sb-lang__option "English")
+Home (learner stub, PageShell home) @ 800px: scrollWidth 800; controls 10; smallest text 16px (button.sb-lang__option "English")
+Lesson, Child protection (quick exit shell) @ 320px: scrollWidth 320; controls 10; smallest text 16px (li.sb-facts__item "Length: [length]")
+Lesson, Child protection (quick exit shell) @ 360px: scrollWidth 360; controls 10; smallest text 16px (li.sb-facts__item "Length: [length]")
+Lesson, Child protection (quick exit shell) @ 390px: scrollWidth 390; controls 10; smallest text 16px (li.sb-facts__item "Length: [length]")
+Lesson, Child protection (quick exit shell) @ 800px: scrollWidth 800; controls 10; smallest text 16px (button.sb-lang__option "English")
+Lesson, Agriculture (single-row inner shell) @ 320px: scrollWidth 320; controls 5; smallest text 16px (p.les-progress__words "You are learning as a gu")
+Lesson, Agriculture (single-row inner shell) @ 360px: scrollWidth 360; controls 6; smallest text 16px (p.les-progress__words "You are learning as a gu")
+Lesson, Agriculture (single-row inner shell) @ 390px: scrollWidth 390; controls 6; smallest text 16px (p.les-progress__words "You are learning as a gu")
+Lesson, Agriculture (single-row inner shell) @ 800px: scrollWidth 800; controls 9; smallest text 16px (button.sb-lang__option "English")
+Not found (inner shell) @ 320px: scrollWidth 320; controls 4; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+Not found (inner shell) @ 360px: scrollWidth 360; controls 5; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+Not found (inner shell) @ 390px: scrollWidth 390; controls 5; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+Not found (inner shell) @ 800px: scrollWidth 800; controls 5; smallest text 16px (p.sb-shell__motto "Wi dae make u sensebod")
+Admin stub @ 320px: scrollWidth 320; controls 5; smallest text 16px (label.adm-label "Username")
+    small target: <a.> "Go to the learning site" 191x46
+Admin stub @ 360px: scrollWidth 360; controls 5; smallest text 16px (label.adm-label "Username")
+    small target: <a.> "Go to the learning site" 176x23
+Admin stub @ 390px: scrollWidth 390; controls 5; smallest text 16px (label.adm-label "Username")
+    small target: <a.> "Go to the learning site" 176x23
+Admin stub @ 800px: scrollWidth 800; controls 5; smallest text 16px (label.adm-label "Username")
+    small target: <a.> "Go to the learning site" 342x46
+Kitchen sink (dev server, every shared component) @ 320px: scrollWidth 320; controls 49; smallest text 8px (text.[object "10")
+Kitchen sink (dev server, every shared component) @ 360px: scrollWidth 360; controls 50; smallest text 8px (text.[object "10")
+Kitchen sink (dev server, every shared component) @ 390px: scrollWidth 390; controls 50; smallest text 8px (text.[object "10")
+Kitchen sink (dev server, every shared component) @ 800px: scrollWidth 800; controls 50; smallest text 8px (text.[object "10")
+
+## 2. Focus after in-app navigation
+
+after tapping a portal card: {"path":"/portal/primary","activeElement":"sb-main","title":"Primary school · Sensebod","scrollY":0}
+
+## 3. Failed feature download, then the network comes back (production build)
+
+lessons chunk blocked, opened a lesson in-app → This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home
+network restored, tapped "Go to Home" → / :: What do you want to learn today?
+opened the same lesson again in-app (network is fine) → Lesson 1 · Watch | My body belongs to me | Length: | [length] | Needs sound | Captions | Listen | English | Krio | Play video | Tap Play when you are ready. | Lesson 1 of 4 · Staying safe | You are learning as a guest · progress is not saved | What you will learn | Your body belongs to you. You can say no. | Up next | Next: Lesson 2 · Listen | Safe and unsafe touch | A story to listen to. | Something feels wrong? Tell someone you trust. | Get help now
+learner chunk blocked on first load of Home → This page did not open | Something went wrong. Nothing is lost. Please try again. | Try again | Go to Home
+network restored, tapped "Go to Home" → Kushɛ! Welcome | What do you want to learn today? | Tap a big picture to start. | Listen to this page | You are a guest | Add your name to save your progress. | Add name | Choose a portal | Open | Primary school | Class 1 to Class 6 | Open | Junior secondary | JSS 1 to JSS 3 | Open | Child protection | Stay safe and find help | Open | Agriculture | Animals, crops and selling | Open | Climate | Weather, floods and our land | Everything here is in this bag. No internet needed.
+
+## 4. Bracket placeholders on screen
+
+kitchen sink: occurrences of "[length]": 7 · "[pages]": 1
+quiz lesson facts row: (none)

@@ -73,7 +73,7 @@ a {
   outline-offset: 4px;
 }
 /* Browsers that know :focus-visible hide the ring for touch and mouse.
-   Older ones drop this rule and keep the ring on every focus, which is safe. */
+   floor-ok: older ones drop this whole rule and keep the ring on every focus, which is safe. */
 :focus:not(:focus-visible) {
   outline: none;
 }

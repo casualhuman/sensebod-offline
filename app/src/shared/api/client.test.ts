@@ -70,12 +70,12 @@ describe('api client', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it('forgets cached answers after a write', async () => {
+  it('keeps cached content answers after a learner write (admin writes are covered in submit.test.ts)', async () => {
     const spy = vi.spyOn(globalThis, 'fetch');
     await getPortals();
     await saveLessonProgress('learner-aminata', 'cp-child-staying-safe-3', { state: 'started' });
     await getPortals();
-    expect(spy).toHaveBeenCalledTimes(3);
+    expect(spy).toHaveBeenCalledTimes(2);
   });
 
   it('does not create a second learner when the same submission is repeated', async () => {

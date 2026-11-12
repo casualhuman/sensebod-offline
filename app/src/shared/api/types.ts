@@ -36,6 +36,16 @@ export type Availability = 'available' | 'not-in-bag';
 
 export type LanguageCode = 'en' | 'kri';
 
+/**
+ * Which badge icon a subject or topic card wears. A key, not a picture: the
+ * app owns the drawings. An unknown key, null or a missing field falls back
+ * to the portal's icon, so new keys can be added without breaking old apps.
+ */
+export type ContentIconKey = 'language' | 'maths' | 'science' | 'social-studies' | 'crops' | 'seasons' | 'floods' | 'clean-water' | 'heat';
+
+/** Who a Child protection audience group is for (fixed text and icon depend on it). */
+export type AudienceKey = 'child' | 'parent' | 'elder';
+
 /** A picture with its text alternative. `url` is root-relative. */
 export interface Picture {
   url: string;
@@ -73,6 +83,17 @@ export interface Group {
   seriesCount: number;
   /** Set when seriesCount is 1, so the list can link directly. */
   onlySeriesId: string | null;
+  /*
+   * Added in fix round 1. The server always sends the fields below; they are
+   * optional in this type only so that code written before they existed
+   * (fixtures in tests) still compiles. Treat undefined like null.
+   */
+  /** Badge icon for the card, or null for the portal's icon. */
+  icon?: ContentIconKey | null;
+  /** Child protection audience groups only: who the group is for. null elsewhere. */
+  audience?: AudienceKey | null;
+  /** The Check quiz of the only series (seriesCount 1), or null. Lets a portal page link "Quick quiz" without loading the series. */
+  quiz?: LessonSummary | null;
 }
 
 export interface PortalDetail extends Portal {
@@ -90,6 +111,11 @@ export interface SeriesSummary {
   /** Published lessons, the Check quiz not counted. */
   lessonCount: number;
   hasQuiz: boolean;
+  /* Added in fix round 1; always sent, optional here for older fixtures (see Group). */
+  /** Badge icon for the card, or null for the portal's icon. */
+  icon?: ContentIconKey | null;
+  /** The published Check quiz of this series (null when hasQuiz is false). */
+  quiz?: LessonSummary | null;
 }
 
 export interface GroupDetail extends Group {
@@ -131,7 +157,12 @@ export interface LessonSummary extends LessonTag {
 
 export interface SeriesDetail extends SeriesSummary {
   portal: Pick<Portal, 'id' | 'title' | 'theme' | 'groupKind'>;
-  group: Pick<Group, 'id' | 'title' | 'kind'>;
+  /**
+   * `seriesCount` (fix round 1, always sent, optional here for older
+   * fixtures): how many series the group holds, so Back can go to the list
+   * of series or straight to the portal without a second request.
+   */
+  group: Pick<Group, 'id' | 'title' | 'kind'> & { seriesCount?: number };
   /** In learner order; the Check quiz, if any, is the last item. */
   lessons: LessonSummary[];
   listenUrl: string | null;
@@ -294,6 +325,12 @@ export interface NewLearner {
 export interface LessonProgress {
   lessonId: string;
   seriesId: string;
+  /**
+   * The lesson's type (fix round 1, always sent, optional here for older
+   * fixtures). `check` marks the quiz, which `lessonCount` leaves out: do not
+   * count such an entry as a finished lesson.
+   */
+  lessonType?: LessonType;
   state: ProgressState;
   /** Where a video or audio stopped, in seconds. */
   positionSeconds: number | null;

@@ -71,7 +71,14 @@ export function PageShell({ title, theme = 'blue', variant = 'inner', backTo, qu
       return;
     }
     const main = mainRef.current;
-    if (main) main.focus();
+    if (!main) return;
+    // Focus must not move the page: without this the browser scrolls the main
+    // area to the top of the screen and pushes Back and Home out of view.
+    // `preventScroll` is Chrome 64+; older browsers get the position put back.
+    const x = window.pageXOffset;
+    const y = window.pageYOffset;
+    main.focus({ preventScroll: true });
+    if (window.pageXOffset !== x || window.pageYOffset !== y) window.scrollTo(x, y);
   }, [pathname]);
 
   const logo = <img className="sb-shell__logo" src="/brand/sensebod-logo.png" alt="Sensebod" width="113" height="34" />;

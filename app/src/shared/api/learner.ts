@@ -3,7 +3,7 @@
  * Content answers are cached for a short while so Back navigation does not
  * ask the Pi again; progress is never cached.
  */
-import { api, newRequestKey, type RequestOptions } from './client';
+import { api, submitOnce, type RequestOptions } from './client';
 import type {
   ContinueLesson,
   GroupDetail,
@@ -45,9 +45,14 @@ export function getLesson(lessonId: string, options?: RequestOptions): Promise<L
   return api.get(`/lessons/${enc(lessonId)}`, undefined, content(options));
 }
 
-/** "Save and start learning". Safe to repeat: the same key never creates two learners. */
+/**
+ * "Save and start learning". Safe to repeat: calling it again with the same
+ * input (a double tap, "Try again" after a timeout) sends the same
+ * Idempotency-Key, so the bag never makes two learners for one submission.
+ * See `submitOnce` in ./client.ts for when the key is renewed.
+ */
 export function createLearner(input: NewLearner, options?: RequestOptions): Promise<Learner> {
-  return api.post('/learners', input, { idempotencyKey: newRequestKey(), ...options });
+  return submitOnce('/learners', input, options);
 }
 
 /** Checks a remembered learner still exists in this bag (404 if it was removed or the bag was reset). */

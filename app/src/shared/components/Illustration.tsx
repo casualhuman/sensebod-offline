@@ -33,6 +33,8 @@ export function Illustration({ src, alt, eager = false, width, height, className
   const ref = useRef<HTMLSpanElement>(null);
   const observe = !eager && !nativeLazy && typeof IntersectionObserver !== 'undefined';
   const [visible, setVisible] = useState(!observe);
+  // The address that failed to load, so a new picture gets a new chance.
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!observe || visible) return undefined;
@@ -54,8 +56,14 @@ export function Illustration({ src, alt, eager = false, width, height, className
   if (!visible) {
     // Old browsers without native lazy loading: hold the place with an empty
     // box (no request, no data: URI) until it scrolls near the screen.
-    return <span ref={ref} className={cx('sb-illustration', className)} style={{ display: 'block', width, height }} role="img" aria-label={alt || undefined} />;
+    // A named placeholder is an image to a screen reader; a decorative one is hidden from it.
+    const naming = alt ? { role: 'img', 'aria-label': alt } : { 'aria-hidden': true };
+    return <span ref={ref} className={cx('sb-illustration', className)} style={{ display: 'block', width, height }} {...naming} />;
   }
+  // A picture that did not load is taken out, so the card keeps its plain
+  // tint instead of the browser's broken-image mark. Its words stay for
+  // screen readers.
+  if (failedUrl === url) return alt ? <span className="sb-visually-hidden">{alt}</span> : null;
   return (
     <img
       className={cx('sb-illustration', className)}
@@ -66,6 +74,7 @@ export function Illustration({ src, alt, eager = false, width, height, className
       loading={eager ? undefined : 'lazy'}
       decoding="async"
       draggable={false}
+      onError={() => setFailedUrl(url)}
     />
   );
 }

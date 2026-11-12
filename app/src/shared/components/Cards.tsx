@@ -50,7 +50,7 @@ export function Card({ to, tappable, current, frame, unavailable, large, theme, 
     );
   }
   return (
-    <div {...aria} className={classes} data-theme={themeAttr} aria-disabled={unavailable || undefined}>
+    <div {...aria} className={classes} data-theme={themeAttr}>
       {children}
     </div>
   );
@@ -86,10 +86,12 @@ export interface PortalCardProps {
   /** 'agriculture' draws the one green card. */
   theme?: ThemeName;
   eager?: boolean;
+  /** Words in the pill. Default "Open"; CPB-Who uses "This is me". */
+  actionLabel?: string;
 }
 
 /** Home gateway card: scene, round badge on the picture edge, Open pill, big title. */
-export function PortalCard({ to, title, description, picture, icon, theme, eager }: PortalCardProps) {
+export function PortalCard({ to, title, description, picture, icon, theme, eager, actionLabel = 'Open' }: PortalCardProps) {
   return (
     <Card to={to} large theme={theme} frame={theme === 'agriculture'}>
       <ScenePicture picture={picture} shape="portal" eager={eager} />
@@ -99,7 +101,7 @@ export function PortalCard({ to, title, description, picture, icon, theme, eager
             {icon}
           </Badge>
           <span className="sb-open-pill">
-            Open
+            {actionLabel}
             <IconArrowRight size={24} />
           </span>
         </span>
@@ -126,10 +128,16 @@ export interface TopicCardProps {
   done?: number;
   total?: number;
   pictureShape?: PictureShape;
+  /**
+   * Optional facts row under the detail line (AGB-Agriculture: "Needs sound").
+   * The card is one link, so pass phrasing content only, e.g.
+   * <span className="sb-facts"><span className="sb-facts__item">Needs sound</span></span>.
+   */
+  facts?: ReactNode;
 }
 
 /** Class, audience or topic card in its 4 states: started, not started, finished, not in bag. */
-export function TopicCard({ to, title, picture, icon, state, tag, detail, done, total, pictureShape = 'topic' }: TopicCardProps) {
+export function TopicCard({ to, title, picture, icon, state, tag, detail, done, total, pictureShape = 'topic', facts }: TopicCardProps) {
   const unavailable = state === 'not-in-bag';
   const hasCount = typeof done === 'number' && typeof total === 'number' && total > 0;
   let line = detail;
@@ -148,6 +156,7 @@ export function TopicCard({ to, title, picture, icon, state, tag, detail, done, 
         {tag ? <span className="sb-topic-card__tag">{tag}</span> : null}
         <span className="sb-topic-card__title">{title}</span>
         {line ? <span className={cx('sb-topic-card__detail', (state === 'started' || state === 'finished') && 'sb-topic-card__detail--done')}>{line}</span> : null}
+        {facts ? <span className="sb-topic-card__facts">{facts}</span> : null}
         {state === 'started' && hasCount ? <ProgressTrack done={done as number} total={total as number} label={`${done} of ${total} lessons done`} /> : null}
       </span>
     </Card>
@@ -192,7 +201,7 @@ export function LessonCard({ lesson, to, state, current, eyebrow, positionLabel,
         </span>
         <span className="sb-lesson-card__title">{lesson.title}</span>
         {lesson.summary ? <span className="sb-lesson-card__summary">{lesson.summary}</span> : null}
-        <FactsRow tag={lesson} />
+        <FactsRow tag={lesson} inline />
         <ButtonLook
           className="sb-lesson-card__action"
           variant={state === 'finished' ? 'secondary' : 'primary'}

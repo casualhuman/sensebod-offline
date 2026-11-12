@@ -55,13 +55,15 @@ export interface ErrorStateProps {
   error?: unknown;
   /** Shows the red "Try again" button. Pass `reload` from useApi. */
   onRetry?: () => void;
+  /** "Try again" is running: the button shows a spinner and ignores taps. */
+  retrying?: boolean;
   /** Extra recovery control, e.g. a Back link. */
   action?: ReactNode;
   className?: string;
 }
 
 /** Error with a way out. Says nothing is lost and offers "Try again". */
-export function ErrorState({ title = 'This page did not open', error, onRetry, action, className }: ErrorStateProps) {
+export function ErrorState({ title = 'This page did not open', error, onRetry, retrying, action, className }: ErrorStateProps) {
   return (
     <Message
       tone="error"
@@ -71,7 +73,7 @@ export function ErrorState({ title = 'This page did not open', error, onRetry, a
         onRetry || action ? (
           <>
             {onRetry ? (
-              <Button variant="danger" fullWidth icon={<IconTryAgain size={28} />} onClick={onRetry}>
+              <Button variant="danger" fullWidth icon={<IconTryAgain size={28} />} onClick={onRetry} working={retrying} workingLabel="Trying again…">
                 Try again
               </Button>
             ) : null}

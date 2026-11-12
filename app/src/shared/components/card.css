@@ -203,6 +203,10 @@ button.sb-card:active {
   font-weight: 600;
   color: var(--sb-accent-strong);
 }
+.sb-topic-card__facts {
+  display: block;
+  margin-top: 6px;
+}
 .sb-topic-card .sb-progress__track {
   margin-top: 8px;
   height: 12px;

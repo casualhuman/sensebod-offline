@@ -159,7 +159,10 @@ describe('cards and state', () => {
   it('does not link a topic that is not in the bag', () => {
     render(<TopicCard to="/x" state="not-in-bag" title="Crops" detail="Not in this bag yet. Ask your facilitator." icon={null} picture={null} />);
     expect(screen.queryByRole('link')).toBeNull();
-    expect(screen.getByText('Crops').closest('[aria-disabled="true"]')).not.toBeNull();
+    expect(screen.getByText('Crops').closest('.sb-card--unavailable')).not.toBeNull();
+    // aria-disabled means nothing on a plain div; the words on the card carry it.
+    expect(document.querySelector('[aria-disabled]')).toBeNull();
+    expect(screen.getByText('Not in bag')).toBeInTheDocument();
   });
 
   it('puts progress in words first', () => {

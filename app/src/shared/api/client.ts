@@ -5,8 +5,12 @@ import type { ApiErrorBody } from './types';
  *
  *  - relative base path (`/api/v1`): works on whatever hostname or IP the bag uses
  *  - every request has a timeout and can be cancelled
- *  - identical GETs that are already in flight are shared, not repeated
- *  - a small, bounded, short-lived GET cache makes Back navigation instant
+ *  - identical GETs in flight are shared when the caller passes no `signal`
+ *    (a request with its own signal, as `useApi` makes, is never shared: its
+ *    cancellation must not cancel someone else's request)
+ *  - a small, bounded, short-lived GET cache makes Back navigation instant.
+ *    Cached answers are shared objects: treat them as read-only (copy before
+ *    sorting or editing)
  *  - no automatic retries: the UI offers "Try again" instead, so a struggling
  *    Pi is not hammered by many tablets at once
  *
@@ -82,7 +86,12 @@ interface CacheEntry {
 const cache = new Map<string, CacheEntry>();
 const inFlight = new Map<string, Promise<unknown>>();
 
-/** Forget cached GET answers. Called automatically after every write. */
+/**
+ * Forget cached GET answers. Called automatically after every write that can
+ * change content (anything under /admin, and uploads). Learner and progress
+ * writes leave the cache alone: only content answers are cached, and saving
+ * progress does not change them.
+ */
 export function clearApiCache(): void {
   cache.clear();
 }
@@ -102,10 +111,11 @@ export function buildUrl(path: string, query?: Query): string {
 }
 
 function remember(key: string, value: unknown): void {
-  if (cache.size >= CACHE_MAX_ENTRIES) {
+  if (!cache.has(key) && cache.size >= CACHE_MAX_ENTRIES) {
     const oldest = cache.keys().next();
     if (!oldest.done) cache.delete(oldest.value);
   }
+  cache.delete(key); // a refreshed answer counts as the newest entry
   cache.set(key, { at: Date.now(), value });
 }
 
@@ -221,9 +231,14 @@ function get<T>(path: string, query?: Query, options: RequestOptions = {}): Prom
   return request;
 }
 
+/** Only admin calls change what the content endpoints answer. */
+function changesContent(path: string): boolean {
+  return path === '/admin' || path.indexOf('/admin/') === 0;
+}
+
 function write<T>(method: string, path: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
   return send<T>(method, buildUrl(path), body, options).then((value) => {
-    clearApiCache();
+    if (changesContent(path)) clearApiCache();
     return value;
   });
 }
@@ -239,6 +254,65 @@ export const api = {
 /** A key for `idempotencyKey`. Not a security token. */
 export function newRequestKey(): string {
   return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+
+/* ---- one Idempotency-Key per submission ---- */
+
+/** A failed submission keeps its key this long, waiting for "Try again". */
+const SUBMISSION_RETRY_MS = 10 * 60 * 1000;
+/** After success the key is kept this long, so a second tap that lands just after the answer is still the same submission. */
+const SUBMISSION_DOUBLE_TAP_MS = 5000;
+const SUBMISSION_MAX_ENTRIES = 20;
+
+const submissions = new Map<string, { key: string; until: number }>();
+
+/** Tests only: forget remembered submission keys. */
+export function forgetSubmissions(): void {
+  submissions.clear();
+}
+
+/**
+ * POST that creates a record ("Save and start learning", a new lesson, a new
+ * series), safe to repeat. The key belongs to the submission, not to the
+ * call: the same body sent to the same path again carries the same
+ * `Idempotency-Key`, so the server answers with the record it already made
+ * instead of making a second one. That covers a double tap, and "Try again"
+ * after a timeout or a Wi-Fi drop in which the first request did arrive.
+ *
+ * The key is renewed when the body changes, when the server refuses the
+ * submission (4xx), a few seconds after success, and after ten minutes. It
+ * lives in memory only: a page reload starts a new submission.
+ *
+ * A caller that passes its own `idempotencyKey` keeps full control.
+ */
+export function submitOnce<T>(path: string, body: unknown, options: RequestOptions = {}): Promise<T> {
+  if (options.idempotencyKey) return write<T>('POST', path, body, options);
+  const id = path + '\n' + JSON.stringify(body);
+  const now = Date.now();
+  let entry = submissions.get(id);
+  if (!entry || entry.until <= now) {
+    if (submissions.size >= SUBMISSION_MAX_ENTRIES) {
+      const oldest = submissions.keys().next();
+      if (!oldest.done) submissions.delete(oldest.value);
+    }
+    entry = { key: newRequestKey(), until: now + SUBMISSION_RETRY_MS };
+    submissions.delete(id);
+    submissions.set(id, entry);
+  }
+  const mine = entry;
+  return write<T>('POST', path, body, { ...options, idempotencyKey: mine.key }).then(
+    (value) => {
+      if (submissions.get(id) === mine) mine.until = Date.now() + SUBMISSION_DOUBLE_TAP_MS;
+      return value;
+    },
+    (error: unknown) => {
+      // Refused by the server: nothing was made, the next try is a new submission.
+      // Anything else (no answer, timeout, cancelled, 5xx) may have arrived: keep the key.
+      const refused = error instanceof ApiError && error.kind === 'http' && error.status < 500;
+      if (refused && submissions.get(id) === mine) submissions.delete(id);
+      throw error;
+    },
+  );
 }
 
 export interface UploadHandle<T> {

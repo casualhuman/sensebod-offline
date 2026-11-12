@@ -21,7 +21,9 @@ export interface ListenButtonProps {
 /**
  * Listen · the only gold button. Plays a recording stored in the bag; tap
  * again to stop. Never starts by itself. If there is no recording, or it
- * cannot be played, the button says so in words.
+ * cannot be played, the button says so in words. While it plays the words
+ * change to "Stop" (the words carry the state; there is no aria-pressed,
+ * which would be read out as "Stop, pressed").
  */
 export function ListenButton({ src, label = 'Listen', size, fullWidth, className }: ListenButtonProps) {
   useSyncExternalStore(subscribeListen, getListenSnapshot);
@@ -45,7 +47,6 @@ export function ListenButton({ src, label = 'Listen', size, fullWidth, className
       fullWidth={fullWidth}
       className={className}
       icon={<IconListen size={32} />}
-      aria-pressed={src ? playing : undefined}
       onClick={() => {
         if (!src) setAsked(true);
         else if (playing) stopListening();

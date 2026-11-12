@@ -265,7 +265,8 @@ function PracticeQuizzes({ group, index }: { group: GroupDetail; index: Progress
   const ids = group.series.filter((series) => series.hasQuiz && series.availability !== 'not-in-bag').map((series) => series.id);
   const key = ids.join(',');
   const { data } = useApi(
-    (signal) => Promise.all(ids.map((id) => learnerApi.getSeries(id, { signal }))),
+    // Read from `key` (the ids as one string), so the request depends on exactly what is listed.
+    (signal) => Promise.all((key ? key.split(',') : []).map((id) => learnerApi.getSeries(id, { signal }))),
     [key],
   );
   if (!data) return null;

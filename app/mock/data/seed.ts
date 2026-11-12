@@ -8,7 +8,9 @@
  */
 import type {
   AdminLesson,
+  AudienceKey,
   Availability,
+  ContentIconKey,
   GalleryPicture,
   GroupKind,
   Learner,
@@ -36,6 +38,8 @@ export interface GroupRecord {
   description: string;
   picture: Picture | null;
   availability: Availability;
+  icon?: ContentIconKey | null;
+  audience?: AudienceKey | null;
 }
 
 export interface SeriesRecord {
@@ -47,6 +51,7 @@ export interface SeriesRecord {
   picture: Picture | null;
   availability: Availability;
   listenUrl: string | null;
+  icon?: ContentIconKey | null;
 }
 
 export interface LessonRecord extends AdminLesson {
@@ -528,6 +533,27 @@ function buildDb(): MockDb {
     addSeries(group, topic.title, topic.description, picture, topic.lessons, topic.availability ?? 'available', `${group.id}-lessons`);
   }
 
+  /* ---- badge icons and audiences (set here by title: the seed is sample data) ---- */
+  const subjectIcons: Record<string, ContentIconKey> = {
+    'English Language': 'language',
+    Mathematics: 'maths',
+    Science: 'science',
+    'Integrated Science': 'science',
+    'Social Studies': 'social-studies',
+    'Agricultural Science': 'crops',
+    'Rainy and dry seasons': 'seasons',
+    'Floods: stay safe': 'floods',
+    'Keeping our land and water clean': 'clean-water',
+    'Heat and health': 'heat',
+    'Growing food when the weather changes': 'crops',
+    Crops: 'crops',
+  };
+  for (const series of db.series) series.icon = subjectIcons[series.title] ?? null;
+  for (const group of db.groups) group.icon = subjectIcons[group.title] ?? null;
+  child.audience = 'child';
+  parent.audience = 'parent';
+  elder.audience = 'elder';
+
   /* ---- drafts waiting to be placed (ADM-M-Home) ---- */
   const draft = (id: string, title: string, type: LessonType, source: LessonSource, fileNames: string[], extra: Partial<LessonRecord>): LessonRecord => ({
     id,
@@ -584,7 +610,7 @@ function buildDb(): MockDb {
   ];
   const mark = (lessonId: string, state: ProgressState, positionSeconds: number | null = null): LessonProgress => {
     const lesson = db.lessons.find((l) => l.id === lessonId);
-    return { lessonId, seriesId: lesson ? lesson.seriesId : '', state, positionSeconds, correct: null, total: null, updatedAt: SEED_DATE };
+    return { lessonId, seriesId: lesson ? lesson.seriesId : '', lessonType: lesson ? lesson.type : 'watch', state, positionSeconds, correct: null, total: null, updatedAt: SEED_DATE };
   };
   const dairy = db.lessons.filter((l) => l.seriesId === 'agriculture-milk-and-dairy-cows-videos').map((l) => mark(l.id, 'finished'));
   db.progress = {

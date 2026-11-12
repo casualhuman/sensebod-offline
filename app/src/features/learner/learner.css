@@ -468,24 +468,6 @@
 
 /* ================= small phones (320 to 359 wide) ================= */
 @media (max-width: 359px) {
-  /*
-   * TODO(stream-1): two shared pieces are wider than a 320px screen
-   * (docs/team/REQUESTS.md "320px"). Until they are fixed in shared code:
-   *  - the Listen + language row wraps onto two lines on these screens;
-   *  - the logo in the one-row header (Back, Home, logo) is hidden. Home is
-   *    still one tap away on the Home button beside it. This rule reaches
-   *    the shared header, so it also applies to other screens once this
-   *    feature's styles are loaded; remove it with the shared fix.
-   */
-  .lrn-listen {
-    flex-wrap: wrap;
-  }
-  .lrn-listen > .sb-lang {
-    margin: 8px 0 0;
-  }
-  .sb-shell__header--single .sb-shell__logo-link {
-    display: none;
-  }
   .lrn-hero__body,
   .lrn-panel {
     padding-left: 14px;

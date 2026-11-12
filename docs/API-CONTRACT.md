@@ -20,7 +20,7 @@ Status of this contract: **proposed by the frontend**. Nothing has been agreed w
 | Times | Durations in seconds (number). Dates ISO 8601 UTC strings. |
 | Caching | Content answers (`/portals`, `/groups`, `/series`, `/lessons`) should send an `ETag` and `Cache-Control: no-cache`. The client also reuses them for 60 s in memory. Everything under `/learners` and `/admin` is `Cache-Control: no-store`. |
 | Compression | gzip for JSON. |
-| Writes | `PUT` and `DELETE` are idempotent. `POST` requests that create something carry an `Idempotency-Key` header; repeating a request with the same key must return the first result instead of creating a second record (shared phones, double taps, retries after a Wi-Fi drop). |
+| Writes | `PUT` and `DELETE` are idempotent. `POST` requests that create something carry an `Idempotency-Key` header; repeating a request with the same key must return the first result instead of creating a second record (shared phones, double taps, retries after a Wi-Fi drop). The client keeps one key per submission: the same body sent to the same path again carries the same key, until the body changes, the server refuses it (4xx), 5 seconds pass after success or 10 minutes pass in all. The server should remember keys for at least 10 minutes. |
 | Paging | List endpoints take `page` (from 1) and `pageSize`; answers carry `page`, `pageSize`, `total`. |
 | Language | Text is returned in the language it was authored in. `language` on a lesson is an ISO code (`en`, `kri`, and at present `es` / `hi` for three agriculture videos, see section 8). Translated UI text is not part of this contract yet. |
 
@@ -57,6 +57,10 @@ Portal ──< Group ──< Series ──< Lesson
 - 5 portals with fixed ids: `primary`, `jss`, `child-protection`, `agriculture`, `climate`. Only `agriculture` has `theme: "agriculture"` (green); the rest are `"blue"`.
 - A group or series can be listed while its content is absent: `availability: "not-in-bag"` (dashed card, not a link).
 - Learner endpoints only ever return **published** lessons that are placed in a series.
+- `Group.icon` and `SeriesSummary.icon` name the badge icon of a subject or topic card: one of `language`, `maths`, `science`, `social-studies`, `crops`, `seasons`, `floods`, `clean-water`, `heat`, or `null`. It is a key, not a picture: the app owns the drawings. `null`, a missing field or a key the app does not know means "use the portal's icon", so keys can be added later without breaking an older app.
+- `Group.audience` says who a Child protection audience group is for: `child`, `parent` or `elder`; `null` for every other group. The fixed text after the lesson list and the audience icon depend on it, not on the group's id or title.
+
+**Fields added in fix round 1** (12 Nov 2026): `Group.icon`, `Group.audience`, `Group.quiz`, `SeriesSummary.icon`, `SeriesSummary.quiz`, `SeriesDetail.group.seriesCount`, `LessonProgress.lessonType`. The server always sends them. In `types.ts` they are optional for now, only so that code and test fixtures written before they existed still compile; treat `undefined` like `null`. They become required once streams 3 and 4 have merged.
 
 ### The lesson data tag
 
@@ -87,6 +91,8 @@ The type is set by the server from what was uploaded (the "automatic type rule")
 Notes
 
 - `Group.lessonCount` and `SeriesSummary.lessonCount` count published lessons **without** the quiz. `Group.lessonTypes` lists the types present (for lines such as "Watch · 12 videos"). `Group.onlySeriesId` is set when a group has exactly one series, so a topic card can link straight to its lesson list.
+- `SeriesSummary.quiz` is the published Check quiz of the series as a `LessonSummary`, or `null` (it is `null` exactly when `hasQuiz` is false). `Group.quiz` is the same for a group that holds exactly one series, and `null` otherwise. A quiz entry card ("Practice quiz", "Quick quiz: keeping quail") can be linked from a portal or class page without loading the series.
+- `SeriesDetail.group` carries `seriesCount` next to `id`, `title` and `kind`, so a lesson list knows whether Back goes to the list of series or straight to the portal.
 - `listenUrl` (portal, series, lesson, quiz question) is the recorded narration for the gold Listen button, or `null` when nothing is recorded. The app never uses speech synthesis.
 - `Lesson.content` depends on `type`:
 
@@ -115,6 +121,7 @@ Rules
 
 - `name` is trimmed, 1–40 characters. Two learners may share a name.
 - A lesson that is `finished` stays finished when it is opened again (a later `started` update does not downgrade it).
+- Every `LessonProgress` entry carries `lessonType`. An entry with `lessonType: "check"` is the quiz, which `lessonCount` leaves out: do not count it towards "N of M done".
 - **Which names a phone offers** ("Used this phone before? Tap your name") is kept on the phone, not listed by the server: there is deliberately no `GET /learners`. See `shared/session` (`knownLearners`, at most 8, in `localStorage`). This keeps one phone from showing every name in the bag.
 - A guest has no learner id and nothing is saved for them.
 

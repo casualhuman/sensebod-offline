@@ -167,6 +167,7 @@ function toAdminLesson(lesson: LessonRecord): AdminLesson {
 
 function toSeriesSummary(series: SeriesRecord): SeriesSummary {
   const lessons = seriesLessons(series.id);
+  const quiz = lessons.find((lesson) => lesson.type === 'check');
   return {
     id: series.id,
     portalId: series.portalId,
@@ -176,13 +177,16 @@ function toSeriesSummary(series: SeriesRecord): SeriesSummary {
     picture: series.picture,
     availability: series.availability,
     lessonCount: lessons.filter((lesson) => lesson.type !== 'check').length,
-    hasQuiz: lessons.some((lesson) => lesson.type === 'check'),
+    hasQuiz: quiz !== undefined,
+    icon: series.icon ?? null,
+    quiz: quiz ? toSummary(quiz) : null,
   };
 }
 
 function toGroup(group: GroupRecord): Group {
   const series = db.series.filter((s) => s.groupId === group.id);
   const lessons = series.flatMap((s) => seriesLessons(s.id)).filter((lesson) => lesson.type !== 'check');
+  const onlyQuiz = series.length === 1 ? seriesLessons((series[0] as SeriesRecord).id).find((lesson) => lesson.type === 'check') : undefined;
   const types: LessonType[] = [];
   for (const lesson of lessons) if (types.indexOf(lesson.type) === -1) types.push(lesson.type);
   return {
@@ -197,6 +201,9 @@ function toGroup(group: GroupRecord): Group {
     lessonTypes: types,
     seriesCount: series.length,
     onlySeriesId: series.length === 1 ? (series[0] as SeriesRecord).id : null,
+    icon: group.icon ?? null,
+    audience: group.audience ?? null,
+    quiz: onlyQuiz ? toSummary(onlyQuiz) : null,
   };
 }
 
@@ -331,7 +338,7 @@ const routes: [method: string, pattern: RegExp, handler: Handler, admin?: boolea
       const detail: SeriesDetail = {
         ...toSeriesSummary(series),
         portal: portalRef(series.portalId),
-        group: { id: group.id, title: group.title, kind: group.kind },
+        group: { id: group.id, title: group.title, kind: group.kind, seriesCount: db.series.filter((s) => s.groupId === group.id).length },
         lessons: seriesLessons(series.id).map(toSummary),
         listenUrl: series.listenUrl,
       };
@@ -430,6 +437,7 @@ const routes: [method: string, pattern: RegExp, handler: Handler, admin?: boolea
       const entry: LessonProgress = {
         lessonId,
         seriesId: lesson.seriesId,
+        lessonType: lesson.type,
         state,
         positionSeconds: update.positionSeconds ?? existing?.positionSeconds ?? null,
         correct: update.correct ?? existing?.correct ?? null,

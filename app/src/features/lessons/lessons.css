@@ -1,0 +1,1859 @@
+/*
+ * Lesson players (stream 3). Prefix: les-.
+ *
+ * Written for the Android 8 floor (Chrome / WebView 58): no flex `gap`
+ * (margins instead), `grid-gap` before `gap`, no aspect-ratio (padding
+ * boxes), no inset, clamp(), min(), max(), :has(). Movement only inside
+ * `prefers-reduced-motion: no-preference`. Colours through the role tokens,
+ * so every screen turns green inside the Agriculture theme by itself.
+ * Laid out from 320px wide.
+ */
+
+/* ---------- page frame ---------- */
+.les-page > * + * {
+  margin-top: 16px;
+}
+.les-header__title {
+  margin-top: 8px;
+}
+.les-header__hint {
+  margin-top: 6px;
+  font-size: 18px;
+  line-height: 27px;
+  color: var(--sb-slate);
+}
+.les-header__facts {
+  margin-top: 8px;
+}
+.les-header__listen {
+  margin-top: 14px;
+}
+.les-header > .les-progress {
+  margin-top: 8px;
+}
+.les-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.les-kicker > * {
+  margin: 2px 10px 2px 0;
+}
+.les-kicker__words {
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 600;
+}
+.les-kicker__words strong {
+  font-weight: 800;
+}
+.les-under__summary {
+  margin-top: 2px;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.les-below > * + * {
+  margin-top: 16px;
+}
+.les-below__col > * + * {
+  margin-top: 16px;
+}
+.les-below__col:empty {
+  display: none;
+}
+.les-note {
+  display: flex;
+  align-items: flex-start;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.les-note .sb-icon {
+  margin-right: 10px;
+}
+.les-save {
+  margin-top: 12px;
+}
+
+/* ---------- "Lesson 2 of 4" ---------- */
+.les-progress__place {
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.les-progress__icon {
+  margin-right: 10px;
+  color: var(--sb-accent);
+}
+.les-progress__series {
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.les-progress .sb-steps,
+.les-quiz .sb-steps {
+  margin-top: 8px;
+}
+.les-progress__words {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+/* started earlier, not the open lesson: lighter than "now" */
+.les-step--begun::before {
+  content: '';
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--sb-edge);
+  opacity: 0.6;
+}
+/* the question being answered: thick edge, not filled */
+.les-step--now {
+  border: 3px solid var(--sb-accent);
+  background: var(--sb-accent-tint);
+}
+
+/* ---------- What you will learn · Up next · help ---------- */
+.les-learn {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--sb-accent-tint);
+}
+.les-learn__icon {
+  margin-right: 14px;
+  color: var(--sb-accent);
+}
+.les-learn__title {
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.les-learn__text {
+  font-size: 18px;
+  line-height: 27px;
+}
+.les-next__heading {
+  margin: 12px 4px;
+}
+.les-next__last {
+  margin: 0 4px 12px;
+  color: var(--sb-slate);
+}
+.les-next__card {
+  display: flex;
+  align-items: center;
+  min-height: 104px;
+  padding: 12px;
+  border-radius: 20px;
+}
+.les-next__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0 12px 0 14px;
+}
+.les-next__kicker {
+  display: block;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.les-next__kicker strong {
+  font-weight: 800;
+  color: var(--sb-ink);
+}
+.les-next__pill {
+  height: 30px;
+  margin: 2px 0 2px 8px;
+  vertical-align: middle;
+}
+.les-next__title {
+  display: block;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.les-next__summary {
+  display: block;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--sb-slate);
+}
+.les-next__arrow {
+  color: var(--sb-accent);
+}
+.les-help {
+  padding: 16px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 20px;
+  background: var(--sb-white);
+}
+.les-help__words {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+}
+.les-help__icon {
+  margin-right: 12px;
+  color: var(--sb-accent);
+}
+
+/* ---------- player card ---------- */
+.les-player__body {
+  padding: 16px 18px 20px;
+}
+.les-player__body:empty {
+  display: none;
+}
+.les-player__body > * + * {
+  margin-top: 16px;
+}
+.les-player__hint {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  line-height: 24px;
+}
+.les-player__hint .sb-icon {
+  margin-right: 10px;
+  color: var(--sb-accent);
+}
+.les-player__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--sb-slate);
+}
+.les-player__legend-key {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+  font-weight: 800;
+  color: var(--sb-ink);
+}
+.les-player__done {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  line-height: 27px;
+  font-weight: 800;
+  color: var(--sb-green-text);
+}
+.les-player__done .sb-icon {
+  margin-right: 10px;
+}
+.les-player__after {
+  margin-top: 16px;
+}
+.les-player__after > * + * {
+  margin-top: 12px;
+}
+
+/* the picture: 16:9 by padding (aspect-ratio is not on the floor browser) */
+.les-stage {
+  position: relative;
+  background: var(--sb-ink);
+  overflow: hidden;
+}
+.les-stage::before {
+  content: '';
+  display: block;
+  padding-top: 56.25%;
+}
+.les-stage__video,
+.les-stage__poster,
+.les-stage__done {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.les-stage__video {
+  object-fit: contain;
+  background: var(--sb-ink);
+}
+.les-stage__poster {
+  max-width: none;
+  object-fit: cover;
+  background: var(--sb-accent-tint);
+}
+.les-stage__done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  background: var(--sb-green-tint);
+  text-align: center;
+}
+.les-stage__tick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 6px;
+  border: 6px solid var(--sb-white);
+  border-radius: 50%;
+  background: var(--sb-green);
+  color: var(--sb-white);
+}
+.les-stage__well {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 800;
+  color: var(--sb-green-text);
+}
+.les-stage__finished {
+  font-size: 18px;
+  line-height: 26px;
+}
+.les-stage__chip {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 12px 0 8px;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-ink);
+  color: var(--sb-white);
+  font-size: 16px;
+  font-weight: 700;
+}
+.les-stage__chip .sb-icon {
+  margin-right: 6px;
+}
+.les-stage__chip--light {
+  height: 40px;
+  border: 2px solid var(--sb-ink);
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  font-weight: 800;
+}
+.les-stage__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.les-stage__disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  padding-left: 6px;
+  border: 5px solid var(--sb-white);
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  box-shadow: 0 4px 14px rgba(21, 35, 59, 0.45);
+}
+.les-stage__play:active .les-stage__disc {
+  background: var(--sb-accent-pressed);
+}
+.les-stage__play-word {
+  margin-top: 6px;
+  padding: 4px 16px;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-ink);
+  color: var(--sb-white);
+  font-size: 17px;
+  line-height: 26px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.les-stage__caption {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--sb-blue-deep);
+  color: var(--sb-white);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+}
+.les-stage__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background: rgba(21, 35, 59, 0.7);
+}
+.les-stage__bar > * + * {
+  margin-left: 10px;
+}
+/* our stage fills the screen */
+.les-stage.is-full {
+  width: 100%;
+  height: 100%;
+}
+.les-stage.is-full::before {
+  display: none;
+}
+.les-stage.is-full .les-stage__caption {
+  bottom: 92px;
+  font-size: 22px;
+  line-height: 30px;
+}
+
+/* ---------- seek bar (a native range input, drawn like the board) ---------- */
+.les-seek__times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 800;
+}
+.les-seek__length {
+  color: var(--sb-slate);
+}
+.les-seek__bar {
+  position: relative;
+  height: 32px;
+  margin-top: 8px;
+}
+.les-seek__bar--marked {
+  margin-top: 24px;
+}
+.les-seek__marker {
+  position: absolute;
+  top: -15px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border: 2px solid var(--sb-ink);
+  background: var(--sb-gold);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.les-seek__marker.is-done {
+  background: var(--sb-white);
+}
+.les-seek__marker--key {
+  position: static;
+  flex: none;
+  margin: 0 10px 0 4px;
+}
+.les-seek__input {
+  display: block;
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.les-seek__input::-webkit-slider-runnable-track {
+  height: 14px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 999px;
+  background-color: var(--sb-accent-tint);
+  background-image: linear-gradient(var(--sb-accent), var(--sb-accent));
+  background-repeat: no-repeat;
+  background-size: var(--les-fill, 0%) 100%;
+}
+.les-seek__input::-webkit-slider-thumb {
+  width: 32px;
+  height: 32px;
+  margin-top: -11px;
+  border: 5px solid var(--sb-white);
+  border-radius: 50%;
+  background: var(--sb-accent);
+  box-shadow: 0 2px 6px rgba(21, 35, 59, 0.4);
+  -webkit-appearance: none;
+}
+.les-seek__input::-moz-range-track {
+  height: 10px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 999px;
+  background: var(--sb-accent-tint);
+}
+.les-seek__input::-moz-range-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--sb-accent);
+}
+.les-seek__input::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: 5px solid var(--sb-white);
+  border-radius: 50%;
+  background: var(--sb-accent);
+  box-shadow: 0 2px 6px rgba(21, 35, 59, 0.4);
+}
+.les-seek__input:disabled {
+  cursor: default;
+}
+.les-seek__input:disabled::-webkit-slider-thumb {
+  background: var(--sb-quiet);
+}
+.les-seek__input:disabled::-moz-range-thumb {
+  background: var(--sb-quiet);
+}
+
+/* ---------- controls ----------
+   Markup order is the tablet order (toggle, Back, Play, Forward, toggles).
+   On phones `order` puts the three transport buttons on the first row and
+   the toggles on the second, as on CPB-Video. */
+.les-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 11px -5px -5px;
+}
+.les-ctl {
+  min-width: 0;
+  margin: 5px;
+  padding: 6px 2px;
+}
+.les-ctl--skip {
+  order: 1;
+  flex: 1 1 26%;
+  height: 92px;
+  border-radius: 22px;
+}
+.les-ctl--play {
+  order: 1;
+  flex: 1.25 1 32%;
+  height: 112px;
+  border-radius: 26px;
+  font-size: 18px;
+}
+.les-ctl--toggle {
+  order: 2;
+  flex: 1 1 26%;
+  height: 80px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 20px;
+  font-weight: 800;
+}
+.les-ctl--toggle[aria-pressed='true'],
+.les-read__highlight[aria-pressed='true'] {
+  border: 3px solid var(--sb-accent);
+  background: var(--sb-accent-tint);
+  color: var(--sb-accent-deep);
+}
+.les-ctl--round {
+  order: 1;
+  flex: 1.25 1 32%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--sb-ink);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 800;
+}
+.les-ctl__disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 108px;
+  max-width: 100%;
+  height: 108px;
+  margin-bottom: 6px;
+  border: 5px solid var(--sb-accent-tint);
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  box-shadow: 0 2px 8px rgba(21, 35, 59, 0.16);
+}
+.les-ctl--round:active .les-ctl__disc {
+  background: var(--sb-accent-pressed);
+}
+
+/* ---------- question over the video (CPB-WatchAnswer) ---------- */
+.les-question {
+  position: relative;
+  z-index: 1;
+  margin: -84px 10px 0;
+  padding: 16px;
+  border: 3px solid var(--sb-accent);
+  border-radius: 22px;
+  background: var(--sb-white);
+  box-shadow: 0 6px 18px rgba(21, 35, 59, 0.22);
+}
+.les-question:focus {
+  outline: none;
+}
+.les-question__count {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.les-question__count .sb-icon {
+  margin-right: 8px;
+}
+.les-question__prompt {
+  margin: 6px 0 14px;
+  font-size: 22px;
+  line-height: 29px;
+  font-weight: 800;
+}
+.les-question__continue {
+  margin-top: 14px;
+}
+
+/* ---------- answers ---------- */
+.les-answer {
+  flex-direction: column;
+  align-items: stretch;
+}
+.les-answer[disabled] {
+  color: var(--sb-ink);
+  opacity: 1;
+}
+.les-answer__row {
+  display: flex;
+  align-items: center;
+}
+.les-answer__mark--ring {
+  border: 3px solid var(--sb-edge);
+  background: var(--sb-white);
+}
+.les-answer.les-answer--right,
+.les-answer.les-answer--right[aria-checked='true'] {
+  padding: 11px 13px;
+  border: 3px solid var(--sb-green);
+  background: var(--sb-green-tint);
+}
+.les-answer.les-answer--again,
+.les-answer.les-answer--again[aria-checked='true'] {
+  padding: 11px 13px;
+  border: 3px solid var(--sb-orange);
+  background: var(--sb-orange-tint);
+}
+.les-answer.les-answer--right .les-answer__mark {
+  border: 0;
+  background: var(--sb-green);
+  color: var(--sb-white);
+}
+.les-answer.les-answer--again .les-answer__mark {
+  border: 0;
+  background: var(--sb-orange);
+  color: var(--sb-white);
+}
+.les-answer__note {
+  display: block;
+  margin-left: 0;
+}
+.les-answer--right .les-answer__note {
+  color: var(--sb-green-text);
+}
+.les-answer--again .les-answer__note {
+  color: var(--sb-orange-text);
+}
+.les-answer__why {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--sb-green);
+  border-radius: 14px;
+  background: var(--sb-white);
+}
+.les-answer__why--again {
+  border-color: var(--sb-orange);
+}
+.les-answer__verdict {
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 800;
+  color: var(--sb-green-text);
+}
+.les-answer__why--again .les-answer__verdict {
+  color: var(--sb-orange-text);
+}
+.les-answer__verdict .sb-icon {
+  margin-right: 6px;
+}
+.les-answer__reason {
+  display: block;
+  font-size: 17px;
+  line-height: 25px;
+  font-weight: 400;
+}
+.les-answers__status {
+  margin-top: 12px;
+}
+.les-answers__line {
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-slate);
+}
+.les-answers__line .sb-icon {
+  margin-right: 10px;
+}
+.les-answers__line--right {
+  color: var(--sb-green-text);
+}
+.les-answers__line--again {
+  color: var(--sb-orange-text);
+}
+.sb-btn.les-answers__retry {
+  margin-top: 10px;
+  border-color: var(--sb-orange);
+  color: var(--sb-orange-text);
+  font-weight: 800;
+}
+.sb-btn.les-answers__retry:active {
+  background: var(--sb-orange-tint);
+}
+
+/* ---------- Listen (CPB-Audio) ---------- */
+.les-player--audio {
+  padding: 18px;
+}
+.les-audio__cover {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  background: var(--sb-accent-tint);
+}
+.les-words {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--sb-page);
+}
+.les-words__title {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.les-words__line {
+  margin-top: 8px;
+  padding: 10px 12px;
+  font-size: 17px;
+  line-height: 25px;
+  color: var(--sb-slate);
+}
+.les-words__line.is-now {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border: 3px solid var(--sb-accent);
+  border-radius: 14px;
+  background: var(--sb-white);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+  color: var(--sb-ink);
+}
+.les-words__icon {
+  margin: 1px 8px 0 0;
+  color: var(--sb-accent);
+}
+
+/* ---------- Read (CPB-Read) ---------- */
+.les-read__cover {
+  border: 2px solid var(--sb-edge);
+  border-radius: 24px;
+  background: var(--sb-accent-tint);
+  box-shadow: var(--sb-shadow);
+  overflow: hidden;
+}
+.les-read__cover img,
+.les-read__frame img,
+.les-read__sheet img {
+  width: 100%;
+}
+.les-read__tools {
+  margin-top: 16px;
+  padding: 16px;
+  border: 2px solid var(--sb-edge);
+  border-radius: 22px;
+  background: var(--sb-white);
+}
+.les-read__tools > * + * {
+  margin-top: 12px;
+}
+.les-read__tools-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.les-read__tools-title .sb-icon {
+  margin-right: 8px;
+}
+.les-read__tools-note {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.les-read__play {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sb-ink);
+  text-align: left;
+}
+.les-read__disc {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-right: 12px;
+  border: 4px solid var(--sb-accent-tint);
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+.les-read__play:active .les-read__disc {
+  background: var(--sb-accent-pressed);
+}
+.les-read__play-word {
+  display: block;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.les-read__play-who {
+  display: block;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.les-read__options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+.les-read__options > * {
+  margin: 4px;
+}
+.sb-btn.les-read__highlight {
+  padding: 6px 14px;
+  font-size: 16px;
+  font-weight: 800;
+}
+.les-read__sizes {
+  display: flex;
+  align-items: center;
+}
+.les-read__sizes-label {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  color: var(--sb-slate);
+}
+.sb-btn.les-read__size {
+  width: 60px;
+  margin-left: 8px;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+.sb-btn.les-read__size--big {
+  font-size: 24px;
+}
+.les-read {
+  padding: 18px 8px;
+}
+.les-read__column {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 19px;
+  line-height: 31px;
+}
+.les-read--size-0 .les-read__column {
+  font-size: 17px;
+  line-height: 28px;
+}
+.les-read--size-2 .les-read__column {
+  font-size: 22px;
+  line-height: 35px;
+}
+.les-read--size-3 .les-read__column {
+  font-size: 25px;
+  line-height: 40px;
+}
+.les-read__column > * + * {
+  margin-top: 18px;
+}
+.les-read__place {
+  padding: 0 12px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  color: var(--sb-slate);
+}
+.les-read__place:focus {
+  outline: none;
+}
+.les-read__heading {
+  margin: 0;
+  padding: 0 12px;
+  font-size: 1.26em;
+  line-height: 1.3;
+  font-weight: 800;
+}
+.les-read__heading--sub {
+  font-size: 1.1em;
+}
+.les-read__para {
+  padding: 0 12px;
+}
+.les-read__list {
+  margin: 0;
+  padding: 0 12px;
+  list-style: none;
+}
+.les-read__para.is-reading,
+.les-read__heading.is-reading,
+.les-read__list.is-reading {
+  padding: 10px 12px;
+  border-left: 6px solid var(--sb-accent);
+  border-radius: 6px 14px 14px 6px;
+  background: var(--sb-accent-tint);
+}
+.les-read__para.is-reading,
+.les-read__heading.is-reading {
+  display: flex;
+  align-items: flex-start;
+  font-weight: 600;
+}
+.les-read__heading.is-reading {
+  font-weight: 800;
+}
+.les-read__speaker {
+  margin: 2px 10px 0 0;
+  color: var(--sb-accent);
+}
+.les-read__figure {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+.les-read__frame {
+  display: block;
+  border: 2px solid var(--sb-divider);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.les-read__caption {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.les-read__item {
+  display: flex;
+  align-items: flex-start;
+}
+.les-read__item + .les-read__item {
+  margin-top: 14px;
+}
+.les-read__bullet {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  font-size: 19px;
+  line-height: 1;
+  font-weight: 800;
+}
+.les-read__bullet--dot {
+  width: 12px;
+  height: 12px;
+  margin: 10px 14px 0 6px;
+}
+.les-read__sheet {
+  margin: 18px 4px 0;
+  border: 2px solid var(--sb-divider);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.les-read__nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 26px;
+  padding: 16px 4px 0;
+  border-top: 2px solid var(--sb-divider);
+}
+.les-read__nav-place {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.les-read__nav-place .sb-icon {
+  margin-right: 8px;
+  color: var(--sb-accent);
+}
+.les-read__nav-prev {
+  margin-top: 10px;
+}
+
+/* ---------- Try it · tap the picture (CPB-TryIt) ---------- */
+.les-try > * + * {
+  margin-top: 16px;
+}
+.les-try__task {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 20px;
+  background: var(--sb-accent-tint);
+}
+.les-try__task > * {
+  margin: 4px;
+}
+.les-try__instruction {
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.les-try__instruction .sb-icon {
+  margin-right: 10px;
+  color: var(--sb-accent);
+}
+.les-try__count {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.les-try__dots {
+  display: flex;
+  margin-left: 4px;
+}
+.les-try__dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-left: 6px;
+  border: 3px solid var(--sb-edge);
+  border-radius: 50%;
+  background: var(--sb-white);
+  color: var(--sb-white);
+}
+.les-try__dot.is-found {
+  border-color: var(--sb-green);
+  background: var(--sb-green);
+}
+.les-try__stage {
+  position: relative;
+}
+.les-try__picture {
+  width: 100%;
+}
+.les-spot {
+  position: absolute;
+  min-width: 64px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.les-spot__frame {
+  display: block;
+  border: 3px dashed var(--sb-accent);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.les-spot__frame::before {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+.les-spot.is-found .les-spot__frame {
+  border: 3px solid var(--sb-green);
+  background: transparent;
+}
+.les-spot.is-current .les-spot__frame {
+  border: 4px solid var(--sb-accent-strong);
+  box-shadow: 0 0 0 3px var(--sb-white);
+}
+.les-spot__label {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  width: -webkit-max-content;
+  width: max-content;
+  max-width: 41vw; /* two names side by side still fit at 320px; a long name wraps */
+  margin-top: 4px;
+  padding: 1px 12px 1px 3px;
+  border: 2px solid var(--sb-accent);
+  border-radius: 20px;
+  background: var(--sb-white);
+  color: var(--sb-accent-strong);
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 800;
+  text-align: left;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+/* near an edge: keep the name inside the picture */
+.les-spot--left .les-spot__label {
+  left: -16px;
+  -webkit-transform: none;
+  transform: none;
+}
+.les-spot--right .les-spot__label {
+  left: auto;
+  right: -16px;
+  -webkit-transform: none;
+  transform: none;
+}
+.les-spot__mark {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 6px;
+  border: 3px solid var(--sb-accent);
+  border-radius: 50%;
+  background: var(--sb-white);
+  color: var(--sb-accent);
+  font-size: 17px;
+}
+.les-spot.is-found .les-spot__label {
+  border-color: var(--sb-green);
+  color: var(--sb-ink);
+}
+.les-spot.is-found .les-spot__mark {
+  border-color: var(--sb-white);
+  background: var(--sb-green);
+  color: var(--sb-white);
+}
+.les-spot.is-current .les-spot__label {
+  border-color: var(--sb-accent-strong);
+  background: var(--sb-accent-strong);
+  color: var(--sb-white);
+}
+.les-try__side {
+  margin-top: 16px;
+}
+.les-try__side > * + * {
+  margin-top: 14px;
+}
+.les-try__speech:empty {
+  display: none;
+}
+.les-speech {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 14px 16px;
+  border: 3px solid var(--sb-accent-strong);
+  border-radius: 22px;
+  background: var(--sb-white);
+  box-shadow: var(--sb-shadow);
+}
+.les-speech__portrait {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  margin-right: 14px;
+  border-radius: 50%;
+  background: var(--sb-accent-tint);
+  object-fit: cover;
+}
+.les-speech__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.les-speech__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.les-speech__found {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  margin-left: 8px;
+  padding: 0 10px 0 6px;
+  border-radius: var(--sb-radius-pill);
+  background: var(--sb-green-tint);
+  color: var(--sb-green-text);
+  font-size: 16px;
+}
+.les-speech__found .sb-icon {
+  margin-right: 4px;
+}
+.les-speech__role {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.les-speech__says {
+  margin-top: 4px;
+  font-size: 19px;
+  line-height: 27px;
+  font-weight: 700;
+  color: var(--sb-accent-strong);
+}
+.les-try__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -5px;
+}
+.les-try__buttons > * {
+  flex: 1 1 110px;
+  margin: 5px;
+}
+.les-try__buttons > .les-try__next {
+  flex: 1.4 1 150px;
+}
+.les-try__done {
+  padding: 16px;
+  border: 3px solid var(--sb-green);
+  border-radius: 20px;
+  background: var(--sb-green-tint);
+}
+.les-try__done > * + * {
+  margin-top: 12px;
+}
+.les-try__well {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  line-height: 27px;
+  font-weight: 800;
+}
+.les-try__tick,
+.les-try__goal-mark {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background: var(--sb-green);
+  color: var(--sb-white);
+}
+.les-try__goal {
+  padding: 16px;
+  border: 2px dashed var(--sb-edge);
+  border-radius: 20px;
+  background: var(--sb-white);
+}
+.les-try__goal-title {
+  margin: 0 0 2px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 800;
+  color: var(--sb-slate);
+}
+.les-try__goal-step {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 2px solid var(--sb-accent);
+  border-radius: 16px;
+  background: var(--sb-white);
+  font-size: 17px;
+  line-height: 23px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.les-try__goal-step--well {
+  border-color: var(--sb-green);
+  background: var(--sb-green-tint);
+  color: var(--sb-ink);
+}
+.les-try__goal-mark {
+  width: 40px;
+  height: 40px;
+}
+.les-try__goal-mark--next {
+  background: var(--sb-accent);
+}
+
+/* ---------- Try it · animation package ---------- */
+.les-package__box {
+  position: relative;
+  height: 70vh;
+  min-height: 360px;
+  max-height: 640px;
+  background: var(--sb-accent-tint);
+}
+.les-package__box:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+}
+.les-package__box:fullscreen {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+}
+.les-package__frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--sb-white);
+}
+.les-package__loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+.les-package__loading .sb-icon {
+  margin-right: 10px;
+}
+.les-package__start {
+  padding: 28px 18px 8px;
+}
+.les-package__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+}
+.les-package__actions {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -5px;
+}
+.les-package__actions > * {
+  flex: 1 1 130px;
+  margin: 5px;
+}
+
+/* ---------- Check quiz (AGB-Agri-Quiz) ---------- */
+.les-quiz__series {
+  margin-top: 8px;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-accent-strong);
+}
+.les-quiz__place {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 800;
+}
+.les-quiz__place .sb-icon {
+  margin-right: 10px;
+  color: var(--sb-accent);
+}
+.les-quiz__card {
+  margin-top: 16px;
+}
+.les-quiz__body,
+.les-done__body,
+.les-picture__body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 22px;
+}
+.les-quiz__badge,
+.les-done__badge {
+  align-self: center;
+}
+.les-quiz__prompt {
+  margin-top: 8px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 800;
+}
+.les-quiz__prompt:focus {
+  outline: none;
+}
+.les-quiz__listen {
+  margin-top: 16px;
+}
+.les-quiz__ask {
+  margin: 22px 4px 12px;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+}
+.les-quiz__next {
+  margin-top: 14px;
+}
+.les-quiz__calm {
+  margin-top: 22px;
+  color: var(--sb-accent-strong);
+}
+
+/* ---------- picture lesson (CLB-Climate-Lesson) ---------- */
+.les-picture > * + * {
+  margin-top: 16px;
+}
+.les-picture__place {
+  padding: 0 4px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-accent-strong);
+}
+.les-picture__title {
+  margin: 8px 0 0;
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 800;
+}
+.les-picture__summary {
+  margin-top: 8px;
+  font-size: 18px;
+  line-height: 27px;
+  color: var(--sb-slate);
+}
+.les-picture__steps {
+  padding: 20px;
+}
+.les-picture__heading {
+  margin: 0;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 800;
+}
+.les-picture__lead {
+  margin-top: 4px;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.les-picture__list {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.les-picture__frame {
+  border: 2px solid var(--sb-edge);
+  border-radius: 14px;
+  background: var(--sb-white);
+  overflow: hidden;
+}
+.les-picture__frame + .les-picture__frame {
+  margin-top: 12px;
+}
+.les-picture__frame--playing {
+  margin-top: 16px;
+  border: 3px solid var(--sb-accent);
+}
+.les-picture__img {
+  width: 100%;
+}
+.les-picture__caption {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px 12px;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+}
+.les-picture__number {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--sb-accent);
+  color: var(--sb-white);
+  font-weight: 800;
+}
+.les-picture__play {
+  margin-top: 16px;
+}
+.les-picture__steps > .les-note {
+  margin-top: 14px;
+}
+.les-picture__nav {
+  display: flex;
+  margin: 12px -6px 0;
+}
+.les-picture__nav > * {
+  flex: 3 1 0;
+  min-width: 0;
+  margin: 0 6px;
+}
+.les-picture__nav > :first-child {
+  flex-grow: 2;
+}
+
+/* ---------- finished (AGB-Agri-Done; V3-Components player state C) ---------- */
+.les-finished > * + * {
+  margin-top: 12px;
+}
+.les-finished__pair {
+  display: flex;
+  margin: 0 -5px;
+}
+.les-finished__small {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 84px;
+  margin: 0 5px;
+  border-radius: 20px;
+  font-size: 17px;
+  font-weight: 800;
+}
+.les-done__well {
+  margin-top: 8px;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 800;
+  color: var(--sb-accent-strong);
+}
+.les-done__title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 800;
+}
+.les-done__place {
+  margin: 4px 0 16px;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.les-score {
+  padding: 18px 20px;
+  border-color: var(--sb-edge);
+}
+.les-score__title {
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 800;
+}
+.les-score__list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 7px -5px -5px;
+  padding: 0;
+  list-style: none;
+}
+.les-score__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 33.33%;
+  padding: 5px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  color: var(--sb-green-text);
+  text-align: center;
+}
+.les-score__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: var(--sb-green);
+  color: var(--sb-white);
+}
+.les-score__item--again {
+  color: var(--sb-orange-text);
+}
+.les-score__item--again .les-score__mark {
+  border: 3px solid var(--sb-orange);
+  background: var(--sb-white);
+  color: var(--sb-orange);
+}
+.les-score__word {
+  font-weight: 800;
+}
+.sb-btn.les-done__next {
+  justify-content: flex-start;
+  min-height: 84px;
+  padding: 12px 20px;
+  border-radius: 22px;
+  text-align: left;
+}
+.les-done__next-small {
+  display: block;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 700;
+}
+.les-done__next-title {
+  display: block;
+  font-size: 20px;
+  line-height: 26px;
+}
+
+/* ---------- tablet (design width 800) and up ---------- */
+@media (min-width: 720px) {
+  .les-page {
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .les-below {
+    display: flex;
+    align-items: flex-start;
+  }
+  .les-below > * + * {
+    margin-top: 0;
+  }
+  .les-below__col {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .les-below__col + .les-below__col {
+    margin-left: 20px;
+  }
+  .les-next__heading {
+    margin-top: 0;
+  }
+  /* one row: toggle, Back, Play, Forward, toggles (CPB-WatchAnswer-Tab) */
+  .les-controls {
+    flex-wrap: nowrap;
+    margin: 10px -6px -6px;
+  }
+  .les-ctl {
+    margin: 6px;
+  }
+  .les-ctl--skip,
+  .les-ctl--toggle {
+    order: 0;
+    flex: 1 1 0;
+    height: 92px;
+  }
+  .les-ctl--play,
+  .les-ctl--round {
+    order: 0;
+    flex: 1.3 1 0;
+  }
+  .les-question {
+    margin: -150px 16px 0;
+    padding: 20px;
+  }
+  .les-question .les-answers {
+    display: flex;
+    align-items: flex-start;
+  }
+  .les-question .les-answers > * {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-top: 0;
+  }
+  .les-question .les-answers > * + * {
+    margin-left: 14px;
+  }
+  .les-player--audio {
+    padding: 24px;
+  }
+  .les-audio__cover {
+    display: block;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .les-read__top {
+    display: flex;
+    align-items: stretch;
+  }
+  .les-read__cover {
+    flex: none;
+    width: 44%;
+  }
+  .les-read__cover + .les-read__tools {
+    margin: 0 0 0 16px;
+  }
+  .les-read__tools {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .les-read {
+    padding: 28px 32px;
+  }
+  .les-read__nav {
+    flex-direction: row;
+    align-items: center;
+  }
+  .les-read__nav-prev {
+    order: -1;
+    flex: 1 1 0;
+    margin-top: 0;
+  }
+  .les-read__nav-place {
+    margin: 0 16px;
+  }
+  .les-read__nav-next {
+    flex: 1 1 0;
+  }
+  .les-try__layout {
+    display: flex;
+    align-items: flex-start;
+  }
+  .les-try__scene {
+    flex: none;
+    width: 48%;
+  }
+  .les-spot__label {
+    max-width: 19vw;
+  }
+  .les-try__side {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0 0 0 20px;
+  }
+  .les-picture__list {
+    display: flex;
+    margin-left: -6px;
+    margin-right: -6px;
+  }
+  .les-picture__list > .les-picture__frame {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0 6px;
+  }
+  .les-picture__frame--playing {
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .les-quiz,
+  .les-done > *,
+  .les-picture__hero {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ---------- movement, only when the device has no reduced-motion wish ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* the tick pops in once, under a second (AGB-Agri-Done design note) */
+  .les-done__badge {
+    animation: les-pop 0.5s ease-out 1 both;
+  }
+  /* Try it "moves gently": three slow pulses on the spots still to find, then still */
+  .les-try__scene--gentle .les-spot:not(.is-found) .les-spot__frame {
+    animation: les-pulse 1.8s ease-in-out 3;
+  }
+  .les-picture__frame--playing .les-picture__img {
+    animation: les-fade 0.8s ease-out 1 both;
+  }
+}
+@keyframes les-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes les-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes les-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

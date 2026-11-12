@@ -31,6 +31,15 @@ Each engineer owns specific paths and edits **only** those paths.
 
 Everyone owns their own report in `docs/reports/` and may append to `docs/team/REQUESTS.md`.
 
+Two independent reviewers check every stream's work. They follow `docs/REVIEWER-INSTRUCTIONS.md`, edit nothing except `docs/reviews/**`, and never change application code.
+
+| Reviewer | Focus across all four streams | Report |
+|---|---|---|
+| A — Code quality | React, hooks, state, TypeScript/JavaScript, CSS, accessibility, design fidelity against the boards, API integration, test quality | `docs/reviews/reviewer-a-code-quality.md` |
+| B — Edge verification | Dependencies and bundle, offline compliance and runtime network inspection, fonts and assets, performance and memory, legacy browser compatibility, security, build and Pi deployment config | `docs/reviews/reviewer-b-edge-verification.md` |
+
+Engineers: expect findings addressed to your stream by ID. Fix Critical and High findings in your own paths, then note the fix in your report so the reviewer can re-verify. A finding is closed only when the reviewer re-verifies it.
+
 ## 3. Rules for working in a team
 
 - **Stay in your lane.** Never edit a file outside your owned paths, even to fix an obvious bug. Other engineers are editing the same repository at the same time.

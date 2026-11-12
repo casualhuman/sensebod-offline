@@ -40,6 +40,10 @@ Two independent reviewers check every stream's work. They follow `docs/REVIEWER-
 
 Engineers: expect findings addressed to your stream by ID. Fix Critical and High findings in your own paths, then note the fix in your report so the reviewer can re-verify. A finding is closed only when the reviewer re-verifies it.
 
+## 2a. Working copies
+
+From stream 2 onward, every engineer and reviewer works in **their own git worktree on their own branch**, created from `main` after stream 1 landed. Work only inside the directory you were started in; never edit the main checkout or another worktree. Run `npm ci` in your own `app/` first. Commit on your own branch; the coordinator merges the branches into `main`. Because ownership paths do not overlap, merges are clean only if everyone stays in their lane. You will not see other streams' in-progress work: link to their screens through the `paths` helpers in `@shared/router` and rely on the contract, not on their files.
+
 ## 3. Rules for working in a team
 
 - **Stay in your lane.** Never edit a file outside your owned paths, even to fix an obvious bug. Other engineers are editing the same repository at the same time.

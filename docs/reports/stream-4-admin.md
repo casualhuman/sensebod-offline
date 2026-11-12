@@ -36,7 +36,7 @@ Supporting code
 | Upload queue | `lib/uploadQueue.ts` | Sequential uploads with progress, stop, retry, removal, background polling of server-side processing; plain class, tested without React |
 | Placement rules | `lib/placement.ts` | What resets what, position options, "how the series will look", missing-step words, reorder helper |
 | Other logic | `lib/files.ts`, `chosenFiles.ts`, `typedLesson.ts`, `questions.ts`, `rotateImage.ts`, `flow.ts`, `hooks.ts` | File classification and validation, typed-lesson blocks and the local draft, question model and validation, photo rotation, flow steps, `useAction` (double-submit lock), `useLeaveWarning` |
-| Shared admin parts | `components.tsx`, `icons.tsx` | 56px fields, radio rows, switch, file picker, progress bar, two-tap confirm, non-link lesson preview; 22 icons with the boards' path data |
+| Shared admin parts | `components.tsx`, `icons.tsx` | 56px fields, radio rows, switch, file picker, progress bar, two-tap confirm, non-link lesson preview; 23 icons with the boards' path data |
 
 How the requirements are met
 

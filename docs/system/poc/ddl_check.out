@@ -1,0 +1,14 @@
+counts.sqlite3 tables: ['counts_meta', 'sensitive_activity_count', 'sensitive_activity_seen']
+sqlite 3.51.2 | tables 27 | explicit indexes 18
+tables: admin_account, admin_session, audit_event, bag_meta, blob, boot, clock_jump, content_group, content_pack, export, health_sample, idempotency_record, job, learner, lesson, lesson_asset, lesson_progress, override_notice, override_presence, override_request, picture, portal, series, setting, tombstone, tryit_package, upload
+renumbering: [('l1', 1), ('new', 2), ('l2', 3), ('l3', 4), ('l4', 5), ('l5', 6), ('q', None)]
+refused as intended: second quiz in a series -> UNIQUE constraint failed: lesson.series_id
+refused as intended: published but unplaced -> CHECK constraint failed: status = 'draft' OR series_id IS NOT NULL
+refused as intended: duplicate position -> UNIQUE constraint failed: lesson.series_id, lesson.position
+refused as intended: learner id format -> CHECK constraint failed: id LIKE 'lr-%' AND length(id) = 29
+refused as intended: two preparing exports -> UNIQUE constraint failed: export.destination
+refused as intended: ready without size/sha256 -> CHECK constraint failed: state NOT IN ('ready','checking','copied-to-usb') OR (size_bytes IS NOT NULL AND sha256 IS NOT NULL)
+allowed as intended: a USB export preparing while a download export is preparing (one per destination)
+count table columns (no seq, no time): ['lesson_id', 'day', 'opened', 'finished']
+repeat of the same anonymous view/event ignored as intended: True
+change_seq now 10

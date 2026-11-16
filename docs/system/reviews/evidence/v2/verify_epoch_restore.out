@@ -1,0 +1,2 @@
+documented rule max(backup, bag)+1: new epoch=2; deleted learner still at office=True; office copy of Aminata='Aminata progress on new card'
+with office's highest epoch: max(backup, bag, office)+1: new epoch=3; deleted learner still at office=False; office copy of Aminata='Aminata progress on new card'

@@ -1,0 +1,12 @@
+one uninterrupted export took 692 ms
+60 kill -9 trials: invariants held every time; outcomes {'ready': 8, 'interrupted': 52}
+sqlite 3.51.2 | tables 24 | explicit indexes 17
+tables: admin_account, admin_session, audit_event, bag_meta, blob, boot, content_group, content_pack, export, health_sample, idempotency_record, job, learner, lesson, lesson_asset, lesson_progress, picture, portal, sensitive_activity_count, series, setting, tombstone, tryit_package, upload
+renumbering: [('l1', 1), ('new', 2), ('l2', 3), ('l3', 4), ('l4', 5), ('l5', 6), ('q', None)]
+refused as intended: second quiz in a series -> UNIQUE constraint failed: lesson.series_id
+refused as intended: published but unplaced -> CHECK constraint failed: status = 'draft' OR series_id IS NOT NULL
+refused as intended: duplicate position -> UNIQUE constraint failed: lesson.series_id, lesson.position
+refused as intended: learner id format -> CHECK constraint failed: id LIKE 'lr-%' AND length(id) = 29
+refused as intended: two preparing exports -> UNIQUE constraint failed: export.state
+refused as intended: ready without size/sha256 -> CHECK constraint failed: state NOT IN ('ready','copied-to-usb') OR (size_bytes IS NOT NULL AND sha256 IS NOT NULL)
+change_seq now 10

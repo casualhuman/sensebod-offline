@@ -1,0 +1,7 @@
+1 automatic recovery, counter lift=True: deleted learner still at office=False; reported lost on bag=['lr-fatmata']
+1 automatic recovery, counter lift=False: deleted learner still at office=True; reported lost on bag=['lr-fatmata']
+2 CONTROL fresh-card restore, revision-1 rule max(backup, bag)+1: epoch=2; deleted learner still at office=True
+3 fresh-card restore, revision-2 rule max(backup, bag, office --min-epoch)+1: epoch=3; deleted learner still at office=False
+4 revision-1 rule with the office (epoch, nonce) clash check: epoch=2; import refused=[('epoch_clash', 2)]; deleted learner still at office=True (the bad import is stopped and reported, not silently merged)
+5a CONTROL new-epoch without re-stamp: first import refused=[('epoch_clash', 2)]; Mohamed (removed on card 2) still at office=True; office Aminata='Aminata card1 v49'
+5b new-epoch with re-stamp since epoch_base_seq: first import refused=[('epoch_clash', 2)]; Mohamed (removed on card 2) still at office=False; office Aminata='Aminata NEW progress on card 2'

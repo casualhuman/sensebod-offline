@@ -1,0 +1,2939 @@
+openapi: 3.0.3
+info:
+  title: Sensebod Offline edge API
+  version: 0.5.1
+  description: |
+    The confirmed contract between the Sensebod Offline frontend and the backend on the Raspberry Pi
+    ("DLH in a bag"). Proposed by the System Architecture Agent on 12 Nov 2026, revised 13 Nov 2026
+    (revision 1, answers ARCHITECTURE-VERIFICATION-1) and again (revision 2, answers ARCHITECTURE-VERIFICATION-2;
+    see REVISION-2-RESPONSE.md), **awaiting reverification**. Item-by-item decisions against the frontend's proposal
+    (`docs/API-CONTRACT.md`) are in `docs/system/API-DECISIONS.md`. Field names follow
+    `app/src/shared/api/types.ts` exactly.
+    The contract is independent of the backend runtime (the owner's choice is Node.js with Express, OWNER-1).
+
+    Rules for every endpoint:
+    - Same origin as the app, plain HTTP, JSON UTF-8. URLs in answers are root-relative.
+    - `null` means "not known"; the server never invents values.
+    - Every non-GET request must carry `X-Sensebod-Offline-Client: 1` (CSRF defence); otherwise `403 csrf`.
+    - Create-type POSTs carry `Idempotency-Key`; keys are kept 24 h, scoped by actor + method + path.
+      Same key with a different body → `422 idempotency_mismatch`; same key while the first request
+      is still running → `409 in_progress` with `Retry-After`.
+    - Content answers send `ETag` and `Cache-Control: no-cache` and honour `If-None-Match` (304).
+      Everything under `/learners` and `/admin` is `Cache-Control: no-store`.
+    - Rate limits (nginx, per client IP): sign-in 5/min, `POST /learners` 30/min, Child protection activity 10/min, everything else 20 req/s
+      (burst 40). Over the limit → `429 rate_limited` with `Retry-After`.
+    - Offline: no endpoint depends on the internet. While the backend is down or in maintenance,
+      nginx answers `503` in the error shape below.
+    - Performance figures in descriptions are targets on a Raspberry Pi 5 with 40 phones, **unverified**.
+servers:
+  - url: /api/v1
+tags:
+  - name: health
+  - name: learner-content
+  - name: learner-progress
+  - name: admin-session
+  - name: admin-content
+  - name: admin-uploads
+  - name: admin-exports
+  - name: admin-usb
+  - name: admin-system
+
+paths:
+  /health:
+    get:
+      tags: [health]
+      operationId: getHealth
+      summary: Is the backend up?
+      x-auth: none
+      description: Used by nginx, the frontend reach check and monitoring. p95 < 50 ms (target, unverified).
+      responses:
+        '200':
+          description: Up
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        '503':
+          description: Starting or in maintenance
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiErrorBody' }
+
+  # ------------------------------------------------------------------ learner content
+  /portals:
+    get:
+      tags: [learner-content]
+      operationId: getPortals
+      summary: The five portals in Home order
+      x-auth: none
+      description: Cacheable (ETag from the bag's content revision). p95 < 150 ms (target, unverified).
+      parameters:
+        - $ref: '#/components/parameters/IfNoneMatch'
+      responses:
+        '200':
+          description: Portals
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Portal' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /portals/{portalId}:
+    get:
+      tags: [learner-content]
+      operationId: getPortal
+      summary: A portal with its groups
+      x-auth: none
+      description: Only groups and counts of published, placed lessons. p95 < 200 ms (target, unverified).
+      parameters:
+        - $ref: '#/components/parameters/PortalIdPath'
+        - $ref: '#/components/parameters/IfNoneMatch'
+      responses:
+        '200':
+          description: Portal detail
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PortalDetail' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /groups/{groupId}:
+    get:
+      tags: [learner-content]
+      operationId: getGroup
+      summary: A group (class, audience or topic) with its series
+      x-auth: none
+      parameters:
+        - $ref: '#/components/parameters/GroupIdPath'
+        - $ref: '#/components/parameters/IfNoneMatch'
+      responses:
+        '200':
+          description: Group detail
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GroupDetail' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /series/{seriesId}:
+    get:
+      tags: [learner-content]
+      operationId: getSeries
+      summary: A series with its published lessons in learner order (quiz last)
+      x-auth: none
+      parameters:
+        - $ref: '#/components/parameters/SeriesIdPath'
+        - $ref: '#/components/parameters/IfNoneMatch'
+      responses:
+        '200':
+          description: Series detail
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SeriesDetail' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /lessons/{lessonId}:
+    get:
+      tags: [learner-content]
+      operationId: getLesson
+      summary: One published lesson with its content
+      x-auth: none
+      description: |
+        Quiz answers (`correct`, `feedback`) are sent on purpose so quizzes keep working if the Wi-Fi drops.
+        Media URLs point to `/media/…`, served by nginx with byte ranges. p95 < 200 ms (target, unverified).
+      parameters:
+        - $ref: '#/components/parameters/LessonIdPath'
+        - $ref: '#/components/parameters/IfNoneMatch'
+      responses:
+        '200':
+          description: Lesson
+          headers:
+            ETag: { $ref: '#/components/headers/ETag' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Lesson' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+
+  # ------------------------------------------------------------------ learner progress
+  /learners:
+    post:
+      tags: [learner-progress]
+      operationId: createLearner
+      summary: Save my progress — create a learner (name + who you are + a 4-digit secret number)
+      x-auth: none
+      description: |
+        Owner decision 2026-11-16 (replaces "no PIN"): the learner chooses a 4-digit secret number, so
+        two learners with the same name are told apart and a learner can sign in again on another phone.
+        Name (capitals ignored) + number must identify one learner: `409 pin_taken` with `fields.pin` otherwise.
+        The number is stored hashed and is never returned or exported.
+        The id is 128-bit random and unguessable. Idempotent by `Idempotency-Key`
+        (a retry after a Wi-Fi drop returns the first learner). Rate limit 30/min per IP.
+        There is deliberately no `GET /learners`.
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NewLearner' }
+      responses:
+        '201':
+          description: Created (or the first result of the same key)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Learner' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+  /learners/sign-in:
+    post:
+      tags: [learner-progress]
+      operationId: signInLearner
+      summary: I have a name already — find my learner by name and secret number
+      x-auth: none
+      description: |
+        Returns the learner whose name (capitals ignored) and 4-digit number match. A wrong name and a
+        wrong number give the same `401 wrong_name_or_number`. After 5 wrong tries for one name, that
+        name answers `429 too_many_tries` for 5 minutes (counted in memory only; a name is never written
+        outside the learner table). Creates nothing, so it takes no `Idempotency-Key`.
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LearnerSignIn' }
+      responses:
+        '200':
+          description: The learner
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Learner' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /learners/{learnerId}:
+    get:
+      tags: [learner-progress]
+      operationId: getLearner
+      summary: One learner
+      x-auth: none
+      parameters:
+        - $ref: '#/components/parameters/LearnerIdPath'
+      responses:
+        '200':
+          description: Learner
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Learner' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+    delete:
+      tags: [learner-progress]
+      operationId: deleteLearner
+      summary: Remove a learner and their progress
+      x-auth: none
+      description: |
+        Idempotent: 204 when the learner existed or was already removed (a tombstone exists); 404 if the id
+        never existed on this bag. Leaves a tombstone with the id only. The name is overwritten in the
+        database pages (secure_delete for this transaction); copies in snapshots expire within 30 days.
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LearnerIdPath'
+      responses:
+        '204': { description: Removed (or already removed) }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /learners/{learnerId}/progress:
+    get:
+      tags: [learner-progress]
+      operationId: getProgress
+      summary: Lessons this learner started or finished
+      x-auth: none
+      description: Never contains lessons of a sensitive (Child protection) portal while the bag records counts only.
+      parameters:
+        - $ref: '#/components/parameters/LearnerIdPath'
+        - name: portalId
+          in: query
+          schema: { $ref: '#/components/schemas/PortalId' }
+        - name: seriesId
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Progress
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LearnerProgress' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /learners/{learnerId}/progress/{lessonId}:
+    put:
+      tags: [learner-progress]
+      operationId: saveLessonProgress
+      summary: Save progress on one lesson
+      x-auth: none
+      description: |
+        Idempotent PUT. Monotonic: `finished` is never downgraded. Position-only updates within 10 s of the
+        stored position and less than 60 s after the last write may be coalesced (the stored row is returned
+        without a write). **Never used for Child protection:** for a lesson in a sensitive portal (counts-only
+        mode, the default) the answer is 409 `sensitive_lesson` and nothing is written; the client uses
+        `POST /lessons/{lessonId}/activity` instead, which carries no learner id.
+        Durable (`synchronous=FULL`) before 200. p95 < 300 ms (target, unverified).
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LearnerIdPath'
+        - $ref: '#/components/parameters/LessonIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProgressUpdate' }
+      responses:
+        '200':
+          description: Stored progress
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LessonProgress' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+  /lessons/{lessonId}/activity:
+    post:
+      tags: [learner-progress]
+      operationId: recordSensitiveActivity
+      summary: Count an anonymous view or finish of a Child protection lesson
+      x-auth: none
+      description: |
+        For lessons in a sensitive (Child protection) portal only (409 `not_sensitive` otherwise). Carries
+        **no learner id** and works for guests and saved learners alike. `viewId` is 128 random bits made by
+        the page once per page view (`crypto.getRandomValues`, available on plain HTTP). The bag counts each
+        (viewId, lesson, event) once per day, so pauses, retries and a repeated "finished" are no-ops.
+        Logged as a route template only, without IP. Stored in a separate database file with no sequence number or
+        time of day, so it cannot be ordered against personal data. Rate limit 10/min per IP; the counts are
+        page views on the bag and indicative only. p95 < 200 ms (target, unverified).
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LessonIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SensitiveActivity' }
+      responses:
+        '204': { description: Counted (or already counted for this view) }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /learners/{learnerId}/continue:
+    get:
+      tags: [learner-progress]
+      operationId: getContinueLesson
+      summary: The lesson for "Continue where you stopped", or null
+      x-auth: none
+      parameters:
+        - $ref: '#/components/parameters/LearnerIdPath'
+        - name: portalId
+          in: query
+          schema: { $ref: '#/components/schemas/PortalId' }
+      responses:
+        '200':
+          description: Lesson to continue, or null
+          content:
+            application/json:
+              schema:
+                allOf: [{ $ref: '#/components/schemas/ContinueLesson' }]
+                nullable: true
+        '404': { $ref: '#/components/responses/NotFound' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+
+  # ------------------------------------------------------------------ admin session
+  /admin/session:
+    post:
+      tags: [admin-session]
+      operationId: signIn
+      summary: Sign in
+      x-auth: none
+      description: |
+        Sets cookie `sb_admin` (HttpOnly, SameSite=Strict, Path=/, no Secure flag: plain HTTP).
+        Sessions: idle 2 h, absolute 12 h, and every session ends when the bag restarts (the clock may have
+        jumped). After 5 failures for a username: locked 1 min, doubling to
+        15 min max (`429`). Rate limit 5/min per IP. Password hashes use a memory-hard KDF (Argon2id or scrypt).
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminCredentials' }
+      responses:
+        '200':
+          description: Signed in
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+              description: sb_admin=<token>; HttpOnly; SameSite=Strict; Path=/
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSession' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+    get:
+      tags: [admin-session]
+      operationId: getSession
+      summary: The current admin session
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      responses:
+        '200':
+          description: Session
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSession' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+    delete:
+      tags: [admin-session]
+      operationId: signOut
+      summary: Sign out
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      responses:
+        '204': { description: Signed out; cookie cleared }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/session/confirm:
+    post:
+      tags: [admin-session]
+      operationId: confirmPassword
+      summary: Type the password again (re-authentication, valid 5 minutes)
+      x-auth: admin
+      description: Needed before exports with names and before account changes.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password: { type: string, minLength: 1 }
+      responses:
+        '204': { description: Confirmed }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /admin/session/password:
+    post:
+      tags: [admin-session]
+      operationId: changePassword
+      summary: Change my password
+      x-auth: admin
+      description: |
+        Ends every other session of this account. `currentPassword` is required, except in the restricted
+        session created by an override code (`/admin/override/redeem`), whose only allowed action is this one.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [newPassword]
+              properties:
+                currentPassword: { type: string }
+                newPassword: { type: string, minLength: 10, maxLength: 128 }
+      responses:
+        '204': { description: Changed }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  # ------------------------------------------------------------------ admin content
+  /admin/lessons:
+    get:
+      tags: [admin-content]
+      operationId: getLibrary
+      summary: Library (every lesson, drafts included)
+      x-auth: admin
+      description: Ordered by portal, group, series, position. `unplaced=true` ignores other filters.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - { name: portalId, in: query, schema: { $ref: '#/components/schemas/PortalId' } }
+        - { name: groupId, in: query, schema: { type: string } }
+        - { name: seriesId, in: query, schema: { type: string } }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/LessonType' } }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/PublishStatus' } }
+        - { name: unplaced, in: query, schema: { type: boolean } }
+        - { name: search, in: query, schema: { type: string, maxLength: 100 } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Library page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryPage' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+    post:
+      tags: [admin-content]
+      operationId: createLesson
+      summary: Create a draft lesson (placement null)
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NewLesson' }
+      responses:
+        '201':
+          description: Draft created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminLesson' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+  /admin/lessons/{lessonId}:
+    get:
+      tags: [admin-content]
+      operationId: getAdminLesson
+      summary: One lesson for admins
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/LessonIdPath'
+      responses:
+        '200':
+          description: Lesson
+          headers:
+            ETag:
+              schema: { type: string }
+              description: '"v<version>"'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminLesson' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [admin-content]
+      operationId: updateLesson
+      summary: Change title, summary, placement, picture, type override, blocks or transcript
+      x-auth: admin
+      description: |
+        Placement inserts at `position` and renumbers the lessons after it in one transaction; the quiz stays
+        last. Optional `If-Match: "v<version>"`; a mismatch answers 412 and changes nothing.
+        Lessons with `source: content-pack`: only `placement`, `pictureId` (and publish state through its own
+        endpoints) may change; any other field answers 409 `pack_owned`. Placing a lesson into a sensitive
+        (Child protection) portal deletes learners' saved progress on it in the same transaction.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LessonIdPath'
+        - name: If-Match
+          in: header
+          schema: { type: string, example: '"v3"' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LessonPatch' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminLesson' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '412': { $ref: '#/components/responses/PreconditionFailed' }
+        '422': { $ref: '#/components/responses/Validation' }
+    delete:
+      tags: [admin-content]
+      operationId: deleteLesson
+      summary: Delete a lesson (the lessons after it are renumbered)
+      x-auth: admin
+      description: Idempotent. Progress on the lesson is deleted with it. Files are garbage-collected after 24 h.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LessonIdPath'
+      responses:
+        '204': { description: Deleted (or already gone) }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/lessons/{lessonId}/publish:
+    post:
+      tags: [admin-content]
+      operationId: publishLesson
+      summary: Publish (learners see it on their next request)
+      x-auth: admin
+      description: Idempotent (publishing a published lesson returns it). 409 `not_placed` without placement.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LessonIdPath'
+      responses:
+        '200':
+          description: Published
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminLesson' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /admin/lessons/{lessonId}/unpublish:
+    post:
+      tags: [admin-content]
+      operationId: unpublishLesson
+      summary: Back to draft (keeps its place)
+      x-auth: admin
+      description: Idempotent.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LessonIdPath'
+      responses:
+        '200':
+          description: Draft
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminLesson' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/lessons/{lessonId}/questions:
+    get:
+      tags: [admin-content]
+      operationId: getQuestions
+      summary: Questions of an interactive video or a Check quiz
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/LessonIdPath'
+      responses:
+        '200':
+          description: Question set
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QuestionSet' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    put:
+      tags: [admin-content]
+      operationId: saveQuestions
+      summary: Save the whole question set
+      x-auth: admin
+      description: |
+        Idempotent PUT of the whole set. Every question needs a prompt, ≥ 2 answers and exactly one correct
+        answer (422). Video questions are sorted by `atSeconds`; `interactive` is set when ≥ 1 question.
+        Only Watch and Check lessons (409 `wrong_type`).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LessonIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/QuestionSet' }
+      responses:
+        '200':
+          description: Saved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QuestionSet' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/lessons/{lessonId}/try-it:
+    get:
+      tags: [admin-content]
+      operationId: getTryItSetup
+      summary: Try it setup (package or hotspots)
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/LessonIdPath'
+      responses:
+        '200':
+          description: Setup
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TryItSetup' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    put:
+      tags: [admin-content]
+      operationId: saveTryItSetup
+      summary: Save the whole Try it setup
+      x-auth: admin
+      description: Idempotent PUT. Hotspots need a scene and at least one spot (422).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/LessonIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TryItSetup' }
+      responses:
+        '200':
+          description: Saved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TryItSetup' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/portals:
+    get:
+      tags: [admin-content]
+      operationId: getPortalCounts
+      summary: Lesson count per portal
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      responses:
+        '200':
+          description: Counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PortalCount' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+  /admin/storage:
+    get:
+      tags: [admin-content]
+      operationId: getStorage
+      summary: Space used and left on the bag
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      responses:
+        '200':
+          description: Storage
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StorageInfo' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+  /admin/pictures:
+    get:
+      tags: [admin-content]
+      operationId: getPictures
+      summary: Picture gallery, with up to three suggestions
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - { name: group, in: query, schema: { $ref: '#/components/schemas/PictureGroup' } }
+        - { name: suggestForLessonId, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Pictures
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PicturePage' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+    post:
+      tags: [admin-content]
+      operationId: uploadPicture
+      summary: Add an own picture (raw body, JPEG/PNG/WebP, ≤ 10 MiB)
+      x-auth: admin
+      description: No SVG (it can carry script). Stored under a generated content-addressed name.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyOptional'
+        - $ref: '#/components/parameters/FileNameHeader'
+        - name: alt
+          in: query
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 200 }
+      requestBody:
+        required: true
+        content:
+          image/jpeg: { schema: { type: string, format: binary, maxLength: 10485760 } }
+          image/png: { schema: { type: string, format: binary, maxLength: 10485760 } }
+          image/webp: { schema: { type: string, format: binary, maxLength: 10485760 } }
+      responses:
+        '201':
+          description: Added to group `own`
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GalleryPicture' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/UnsupportedFile' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+  /admin/series:
+    post:
+      tags: [admin-content]
+      operationId: createSeries
+      summary: Start a new series
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NewSeries' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSeries' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/series/{seriesId}:
+    get:
+      tags: [admin-content]
+      operationId: getAdminSeries
+      summary: A series with every lesson, drafts included, in order
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/SeriesIdPath'
+      responses:
+        '200':
+          description: Series
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSeries' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/series/{seriesId}/order:
+    put:
+      tags: [admin-content]
+      operationId: saveSeriesOrder
+      summary: Save the whole order
+      x-auth: admin
+      description: |
+        `lessonIds` must hold every lesson of the series except the quiz, exactly once; otherwise 409
+        `conflict` and nothing changes (another admin edited meanwhile). One transaction. Idempotent.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/SeriesIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SeriesOrder' }
+      responses:
+        '200':
+          description: Saved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSeries' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ------------------------------------------------------------------ admin uploads
+  /admin/uploads:
+    post:
+      tags: [admin-uploads]
+      operationId: uploadContent
+      summary: Upload one small file in one request (≤ 16 MiB)
+      x-auth: admin
+      description: |
+        Raw body (not multipart), streamed to disk. Larger files use the resumable protocol
+        (`POST /admin/uploads/resumable`). Retrying with the same `Idempotency-Key` returns the first upload.
+        Unusable kinds → 415. The file name is for display only; storage names are generated.
+        Transition (API-DECISIONS D-6.2b): until the frontend ships resumable uploads, the bag is configured
+        (`uploads.single_max_bytes`) to accept single requests up to 2 GiB; the 16 MiB limit applies after that.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyOptional'
+        - $ref: '#/components/parameters/FileNameHeader'
+        - name: Content-Length
+          in: header
+          required: true
+          schema: { type: integer, minimum: 1, maximum: 16777216 }
+        - name: smallerCopy
+          in: query
+          schema: { type: boolean, default: false }
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: { type: string, format: binary }
+          '*/*':
+            schema: { type: string, format: binary }
+      responses:
+        '201':
+          description: Received
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Upload' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/UnsupportedFile' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+  /admin/uploads/resumable:
+    post:
+      tags: [admin-uploads]
+      operationId: startResumableUpload
+      summary: Start a resumable upload (any size up to 2 GiB)
+      x-auth: admin
+      description: |
+        Declares the file; the space check happens here (507). Then send the bytes with
+        `PUT /admin/uploads/{id}/bytes` in chunks of `chunkBytes`. After power loss or a Wi-Fi drop,
+        `GET /admin/uploads/{id}` tells where to continue.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NewResumableUpload' }
+      responses:
+        '201':
+          description: Ready to receive
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Upload'
+                  - type: object
+                    required: [chunkBytes]
+                    properties:
+                      chunkBytes: { type: integer, example: 2097152, description: 'Recommended chunk size (2 MiB). Smaller chunks hold a server thread for less time on slow Wi-Fi.' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '415': { $ref: '#/components/responses/UnsupportedFile' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+  /admin/uploads/{uploadId}:
+    get:
+      tags: [admin-uploads]
+      operationId: getUpload
+      summary: Upload state (receivedBytes, processing)
+      x-auth: admin
+      description: Poll every few seconds while `processing.state` is `working`, not faster.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/UploadIdPath'
+      responses:
+        '200':
+          description: Upload
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Upload' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [admin-uploads]
+      operationId: deleteUpload
+      summary: Abandon or remove an upload
+      x-auth: admin
+      description: Idempotent.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/UploadIdPath'
+      responses:
+        '204': { description: Removed }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/uploads/{uploadId}/bytes:
+    put:
+      tags: [admin-uploads]
+      operationId: sendUploadChunk
+      summary: Send the next chunk (≤ 4 MiB; 2 MiB recommended)
+      x-auth: admin
+      description: |
+        `Content-Range: bytes <start>-<end>/<total>`; `start` must equal `receivedBytes`, otherwise
+        409 `offset_mismatch` with `details.receivedBytes` (resend from there). The chunk is fsynced
+        before `receivedBytes` is committed and before 200. Resending an already received range is a
+        no-op answered like a mismatch, so retries are safe. On the last chunk the state becomes
+        `processing` or `ready`.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/UploadIdPath'
+        - name: Content-Range
+          in: header
+          required: true
+          schema: { type: string, pattern: '^bytes \d+-\d+/\d+$' }
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: { type: string, format: binary, maxLength: 4194304 }
+      responses:
+        '200':
+          description: Chunk stored
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Upload' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+
+  # ------------------------------------------------------------------ admin exports
+  /admin/learner-data/summary:
+    get:
+      tags: [admin-exports]
+      operationId: getLearnerDataSummary
+      summary: Counts shown on the "Download learner data" screen
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      responses:
+        '200':
+          description: Summary
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LearnerDataSummary' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ------------------------------------------------------------------ override code (OWNER-4, ADR-017)
+  /admin/override/requests:
+    post:
+      tags: [admin-session]
+      operationId: createOverrideRequest
+      summary: "Locked out: show a request code to read to EasySTEM"
+      x-auth: none
+      description: |
+        Creates a challenge for `username` and returns the request code the bag shows. Always succeeds for a
+        well-formed username, even one that does not exist (no account enumeration; such a challenge can never
+        be redeemed). Sets an HttpOnly, SameSite=Strict cookie `sb_ovr` with a 256-bit request secret; every later
+        call for this request needs it (V-032). `requestId` is 128 random bits (26 base32 characters). Limits
+        (revision 5, V-030): rate limit 3/hour per IP; bag-wide ceiling of 2,000 new network requests per 24 h of
+        uptime (then `429` with `details.presenceAvailable: true`); no per-username cap; no bag-wide failure pause.
+        With `presence: true` and a live presence token (`POST /admin/override/presence`) plus a USB stick inserted
+        within 2 minutes, the request is a presence request exempt from the ceiling and the IP limit. A challenge expires at the first of: 72 h of accumulated bag uptime, 20 boots,
+        72 h of wall clock if the clock was trusted at both ends, one successful use, 5 wrong codes, or a
+        replacement of the database. `expiresHint` is plain words, not a time. Audited (`admin.override.request`).
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username]
+              properties:
+                username: { type: string, minLength: 3, maxLength: 32 }
+                presence: { type: boolean, default: false }
+      responses:
+        '201':
+          description: Request created (and the `sb_ovr` cookie set)
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+              description: sb_ovr=<256-bit secret>; HttpOnly; SameSite=Strict; Path=/api/v1/admin/override
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OverrideRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /admin/override/requests/{requestId}:
+    get:
+      tags: [admin-session]
+      operationId: getOverrideRequest
+      summary: State of a request; for the online path also whether a code arrived (needs the request cookie)
+      x-auth: request-cookie
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: State
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OverrideRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/override/requests/{requestId}/send-online:
+    post:
+      tags: [admin-session]
+      operationId: sendOverrideRequestOnline
+      summary: "Online reset (OWNER-3): send the request to EasySTEM's reset service when the bag has internet"
+      x-auth: request-cookie
+      description: |
+        Needs the request cookie `sb_ovr` of the browser that created the request. Only when the bag has an uplink
+        and a synchronised clock (needed for TLS). The bag sends `{bag_id, request code, username, requestId}` to
+        EasySTEM's reset service, signed with the bag's **Ed25519 sync key** (made on the bag at provisioning; public
+        key registered at EasySTEM). The service is store-and-forward: it holds no override master or per-bag secret
+        and cannot make codes. EasySTEM staff verify the caller and mint the code on the offline office machine,
+        then paste it into the service. The bag polls with signed requests, stores the code (`state: code-received`)
+        and acknowledges it; it does **not** redeem by itself: the browser holding the request cookie completes with
+        `POST /admin/override/redeem` (no `code` needed). Every step is idempotent by `requestId`. 503 `offline`
+        when there is no internet: the person reads the request code to EasySTEM instead. Optional; the offline path
+        never depends on it (SYNC §6.3b, V-032).
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '202':
+          description: Sent; poll GET /admin/override/requests/{requestId} (state `waiting-for-easystem` → `code-received`)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OverrideRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '503': { $ref: '#/components/responses/Unavailable' }
+  /admin/override/redeem:
+    post:
+      tags: [admin-session]
+      operationId: redeemOverrideCode
+      summary: Enter the override code from EasySTEM; on success, set a new password
+      x-auth: none
+      description: |
+        Constant-time comparison; tolerant reading (case, dashes, I/L→1, O→0). Wrong code → 401 `bad_code` with
+        `details.attemptsLeft`; 5 wrong codes void the request (no bag-wide pause, V-030). Requires the request
+        cookie `sb_ovr` of the browser that created the request (403 `request_not_yours` otherwise; the request is
+        untouched). Each wrong attempt is committed before the answer (V-034). Success marks the request used, ends all
+        sessions of the account, clears its lockout, and returns a **restricted** session (cookie `sb_admin`,
+        15 minutes) that may only call `POST /admin/session/password`; `mustChangePassword` is true. Audited
+        (`admin.override.used` / `admin.override.refused`). For an online request whose code was received by the bag
+        (`state: code-received`), the same call with `code` omitted completes it (cookie still required).
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [requestId, username]
+              properties:
+                requestId: { type: string }
+                username: { type: string }
+                code: { type: string, minLength: 10, maxLength: 16, example: WB0DE-D5F56 }
+      responses:
+        '200':
+          description: Accepted; restricted session set
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSession' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '410': { $ref: '#/components/responses/Gone' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /admin/override/presence:
+    post:
+      tags: [admin-session]
+      operationId: startOverridePresence
+      summary: "\"I am at the bag\": a 2-minute presence token; plugging any USB stick into the bag in that time proves presence"
+      x-auth: none
+      description: |
+        Sets a short-lived HttpOnly cookie `sb_presence` (2 minutes). Rate limit **3 tokens per hour per IP** (nginx and
+        backend; V-038); no bag-wide cap on live tokens, so the person cannot be crowded out. An "insertion" is a USB
+        block-device *add* event of any filesystem, recorded with its time by the root helper (`sensebod-offline-usb@`). Every
+        browser holding a token that was live at an insertion may create one presence request
+        (`POST /admin/override/requests` with `presence: true`), exempt from the 2,000/24 h ceiling (V-030). Audited
+        (`admin.override.presence`). Guessing bound: (2,000 + insertions/day × live tokens) × 5 per 24 h of uptime.
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      responses:
+        '204': { description: Token set; plug a USB stick into the bag within 2 minutes }
+        '429': { $ref: '#/components/responses/RateLimited' }
+  /admin/override/notices/{noticeId}/ack:
+    post:
+      tags: [admin-session]
+      operationId: acknowledgeOverrideNotice
+      summary: A hub manager acknowledges the "override was used" banner (V-031)
+      x-auth: hub-manager
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - name: noticeId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204': { description: Acknowledged (audited `admin.override.ack`) }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/learner-data/confirm-date:
+    post:
+      tags: [admin-exports]
+      operationId: confirmDateForRetention
+      summary: Confirm that a forward date change is right, so it may count toward automatic removal (V-033)
+      x-auth: hub-manager
+      description: |
+        Only for exported data; unexported data never counts a date jump. Answer to the banner "[n] learners would
+        be removed because the date moved forward by [d] days. Is the date right?". Needs a confirm within 5 minutes.
+        Audited (`clock.jump.confirmed`).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jumpId, dateIsRight]
+              properties:
+                jumpId: { type: string }
+                dateIsRight: { type: boolean }
+      responses:
+        '204': { description: Recorded }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ------------------------------------------------------------------ learner data cleaning (OWNER-5)
+  /admin/learner-data/clean:
+    post:
+      tags: [admin-exports]
+      operationId: cleanLearnerData
+      summary: Remove learner data now (hub manager)
+      x-auth: hub-manager
+      description: |
+        Removes learners and their progress (`scope: all`, or `older-than` = learners not active for at least
+        `days`). Needs a confirm within 5 minutes and `confirm: "CLEAN"`. If any of the selected data has not been
+        exported (`GET /admin/learner-data/summary` → `unexportedLearners`), the request also needs
+        `acknowledgeUnexported: true` (else 409 `not_exported`), and the screen must show the date of the last
+        export first. Deletes with `secure_delete`, writes tombstones, removes local `auto-*` snapshots and takes a
+        fresh one. Child protection counts are not personal data and are not touched. Audited (`learner.clean`).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [scope, confirm]
+              properties:
+                scope: { type: string, enum: [all, older-than] }
+                days: { type: integer, minimum: 1, maximum: 3650 }
+                confirm: { type: string, enum: [CLEAN] }
+                acknowledgeUnexported: { type: boolean, default: false }
+      responses:
+        '200':
+          description: Removed
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [learnersRemoved, progressRemoved]
+                properties:
+                  learnersRemoved: { type: integer }
+                  progressRemoved: { type: integer }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/exports:
+    get:
+      tags: [admin-exports]
+      operationId: listExports
+      summary: Recent exports and backups, newest first
+      x-auth: admin
+      description: Every admin role sees all kinds (OWNER-6 assumption; roles `hub_manager` and `admin`).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Exports
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExportPage' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+    post:
+      tags: [admin-exports]
+      operationId: createExport
+      summary: Make a learner-data download, a backup or a diagnostics report
+      x-auth: admin
+      description: |
+        Any admin role (`admin` or `hub_manager`; OWNER-6). The UI's default is `backup-records`, labelled "Export for EasySTEM" (OWNER-5). `includeNames: true` needs a confirm within 5 minutes
+        (403 `reauth_required`) and, unless `namesOverWifi: true`, `destination: usb` (422 `names_need_usb`).
+        `backup-full` needs `destination: usb` (422). One export preparing per destination (409
+        `export_in_progress`). Space is checked first (507 with `details.neededBytes`, `details.availableBytes`).
+        The answer is 202 while the worker prepares the file; poll `GET /admin/exports/{id}` every 3 s.
+        `password` appears **only** in this first answer. The password is never stored in the database or in
+        the idempotency record: a replay with the same `Idempotency-Key` answers the same export with
+        `password: null, passwordShown: true`. Power loss while preparing or queued → `interrupted`, never a
+        half-written or unencrypted file.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExportRequest' }
+      responses:
+        '202':
+          description: Preparing
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Export'
+                  - type: object
+                    properties:
+                      password:
+                        type: string
+                        nullable: true
+                        description: One-time password of the zip. Only in the first answer; null on a replay.
+                        example: river-mango-seven-chalk-42
+                      passwordShown:
+                        type: boolean
+                        description: true on a replay of a request whose first answer carried the password.
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+  /admin/exports/{exportId}:
+    get:
+      tags: [admin-exports]
+      operationId: getExport
+      summary: One export (state, progress, size, checksum)
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ExportIdPath'
+      responses:
+        '200':
+          description: Export
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Export' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [admin-exports]
+      operationId: deleteExport
+      summary: Delete the file from the bag now
+      x-auth: admin
+      description: Idempotent. The row stays with state `deleted`.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/ExportIdPath'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/exports/{exportId}/download-link:
+    post:
+      tags: [admin-exports]
+      operationId: createExportDownloadLink
+      summary: A download link valid 30 minutes
+      x-auth: admin
+      description: The ticket in the URL works with or without the cookie and for any number of Range requests until it expires.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/ExportIdPath'
+      responses:
+        '200':
+          description: Link
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DownloadLink' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '410': { $ref: '#/components/responses/Gone' }
+  /admin/exports/{exportId}/file:
+    get:
+      tags: [admin-exports]
+      operationId: downloadExportFile
+      summary: The file itself (Range supported)
+      x-auth: admin
+      description: |
+        The API checks the ticket (or cookie) and hands the file to nginx (`X-Accel-Redirect`), which serves
+        `Range`/`If-Range` (206), `ETag`, `Content-Length`. nginx writes no access line for `/api/` and the
+        application logs the route template only, so the ticket never reaches a log. Tickets are valid 30 min
+        and only within the boot in which they were issued (403 `ticket_invalid` after a restart: ask for a
+        new link; the file and ETag are unchanged). 409 `checking` while the file is re-checked after a power
+        cut. A request without `Range` or starting at byte 0 is audited as a download.
+      security:
+        - adminCookie: []
+        - downloadTicket: []
+      parameters:
+        - $ref: '#/components/parameters/ExportIdPath'
+        - name: ticket
+          in: query
+          schema: { type: string }
+        - name: Range
+          in: header
+          schema: { type: string, example: bytes=1048576-2097151 }
+        - name: If-Range
+          in: header
+          schema: { type: string }
+      responses:
+        '200':
+          description: Whole file
+          headers:
+            Content-Disposition: { $ref: '#/components/headers/ContentDisposition' }
+            ETag: { $ref: '#/components/headers/ETag' }
+            Accept-Ranges: { $ref: '#/components/headers/AcceptRanges' }
+            X-Sensebod-Offline-SHA256: { $ref: '#/components/headers/Sha256' }
+          content:
+            application/zip: { schema: { type: string, format: binary } }
+            application/octet-stream: { schema: { type: string, format: binary } }
+        '206':
+          description: Part of the file
+          headers:
+            Content-Range:
+              schema: { type: string }
+            ETag: { $ref: '#/components/headers/ETag' }
+            X-Sensebod-Offline-SHA256: { $ref: '#/components/headers/Sha256' }
+          content:
+            application/zip: { schema: { type: string, format: binary } }
+            application/octet-stream: { schema: { type: string, format: binary } }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '410': { $ref: '#/components/responses/Gone' }
+        '416': { description: Range not satisfiable }
+  /admin/exports/{exportId}/checks:
+    post:
+      tags: [admin-exports]
+      operationId: recordExportCheck
+      summary: The admin's page checked the received bytes, or the saved file (SHA-256 matches)
+      x-auth: admin
+      description: |
+        `stage: received` = every byte arrived and the hash of the bytes in the page matched (sets
+        `receivedCheckedAt`). `stage: saved` = the admin picked the saved file and its hash matched (sets
+        `savedCheckedAt`); only this stage allows the screen to say "Downloaded and checked". Idempotent.
+        422 if the hash differs from the file's.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/ExportIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [stage, sha256]
+              properties:
+                stage: { type: string, enum: [received, saved] }
+                sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+      responses:
+        '200':
+          description: Recorded
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Export' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/Validation' }
+
+  # ------------------------------------------------------------------ USB
+  /admin/usb:
+    get:
+      tags: [admin-usb]
+      operationId: getUsb
+      summary: The USB stick in the bag, if any
+      x-auth: admin
+      description: Poll every 3 s only while a USB screen is open.
+      security: [{ adminCookie: [] }]
+      responses:
+        '200':
+          description: USB state
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UsbState' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+  /admin/usb/eject:
+    post:
+      tags: [admin-usb]
+      operationId: ejectUsb
+      summary: Remove the stick safely (sync and unmount)
+      x-auth: admin
+      description: Idempotent. Refused with 409 while a copy to the stick is running.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      responses:
+        '200':
+          description: State after ejecting
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UsbState' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /admin/usb/format:
+    post:
+      tags: [admin-usb]
+      operationId: formatUsb
+      summary: Format the stick for Sensebod Offline (exFAT, label SENSEBOD-A or SENSEBOD-B)
+      x-auth: hub-manager
+      description: |
+        Deletes everything on the stick. The body must carry `confirm: "FORMAT"`. Needs a confirm (re-auth)
+        within 5 minutes. 409 while a USB job runs. Audited (`usb.format`). The API writes a one-time request
+        and starts the root unit `sensebod-offline-usb-format@<kernel name>-<nonce>`, which refuses any target that is
+        not the USB stick recorded by the mount helper (never the bag's own card; SYSTEM-ARCHITECTURE §9.8).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [label, confirm]
+              properties:
+                label: { type: string, enum: [A, B] }
+                confirm: { type: string, enum: [FORMAT] }
+      responses:
+        '202':
+          description: Formatting; follow it in GET /admin/usb
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobStarted' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/usb/check:
+    post:
+      tags: [admin-usb]
+      operationId: checkUsb
+      summary: Re-read every Sensebod Offline file on the stick and compare hashes
+      x-auth: hub-manager
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      responses:
+        '202':
+          description: Started; follow it in GET /admin/status
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobStarted' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /admin/usb/packages/{packageName}/install:
+    post:
+      tags: [admin-usb]
+      operationId: installUsbPackage
+      summary: Install a signed update or content pack from the stick
+      x-auth: hub-manager
+      description: Refused (409) unless the package's signature is valid. Resumable after power loss.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - name: packageName
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '202':
+          description: Started
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobStarted' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '507': { $ref: '#/components/responses/StorageFull' }
+
+  # ------------------------------------------------------------------ system
+  /admin/status:
+    get:
+      tags: [admin-system]
+      operationId: getStatus
+      summary: Health of the bag (diagnostics screen)
+      x-auth: admin
+      security: [{ adminCookie: [] }]
+      responses:
+        '200':
+          description: Status
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminStatus' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+  /admin/audit:
+    get:
+      tags: [admin-system]
+      operationId: getAudit
+      summary: Who did what and when
+      x-auth: hub-manager
+      security: [{ adminCookie: [] }]
+      parameters:
+        - { name: action, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Audit page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuditPage' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /admin/accounts:
+    get:
+      tags: [admin-system]
+      operationId: listAccounts
+      summary: Admin accounts on this bag
+      x-auth: hub-manager
+      security: [{ adminCookie: [] }]
+      responses:
+        '200':
+          description: Accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AdminAccount' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [admin-system]
+      operationId: createAccount
+      summary: Add an admin (temporary password, must change at first sign-in)
+      x-auth: hub-manager
+      description: Needs a confirm within 5 minutes (403 `reauth_required`).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - $ref: '#/components/parameters/IdempotencyKeyOptional'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NewAdminAccount' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminAccount' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/accounts/{accountId}:
+    patch:
+      tags: [admin-system]
+      operationId: updateAccount
+      summary: Rename, change role or disable an admin account
+      x-auth: hub-manager
+      description: |
+        Needs a confirm within 5 minutes. Disabling ends that account's sessions at once. The last active
+        hub manager cannot be disabled or demoted (409). Passwords are NOT reset here (OWNER-3): a forgotten
+        password is reset online (when the bag has internet) or with an EasySTEM override code
+        (`/admin/override/*`); a technician CLI remains for physical access.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+        - name: accountId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminAccountPatch' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminAccount' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/clock:
+    post:
+      tags: [admin-system]
+      operationId: setClock
+      summary: Set the bag's clock from this phone
+      x-auth: hub-manager
+      description: |
+        409 `conflict` if the difference is under 5 minutes and the clock is trusted (nothing to do). The new time
+        is marked `clockTrust: manual`. Every change is audited (`clock.set`, old and new time, who) and listed in
+        `GET /admin/status` → `clockChanges`. A manual forward step of more than 7 days is recorded as a clock jump: it
+        never counts toward removing unexported learner data, and counts for exported data only after a hub
+        manager confirms the date (`/admin/learner-data/confirm-date`; V-033).
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [clientTime]
+              properties:
+                clientTime: { type: string, format: date-time }
+      responses:
+        '200':
+          description: Clock set
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [serverTime, clockTrust]
+                properties:
+                  serverTime: { type: string, format: date-time }
+                  clockTrust: { $ref: '#/components/schemas/ClockTrust' }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Validation' }
+  /admin/power-off:
+    post:
+      tags: [admin-system]
+      operationId: powerOff
+      summary: Switch off the bag safely
+      x-auth: admin
+      description: The bag stops services cleanly and switches off within about 10 s. Refused (409) during an update or restore.
+      security: [{ adminCookie: [] }]
+      parameters:
+        - $ref: '#/components/parameters/ClientHeader'
+      responses:
+        '202': { description: Switching off }
+        '401': { $ref: '#/components/responses/Unauthorised' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+components:
+  securitySchemes:
+    adminCookie:
+      type: apiKey
+      in: cookie
+      name: sb_admin
+      description: Random session token set by POST /admin/session. HttpOnly, SameSite=Strict, Path=/. No Secure flag (plain HTTP).
+    downloadTicket:
+      type: apiKey
+      in: query
+      name: ticket
+      description: HMAC-signed, export-bound, valid 30 minutes. Only for GET /admin/exports/{exportId}/file.
+
+  parameters:
+    ClientHeader:
+      name: X-Sensebod-Offline-Client
+      in: header
+      required: true
+      description: Must be `1` on every non-GET request (CSRF defence). Missing → 403 `csrf`.
+      schema: { type: string, enum: ['1'] }
+    IdempotencyKeyRequired:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 8, maxLength: 128 }
+    IdempotencyKeyOptional:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, minLength: 8, maxLength: 128 }
+    IfNoneMatch:
+      name: If-None-Match
+      in: header
+      schema: { type: string }
+    FileNameHeader:
+      name: X-File-Name
+      in: header
+      required: true
+      description: Original file name, URI-encoded. Display and search only.
+      schema: { type: string, maxLength: 512 }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+    PortalIdPath:
+      name: portalId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/PortalId' }
+    GroupIdPath:
+      name: groupId
+      in: path
+      required: true
+      schema: { type: string }
+    SeriesIdPath:
+      name: seriesId
+      in: path
+      required: true
+      schema: { type: string }
+    LessonIdPath:
+      name: lessonId
+      in: path
+      required: true
+      schema: { type: string }
+    LearnerIdPath:
+      name: learnerId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/LearnerId' }
+    UploadIdPath:
+      name: uploadId
+      in: path
+      required: true
+      schema: { type: string }
+    ExportIdPath:
+      name: exportId
+      in: path
+      required: true
+      schema: { type: string }
+
+  headers:
+    ETag:
+      schema: { type: string }
+    ContentDisposition:
+      schema: { type: string, example: 'attachment; filename="sensebod-offline-learner-data_bag_20261112-1030_ex1.zip"' }
+    AcceptRanges:
+      schema: { type: string, enum: [bytes] }
+    Sha256:
+      description: SHA-256 of the whole file, hex.
+      schema: { type: string, pattern: '^[0-9a-f]{64}$' }
+    RetryAfter:
+      schema: { type: integer, minimum: 1 }
+
+  responses:
+    NotModified:
+      description: Not modified (ETag matched)
+    Unauthorised:
+      description: '`unauthorised` (no or expired session) or `bad_credentials`'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    Forbidden:
+      description: '`forbidden` (role), `csrf`, `ticket_invalid` or `reauth_required`'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    NotFound:
+      description: '`not_found` — not in this bag (or not published)'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    Conflict:
+      description: '`conflict`, `not_placed`, `wrong_type`, `export_in_progress`, `offset_mismatch` (details.receivedBytes) or `in_progress` (with Retry-After)'
+      headers:
+        Retry-After: { $ref: '#/components/headers/RetryAfter' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    Gone:
+      description: '`expired` — the export file was removed from the bag'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    PreconditionFailed:
+      description: '`precondition_failed` — If-Match version does not match'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    TooLarge:
+      description: '`too_large`'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    UnsupportedFile:
+      description: '`unsupported_file`'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    Validation:
+      description: '`validation` (with fields) or `idempotency_mismatch`'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    RateLimited:
+      description: '`rate_limited`'
+      headers:
+        Retry-After: { $ref: '#/components/headers/RetryAfter' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    Unavailable:
+      description: '`unavailable` (starting), `busy` (database lock wait exceeded) or `maintenance` (restore/update)'
+      headers:
+        Retry-After: { $ref: '#/components/headers/RetryAfter' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+    StorageFull:
+      description: '`storage_full` — details.neededBytes and details.availableBytes when known'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiErrorBody' }
+
+  schemas:
+    # ---------------- errors, health
+    ApiErrorBody:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, example: validation }
+            message: { type: string, description: Plain sentence that may be shown as it is. }
+            fields:
+              type: object
+              additionalProperties: { type: string }
+            details:
+              type: object
+              description: Machine values for some codes (receivedBytes, neededBytes, availableBytes).
+              additionalProperties: true
+    Health:
+      type: object
+      required: [ok, version, maintenance]
+      properties:
+        ok: { type: boolean }
+        version: { type: string }
+        maintenance: { type: boolean }
+
+    # ---------------- enums
+    PortalId:
+      type: string
+      enum: [primary, jss, child-protection, agriculture, climate]
+    ThemeName:
+      type: string
+      enum: [blue, agriculture]
+    GroupKind:
+      type: string
+      enum: [class, audience, topic]
+    LessonType:
+      type: string
+      enum: [watch, listen, read, try, check]
+    ProgressState:
+      type: string
+      enum: [not-started, started, finished]
+    Availability:
+      type: string
+      enum: [available, not-in-bag]
+    ContentIconKey:
+      type: string
+      description: Badge icon key. Unknown keys must be tolerated by the app (fallback to the portal icon).
+      example: maths
+    AudienceKey:
+      type: string
+      enum: [child, parent, elder]
+    PublishStatus:
+      type: string
+      enum: [draft, published]
+    LessonSource:
+      type: string
+      enum: [upload, notes-photos, typed, animation, questions, content-pack]
+    PictureGroup:
+      type: string
+      enum: [child-protection, agriculture, climate, school, people-places, own]
+    UploadKind:
+      type: string
+      enum: [video, audio, voice-note, pdf, word, photo, animation, h5p, unknown]
+    LearnerRole:
+      type: string
+      enum: [learner, teacher, other]
+    LearnerId:
+      type: string
+      pattern: '^lr-[a-z2-7]{26}$'
+    ClockTrust:
+      type: string
+      enum: [synced, rtc, restored, manual, unsure]
+      description: '`manual` = set by a hub manager from a phone (V-033). A forward step of more than 7 days is recorded as a guarded clock jump only if it is manual or unexplained; steps read from a battery-backed RTC at boot (`rtc`) or made by NTP (`synced`) are real elapsed time (revision 5a).'
+
+    # ---------------- content
+    Picture:
+      type: object
+      required: [url, alt]
+      properties:
+        url: { type: string, description: Root-relative. }
+        alt: { type: string }
+    NullablePicture:
+      allOf: [{ $ref: '#/components/schemas/Picture' }]
+      nullable: true
+    PortalRef:
+      type: object
+      required: [id, title, theme, groupKind]
+      properties:
+        id: { $ref: '#/components/schemas/PortalId' }
+        title: { type: string }
+        theme: { $ref: '#/components/schemas/ThemeName' }
+        groupKind: { $ref: '#/components/schemas/GroupKind' }
+    Portal:
+      type: object
+      required: [id, title, description, theme, groupKind, picture, listenUrl]
+      properties:
+        id: { $ref: '#/components/schemas/PortalId' }
+        title: { type: string }
+        description: { type: string }
+        theme: { $ref: '#/components/schemas/ThemeName' }
+        groupKind: { $ref: '#/components/schemas/GroupKind' }
+        picture: { $ref: '#/components/schemas/NullablePicture' }
+        listenUrl: { type: string, nullable: true }
+    Group:
+      type: object
+      required: [id, portalId, kind, title, description, picture, availability, lessonCount, lessonTypes, seriesCount, onlySeriesId, icon, audience, quiz]
+      properties:
+        id: { type: string }
+        portalId: { $ref: '#/components/schemas/PortalId' }
+        kind: { $ref: '#/components/schemas/GroupKind' }
+        title: { type: string }
+        description: { type: string }
+        picture: { $ref: '#/components/schemas/NullablePicture' }
+        availability: { $ref: '#/components/schemas/Availability' }
+        lessonCount: { type: integer, description: Published lessons, quizzes not counted. }
+        lessonTypes:
+          type: array
+          items: { $ref: '#/components/schemas/LessonType' }
+        seriesCount: { type: integer }
+        onlySeriesId: { type: string, nullable: true }
+        icon:
+          allOf: [{ $ref: '#/components/schemas/ContentIconKey' }]
+          nullable: true
+        audience:
+          allOf: [{ $ref: '#/components/schemas/AudienceKey' }]
+          nullable: true
+        quiz:
+          allOf: [{ $ref: '#/components/schemas/LessonSummary' }]
+          nullable: true
+    PortalDetail:
+      allOf:
+        - $ref: '#/components/schemas/Portal'
+        - type: object
+          required: [groups]
+          properties:
+            groups:
+              type: array
+              items: { $ref: '#/components/schemas/Group' }
+    SeriesSummary:
+      type: object
+      required: [id, portalId, groupId, title, description, picture, availability, lessonCount, hasQuiz, icon, quiz]
+      properties:
+        id: { type: string }
+        portalId: { $ref: '#/components/schemas/PortalId' }
+        groupId: { type: string }
+        title: { type: string }
+        description: { type: string }
+        picture: { $ref: '#/components/schemas/NullablePicture' }
+        availability: { $ref: '#/components/schemas/Availability' }
+        lessonCount: { type: integer }
+        hasQuiz: { type: boolean }
+        icon:
+          allOf: [{ $ref: '#/components/schemas/ContentIconKey' }]
+          nullable: true
+        quiz:
+          allOf: [{ $ref: '#/components/schemas/LessonSummary' }]
+          nullable: true
+    GroupDetail:
+      allOf:
+        - $ref: '#/components/schemas/Group'
+        - type: object
+          required: [portal, series]
+          properties:
+            portal: { $ref: '#/components/schemas/PortalRef' }
+            series:
+              type: array
+              items: { $ref: '#/components/schemas/SeriesSummary' }
+    LessonTag:
+      type: object
+      required: [type, interactive, captions, readAlong, needsSound, length, pages]
+      properties:
+        type: { $ref: '#/components/schemas/LessonType' }
+        interactive: { type: boolean }
+        captions: { type: boolean }
+        readAlong: { type: boolean }
+        needsSound: { type: boolean }
+        length: { type: integer, nullable: true, description: Seconds. }
+        pages: { type: integer, nullable: true }
+    LessonSummary:
+      allOf:
+        - $ref: '#/components/schemas/LessonTag'
+        - type: object
+          required: [id, seriesId, position, title, summary, picture, language]
+          properties:
+            id: { type: string }
+            seriesId: { type: string }
+            position: { type: integer, nullable: true, description: 1-based; null for the Check quiz. }
+            title: { type: string }
+            summary: { type: string }
+            picture: { $ref: '#/components/schemas/NullablePicture' }
+            language: { type: string, example: en }
+    SeriesDetail:
+      allOf:
+        - $ref: '#/components/schemas/SeriesSummary'
+        - type: object
+          required: [portal, group, lessons, listenUrl]
+          properties:
+            portal: { $ref: '#/components/schemas/PortalRef' }
+            group:
+              type: object
+              required: [id, title, kind, seriesCount]
+              properties:
+                id: { type: string }
+                title: { type: string }
+                kind: { $ref: '#/components/schemas/GroupKind' }
+                seriesCount: { type: integer }
+            lessons:
+              type: array
+              items: { $ref: '#/components/schemas/LessonSummary' }
+            listenUrl: { type: string, nullable: true }
+    MediaSource:
+      type: object
+      required: [url, mimeType]
+      properties:
+        url: { type: string }
+        mimeType: { type: string, example: video/mp4 }
+    QuizAnswer:
+      type: object
+      required: [id, text, correct, feedback]
+      properties:
+        id: { type: string }
+        text: { type: string }
+        correct: { type: boolean }
+        feedback: { type: string }
+    QuizQuestion:
+      type: object
+      required: [id, prompt, listenUrl, answers, allowRetry]
+      properties:
+        id: { type: string }
+        prompt: { type: string }
+        listenUrl: { type: string, nullable: true }
+        answers:
+          type: array
+          items: { $ref: '#/components/schemas/QuizAnswer' }
+        allowRetry: { type: boolean }
+    VideoQuestion:
+      allOf:
+        - $ref: '#/components/schemas/QuizQuestion'
+        - type: object
+          required: [atSeconds, pauseUntilAnswered]
+          properties:
+            atSeconds: { type: number }
+            pauseUntilAnswered: { type: boolean }
+    CaptionTrack:
+      type: object
+      required: [language, label, url]
+      properties:
+        language: { type: string }
+        label: { type: string }
+        url: { type: string, description: WebVTT file. }
+    TranscriptLine:
+      type: object
+      required: [start, text]
+      properties:
+        start: { type: number, nullable: true }
+        text: { type: string }
+    ReadBlockHeading:
+      type: object
+      required: [kind, text]
+      properties:
+        kind: { type: string, enum: [heading] }
+        text: { type: string }
+    ReadBlockParagraph:
+      type: object
+      required: [kind, text]
+      properties:
+        kind: { type: string, enum: [paragraph] }
+        text: { type: string }
+    ReadBlockList:
+      type: object
+      required: [kind, ordered, items]
+      properties:
+        kind: { type: string, enum: [list] }
+        ordered: { type: boolean }
+        items:
+          type: array
+          items: { type: string }
+    ReadBlockPicture:
+      type: object
+      required: [kind, picture, caption]
+      properties:
+        kind: { type: string, enum: [picture] }
+        picture: { $ref: '#/components/schemas/Picture' }
+        caption: { type: string, nullable: true }
+    ReadBlock:
+      oneOf:
+        - $ref: '#/components/schemas/ReadBlockHeading'
+        - $ref: '#/components/schemas/ReadBlockParagraph'
+        - $ref: '#/components/schemas/ReadBlockList'
+        - $ref: '#/components/schemas/ReadBlockPicture'
+      discriminator:
+        propertyName: kind
+        mapping:
+          heading: '#/components/schemas/ReadBlockHeading'
+          paragraph: '#/components/schemas/ReadBlockParagraph'
+          list: '#/components/schemas/ReadBlockList'
+          picture: '#/components/schemas/ReadBlockPicture'
+    TryItSpot:
+      type: object
+      required: [id, label, role, says, audioUrl, portrait, x, y, r]
+      properties:
+        id: { type: string }
+        label: { type: string }
+        role: { type: string }
+        says: { type: string }
+        audioUrl: { type: string, nullable: true }
+        portrait: { $ref: '#/components/schemas/NullablePicture' }
+        x: { type: number, minimum: 0, maximum: 100 }
+        y: { type: number, minimum: 0, maximum: 100 }
+        r: { type: number, minimum: 0, maximum: 100 }
+    WatchContent:
+      type: object
+      required: [type, sources, poster, captions, questions, learningPoints]
+      properties:
+        type: { type: string, enum: [watch] }
+        sources:
+          type: array
+          items: { $ref: '#/components/schemas/MediaSource' }
+        poster: { $ref: '#/components/schemas/NullablePicture' }
+        captions:
+          type: array
+          items: { $ref: '#/components/schemas/CaptionTrack' }
+        questions:
+          type: array
+          items: { $ref: '#/components/schemas/VideoQuestion' }
+        learningPoints:
+          type: array
+          items: { type: string }
+    ListenContent:
+      type: object
+      required: [type, sources, cover, transcript]
+      properties:
+        type: { type: string, enum: [listen] }
+        sources:
+          type: array
+          items: { $ref: '#/components/schemas/MediaSource' }
+        cover: { $ref: '#/components/schemas/NullablePicture' }
+        transcript:
+          type: array
+          items: { $ref: '#/components/schemas/TranscriptLine' }
+    ReadContent:
+      type: object
+      required: [type, blocks, pageImages, audio, cover]
+      properties:
+        type: { type: string, enum: [read] }
+        blocks:
+          type: array
+          items: { $ref: '#/components/schemas/ReadBlock' }
+        pageImages:
+          type: array
+          items: { $ref: '#/components/schemas/Picture' }
+        audio:
+          allOf: [{ $ref: '#/components/schemas/MediaSource' }]
+          nullable: true
+        cover: { $ref: '#/components/schemas/NullablePicture' }
+    TryItContent:
+      type: object
+      description: 'mode "package": packageUrl is required. mode "hotspots": instruction, scene, spots, goal, finishMessage, gentleMovement are required.'
+      required: [type, mode]
+      properties:
+        type: { type: string, enum: [try] }
+        mode: { type: string, enum: [package, hotspots] }
+        packageUrl: { type: string, description: index.html of the unpacked package, shown in a sandboxed iframe. }
+        instruction: { type: string }
+        scene: { $ref: '#/components/schemas/Picture' }
+        spots:
+          type: array
+          items: { $ref: '#/components/schemas/TryItSpot' }
+        goal: { type: string, enum: [all, any] }
+        finishMessage: { type: string }
+        gentleMovement: { type: boolean }
+    CheckContent:
+      type: object
+      required: [type, questions]
+      properties:
+        type: { type: string, enum: [check] }
+        questions:
+          type: array
+          items: { $ref: '#/components/schemas/QuizQuestion' }
+    LessonContent:
+      oneOf:
+        - $ref: '#/components/schemas/WatchContent'
+        - $ref: '#/components/schemas/ListenContent'
+        - $ref: '#/components/schemas/ReadContent'
+        - $ref: '#/components/schemas/TryItContent'
+        - $ref: '#/components/schemas/CheckContent'
+      discriminator:
+        propertyName: type
+        mapping:
+          watch: '#/components/schemas/WatchContent'
+          listen: '#/components/schemas/ListenContent'
+          read: '#/components/schemas/ReadContent'
+          try: '#/components/schemas/TryItContent'
+          check: '#/components/schemas/CheckContent'
+    Lesson:
+      allOf:
+        - $ref: '#/components/schemas/LessonSummary'
+        - type: object
+          required: [portal, group, series, next, listenUrl, content]
+          properties:
+            portal: { $ref: '#/components/schemas/PortalRef' }
+            group:
+              type: object
+              required: [id, title, kind]
+              properties:
+                id: { type: string }
+                title: { type: string }
+                kind: { $ref: '#/components/schemas/GroupKind' }
+            series:
+              type: object
+              required: [id, title, lessonCount]
+              properties:
+                id: { type: string }
+                title: { type: string }
+                lessonCount: { type: integer }
+            next:
+              allOf: [{ $ref: '#/components/schemas/LessonSummary' }]
+              nullable: true
+            listenUrl: { type: string, nullable: true }
+            content: { $ref: '#/components/schemas/LessonContent' }
+
+    # ---------------- learners
+    Learner:
+      type: object
+      required: [id, name, role, roleLabel]
+      properties:
+        id: { $ref: '#/components/schemas/LearnerId' }
+        name: { type: string, minLength: 1, maxLength: 40 }
+        role: { $ref: '#/components/schemas/LearnerRole' }
+        roleLabel: { type: string }
+    NewLearner:
+      type: object
+      required: [name, role, pin]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 40, description: Trimmed by the server. }
+        role: { $ref: '#/components/schemas/LearnerRole' }
+        pin: { type: string, pattern: '^[0-9]{4}$', description: The learner's secret number. Write-only. }
+    LearnerSignIn:
+      type: object
+      required: [name, pin]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 40 }
+        pin: { type: string, pattern: '^[0-9]{4}$' }
+    LessonProgress:
+      type: object
+      required: [lessonId, seriesId, lessonType, state, positionSeconds, correct, total, updatedAt]
+      properties:
+        lessonId: { type: string }
+        seriesId: { type: string }
+        lessonType: { $ref: '#/components/schemas/LessonType' }
+        state: { $ref: '#/components/schemas/ProgressState' }
+        positionSeconds: { type: integer, nullable: true }
+        correct: { type: integer, nullable: true }
+        total: { type: integer, nullable: true }
+        updatedAt: { type: string, format: date-time }
+    SensitiveActivity:
+      type: object
+      required: [event, viewId]
+      properties:
+        event: { type: string, enum: [opened, finished] }
+        viewId: { type: string, pattern: '^[0-9a-f]{32}$', description: Random per page view. }
+    ProgressUpdate:
+      type: object
+      required: [state]
+      properties:
+        state: { $ref: '#/components/schemas/ProgressState' }
+        positionSeconds: { type: integer, minimum: 0, nullable: true }
+        correct: { type: integer, minimum: 0, nullable: true }
+        total: { type: integer, minimum: 0, nullable: true }
+    LearnerProgress:
+      type: object
+      required: [learnerId, lessons]
+      properties:
+        learnerId: { $ref: '#/components/schemas/LearnerId' }
+        lessons:
+          type: array
+          items: { $ref: '#/components/schemas/LessonProgress' }
+    ContinueLesson:
+      type: object
+      required: [lesson, seriesTitle, lessonCount]
+      properties:
+        lesson: { $ref: '#/components/schemas/LessonSummary' }
+        seriesTitle: { type: string }
+        lessonCount: { type: integer }
+
+    # ---------------- admin session and accounts
+    AdminRole:
+      type: string
+      enum: [hub_manager, admin]
+      description: 'OWNER-6 (assumption, unconfirmed): hub_manager may do everything; admin manages content and exports but cannot clean learner data or manage accounts.'
+    AdminSession:
+      type: object
+      required: [username, displayName, role, mustChangePassword]
+      properties:
+        username: { type: string }
+        displayName: { type: string }
+        role: { $ref: '#/components/schemas/AdminRole' }
+        mustChangePassword: { type: boolean }
+    AdminCredentials:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string, minLength: 1, maxLength: 32 }
+        password: { type: string, minLength: 1, maxLength: 128 }
+    AdminAccount:
+      type: object
+      required: [id, username, displayName, role, isActive, mustChangePassword, createdAt]
+      properties:
+        id: { type: string }
+        username: { type: string }
+        displayName: { type: string }
+        role: { $ref: '#/components/schemas/AdminRole' }
+        isActive: { type: boolean }
+        mustChangePassword: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    NewAdminAccount:
+      type: object
+      required: [username, displayName, role, temporaryPassword]
+      properties:
+        username: { type: string, minLength: 3, maxLength: 32 }
+        displayName: { type: string, minLength: 1, maxLength: 60 }
+        role: { $ref: '#/components/schemas/AdminRole' }
+        temporaryPassword: { type: string, minLength: 10, maxLength: 128 }
+    AdminAccountPatch:
+      type: object
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 60 }
+        role: { $ref: '#/components/schemas/AdminRole' }
+        isActive: { type: boolean }
+
+    # ---------------- admin content
+    Placement:
+      type: object
+      required: [portalId, groupId, seriesId, position]
+      properties:
+        portalId: { $ref: '#/components/schemas/PortalId' }
+        groupId: { type: string }
+        seriesId: { type: string }
+        position: { type: integer, minimum: 1 }
+    AdminLesson:
+      allOf:
+        - $ref: '#/components/schemas/LessonSummary'
+        - type: object
+          required: [status, placement, placementLabel, source, fileNames, questionCount, pictureId, updatedAt, notes, version]
+          properties:
+            status: { $ref: '#/components/schemas/PublishStatus' }
+            placement:
+              allOf: [{ $ref: '#/components/schemas/Placement' }]
+              nullable: true
+            placementLabel: { type: string, nullable: true }
+            source: { $ref: '#/components/schemas/LessonSource' }
+            fileNames:
+              type: array
+              items: { type: string }
+            questionCount: { type: integer, nullable: true }
+            pictureId: { type: string, nullable: true }
+            updatedAt: { type: string, format: date-time }
+            notes:
+              type: array
+              items: { type: string }
+            version: { type: integer, minimum: 1, description: For If-Match on PATCH. }
+    LibraryPage:
+      type: object
+      required: [items, page, pageSize, total, publishedCount, draftCount]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/AdminLesson' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+        publishedCount: { type: integer }
+        draftCount: { type: integer }
+    PortalCount:
+      type: object
+      required: [portalId, title, description, lessonCount]
+      properties:
+        portalId: { $ref: '#/components/schemas/PortalId' }
+        title: { type: string }
+        description: { type: string }
+        lessonCount: { type: integer }
+    StorageInfo:
+      type: object
+      required: [usedBytes, totalBytes, availableBytes, reserveBytes, state, breakdown]
+      properties:
+        usedBytes: { type: integer, nullable: true }
+        totalBytes: { type: integer, nullable: true }
+        availableBytes: { type: integer, nullable: true, description: Free for Sensebod Offline (root-reserved blocks excluded). }
+        reserveBytes: { type: integer, description: Space kept free; uploads and exports are refused below it. }
+        state: { type: string, enum: [ok, low, full] }
+        breakdown:
+          type: array
+          items:
+            type: object
+            required: [label, bytes]
+            properties:
+              label: { type: string }
+              bytes: { type: integer, nullable: true }
+    PackageCheck:
+      type: object
+      required: [id, ok, title, detail]
+      properties:
+        id: { type: string, enum: [offline, index, size, player] }
+        ok: { type: boolean }
+        title: { type: string }
+        detail: { type: string }
+    Upload:
+      type: object
+      required: [id, fileName, sizeBytes, receivedBytes, state, kind, becomes, durationSeconds, pages, processing, checks]
+      properties:
+        id: { type: string }
+        fileName: { type: string }
+        sizeBytes: { type: integer, description: Declared total. }
+        receivedBytes: { type: integer }
+        state: { type: string, enum: [receiving, processing, ready, failed, abandoned] }
+        kind: { $ref: '#/components/schemas/UploadKind' }
+        becomes:
+          allOf: [{ $ref: '#/components/schemas/LessonType' }]
+          nullable: true
+        durationSeconds: { type: integer, nullable: true }
+        pages: { type: integer, nullable: true }
+        processing:
+          type: object
+          required: [state, note]
+          properties:
+            state: { type: string, enum: [working, ready, failed] }
+            note: { type: string, nullable: true }
+        checks:
+          type: array
+          items: { $ref: '#/components/schemas/PackageCheck' }
+    NewResumableUpload:
+      type: object
+      required: [fileName, sizeBytes, mimeType]
+      properties:
+        fileName: { type: string, maxLength: 512 }
+        sizeBytes: { type: integer, minimum: 1, maximum: 2147483648 }
+        mimeType: { type: string }
+        smallerCopy: { type: boolean, default: false }
+    NewLesson:
+      type: object
+      required: [source, title]
+      properties:
+        source: { $ref: '#/components/schemas/LessonSource' }
+        title: { type: string, minLength: 1, maxLength: 120 }
+        uploadIds:
+          type: array
+          items: { type: string }
+        blocks:
+          type: array
+          items: { $ref: '#/components/schemas/ReadBlock' }
+        readAlongUploadId: { type: string }
+    LessonPatch:
+      type: object
+      properties:
+        title: { type: string, minLength: 1, maxLength: 120 }
+        summary: { type: string }
+        placement:
+          allOf: [{ $ref: '#/components/schemas/Placement' }]
+          nullable: true
+        pictureId: { type: string, nullable: true }
+        type: { $ref: '#/components/schemas/LessonType' }
+        interactive: { type: boolean }
+        blocks:
+          type: array
+          items: { $ref: '#/components/schemas/ReadBlock' }
+        transcript:
+          type: array
+          items: { $ref: '#/components/schemas/TranscriptLine' }
+    GalleryPicture:
+      allOf:
+        - $ref: '#/components/schemas/Picture'
+        - type: object
+          required: [id, group]
+          properties:
+            id: { type: string }
+            group: { $ref: '#/components/schemas/PictureGroup' }
+    PicturePage:
+      type: object
+      required: [suggested, items, page, pageSize, total]
+      properties:
+        suggested:
+          type: array
+          maxItems: 3
+          items: { $ref: '#/components/schemas/GalleryPicture' }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/GalleryPicture' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+    NewSeries:
+      type: object
+      required: [portalId, groupId, title]
+      properties:
+        portalId: { $ref: '#/components/schemas/PortalId' }
+        groupId: { type: string }
+        title: { type: string, minLength: 1, maxLength: 120 }
+    SeriesOrder:
+      type: object
+      required: [lessonIds]
+      properties:
+        lessonIds:
+          type: array
+          items: { type: string }
+    AdminSeries:
+      allOf:
+        - $ref: '#/components/schemas/SeriesSummary'
+        - type: object
+          required: [lessons]
+          properties:
+            lessons:
+              type: array
+              items: { $ref: '#/components/schemas/AdminLesson' }
+    QuestionSetItem:
+      allOf:
+        - $ref: '#/components/schemas/QuizQuestion'
+        - type: object
+          properties:
+            atSeconds: { type: number, minimum: 0 }
+            pauseUntilAnswered: { type: boolean }
+    QuestionSet:
+      type: object
+      required: [lessonId, kind, questions]
+      properties:
+        lessonId: { type: string }
+        kind: { type: string, enum: [video, check] }
+        questions:
+          type: array
+          items: { $ref: '#/components/schemas/QuestionSetItem' }
+    TryItSetupSpot:
+      type: object
+      required: [id, label, role, says, audioUrl, portrait, x, y, r]
+      properties:
+        id: { type: string }
+        label: { type: string }
+        role: { type: string }
+        says: { type: string }
+        audioUrl: { type: string, nullable: true }
+        audioUploadId: { type: string }
+        portrait: { $ref: '#/components/schemas/NullablePicture' }
+        x: { type: number, minimum: 0, maximum: 100 }
+        y: { type: number, minimum: 0, maximum: 100 }
+        r: { type: number, minimum: 0, maximum: 100 }
+    TryItSetup:
+      type: object
+      description: 'mode "package": uploadId, packageUrl, checks. mode "hotspots": instruction, scene or sceneUploadId, spots, goal, finishMessage, gentleMovement.'
+      required: [lessonId, mode]
+      properties:
+        lessonId: { type: string }
+        mode: { type: string, enum: [package, hotspots] }
+        uploadId: { type: string, nullable: true }
+        packageUrl: { type: string, nullable: true }
+        checks:
+          type: array
+          items: { $ref: '#/components/schemas/PackageCheck' }
+        instruction: { type: string }
+        scene: { $ref: '#/components/schemas/NullablePicture' }
+        sceneUploadId: { type: string }
+        spots:
+          type: array
+          items: { $ref: '#/components/schemas/TryItSetupSpot' }
+        goal: { type: string, enum: [all, any] }
+        finishMessage: { type: string }
+        gentleMovement: { type: boolean }
+
+    # ---------------- exports, USB, system
+    ExportKind:
+      type: string
+      enum: [learner-data, backup-records, backup-full, diagnostics]
+    ExportRequest:
+      type: object
+      required: [kind, destination]
+      properties:
+        kind: { $ref: '#/components/schemas/ExportKind' }
+        destination: { type: string, enum: [download, usb] }
+        includeNames: { type: boolean, default: false }
+        includeChildProtectionCounts: { type: boolean, default: true }
+        encrypted: { type: boolean, default: true, description: learner-data only; backups are always encrypted to EasySTEM. }
+        namesOverWifi: { type: boolean, default: false, description: 'With includeNames, allow destination download after the warning; audited.' }
+        from: { type: string, format: date }
+        to: { type: string, format: date }
+    Export:
+      type: object
+      required: [id, kind, destination, state, progress, options, createdAt, createdBy, readyAt, expiresAt, fileName, sizeBytes, sha256, checkCode, rowCounts, errorCode, downloadCount, receivedCheckedAt, savedCheckedAt, clockTrust]
+      properties:
+        id: { type: string }
+        kind: { $ref: '#/components/schemas/ExportKind' }
+        destination: { type: string, enum: [download, usb] }
+        state: { type: string, enum: [preparing, ready, checking, copied-to-usb, failed, interrupted, expired, deleted], description: '`checking` = being re-hashed after a power cut; not downloadable yet.' }
+        progress: { type: integer, minimum: 0, maximum: 100 }
+        options:
+          type: object
+          required: [includeNames, includeChildProtectionCounts, encrypted]
+          properties:
+            includeNames: { type: boolean }
+            includeChildProtectionCounts: { type: boolean }
+            encrypted: { type: boolean }
+            namesOverWifi: { type: boolean }
+            from: { type: string, format: date, nullable: true }
+            to: { type: string, format: date, nullable: true }
+        createdAt: { type: string, format: date-time }
+        createdBy: { type: string, description: Display name. }
+        readyAt: { type: string, format: date-time, nullable: true }
+        expiresAt: { type: string, format: date-time, nullable: true }
+        fileName: { type: string, nullable: true }
+        sizeBytes: { type: integer, nullable: true }
+        sha256: { type: string, nullable: true, pattern: '^[0-9a-f]{64}$' }
+        checkCode: { type: string, nullable: true, example: 3F9A 21C0 7B4E }
+        rowCounts:
+          type: object
+          nullable: true
+          additionalProperties: { type: integer }
+        errorCode:
+          type: string
+          nullable: true
+          enum: [power_or_crash, worker_restart, stalled, password_missing, no_space, usb_removed, usb_full, file_lost, internal, null]
+        downloadCount: { type: integer }
+        receivedCheckedAt: { type: string, format: date-time, nullable: true }
+        savedCheckedAt: { type: string, format: date-time, nullable: true }
+        clockTrust: { $ref: '#/components/schemas/ClockTrust' }
+    ExportPage:
+      type: object
+      required: [items, page, pageSize, total]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Export' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+    DownloadLink:
+      type: object
+      required: [url, expiresAt]
+      properties:
+        url: { type: string, example: "/api/v1/admin/exports/ex-abc/file?ticket=..." }
+        expiresAt: { type: string, format: date-time }
+    LearnerDataSummary:
+      type: object
+      required: [learners, learnersWithProgress, progressRecords, childProtectionMode, oldestActivity, newestActivity, clockTrust, lastExportAt, lastExportKind, unexportedLearners, retentionDays, nextAutomaticRemoval, retentionHeldBack]
+      properties:
+        lastExportAt: { type: string, format: date-time, nullable: true, description: 'Last export that reached the admin (saved file checked, or copied to a stick).' }
+        lastExportKind: { type: string, nullable: true, enum: [backup-records, backup-full, learner-data, null] }
+        unexportedLearners: { type: integer, description: 'Learners with changes newer than the last export (change_seq above its snapshot).' }
+        retentionDays: { type: integer, example: 61, description: 'Automatic removal after this many days without activity (OWNER-5: two months).' }
+        nextAutomaticRemoval: { type: object, nullable: true, properties: { date: { type: string, format: date }, learners: { type: integer } } }
+        clockJumps: { type: array, items: { type: object, properties: { jumpId: { type: string }, days: { type: integer }, at: { type: string, format: date-time }, source: { type: string, enum: [manual, unexplained] }, wouldRemove: { type: integer }, confirmed: { type: boolean } } }, description: 'Unconfirmed forward date jumps > 7 days and how many exported learners each would make removable (V-033).' }
+        retentionHeldBack: { type: integer, description: 'Learners past the retention period kept only because they have not been exported (if the owner chooses option B).' }
+        learners: { type: integer }
+        learnersWithProgress: { type: integer }
+        progressRecords: { type: integer }
+        childProtectionMode: { type: string, enum: [counts-only, per-learner] }
+        oldestActivity: { type: string, format: date, nullable: true }
+        newestActivity: { type: string, format: date, nullable: true }
+        clockTrust: { $ref: '#/components/schemas/ClockTrust' }
+    OverrideRequest:
+      type: object
+      required: [requestId, requestCode, bagName, state, attemptsLeft, expiresHint]
+      properties:
+        requestId: { type: string, pattern: '^[0-9a-z]{26}$', description: 128 random bits. }
+        requestCode: { type: string, example: 1-Z470-G6F1-3NE0, description: 'Read aloud to EasySTEM: key version, bag tag, 40-bit nonce (Crockford base32).' }
+        bagName: { type: string }
+        state: { type: string, enum: [open, waiting-for-easystem, code-received, declined, send-failed, used, expired, void] }
+        attemptsLeft: { type: integer, minimum: 0, maximum: 5 }
+        expiresHint: { type: string, example: 'Valid for about 3 days while the bag is switched on' }
+    UsbState:
+      type: object
+      required: [state, label, filesystem, totalBytes, freeBytes, backups, packages, dirtyNote, repaired, sensebodOfflineLabel, rotationHint]
+      properties:
+        state: { type: string, enum: [none, mounted, read-only, errors, unreadable, busy, not-answering, ejected] }
+        dirtyNote: { type: boolean, description: 'The stick was not removed safely last time (dirty bit only); it is mounted read-write.' }
+        repaired: { type: boolean, description: 'The bag repaired this stick (only sticks it formatted itself).' }
+        sensebodOfflineLabel: { type: string, nullable: true, enum: [A, B, null], description: 'Set when the bag formatted the stick (SENSEBOD-A / SENSEBOD-B).' }
+        rotationHint: { type: string, nullable: true, enum: [A, B, null], description: 'Which stick to use for the next full backup.' }
+        label: { type: string, nullable: true }
+        filesystem: { type: string, nullable: true, enum: [vfat, exfat, null] }
+        totalBytes: { type: integer, nullable: true }
+        freeBytes: { type: integer, nullable: true }
+        backups:
+          type: array
+          items:
+            type: object
+            required: [bagId, bagName, createdAt, scope]
+            properties:
+              bagId: { type: string }
+              bagName: { type: string }
+              createdAt: { type: string, format: date-time }
+              scope: { type: string, enum: [records, full] }
+        packages:
+          type: array
+          items:
+            type: object
+            required: [name, kind, version, signatureOk]
+            properties:
+              name: { type: string }
+              kind: { type: string, enum: [update, content-pack] }
+              version: { type: string }
+              signatureOk: { type: boolean }
+    JobStarted:
+      type: object
+      required: [jobId]
+      properties:
+        jobId: { type: string }
+    AdminStatus:
+      type: object
+      required: [version, uptimeSeconds, bootId, previousShutdownClean, clockTrust, serverTime, storage, database, lastLocalSnapshotAt, lastOffBagBackupAt, recovery, jobs, power, temperatureC, overrideNotices, clockChanges]
+      properties:
+        overrideNotices: { type: array, description: 'Unacknowledged override uses; shown as a banner to every admin (V-031).', items: { type: object, required: [noticeId, username, usedAt], properties: { noticeId: { type: string }, username: { type: string }, usedAt: { type: string, format: date-time } } } }
+        clockChanges: { type: array, description: 'Clock changes of the last 30 days, shown on the status screen (V-033).', items: { type: object, properties: { at: { type: string, format: date-time }, from: { type: string, format: date-time }, to: { type: string, format: date-time }, source: { type: string, enum: [manual, boot, ntp] }, byUsername: { type: string, nullable: true } } } }
+        version: { type: string }
+        uptimeSeconds: { type: integer }
+        bootId: { type: string }
+        previousShutdownClean: { type: boolean }
+        clockTrust: { $ref: '#/components/schemas/ClockTrust' }
+        serverTime: { type: string, format: date-time }
+        storage: { $ref: '#/components/schemas/StorageInfo' }
+        database:
+          type: object
+          required: [sizeBytes, walBytes, lastQuickCheck, lastIntegrityCheckAt]
+          properties:
+            sizeBytes: { type: integer }
+            walBytes: { type: integer }
+            lastQuickCheck: { type: string, enum: [ok, failed] }
+            lastIntegrityCheckAt: { type: string, format: date-time, nullable: true }
+        lastLocalSnapshotAt: { type: string, format: date-time, nullable: true }
+        lastOffBagBackupAt: { type: string, format: date-time, nullable: true }
+        recovery:
+          type: object
+          required: [restoredFrom, note]
+          properties:
+            restoredFrom: { type: string, nullable: true }
+            note: { type: string, nullable: true }
+        jobs:
+          type: array
+          items:
+            type: object
+            required: [id, kind, state, progress, errorCode]
+            properties:
+              id: { type: string }
+              kind: { type: string }
+              state: { type: string, enum: [queued, running, done, failed, interrupted, cancelled] }
+              progress: { type: integer, minimum: 0, maximum: 100 }
+              errorCode: { type: string, nullable: true }
+        power:
+          type: object
+          required: [undervoltageSinceBoot, throttledNow]
+          properties:
+            undervoltageSinceBoot: { type: boolean }
+            throttledNow: { type: boolean }
+        temperatureC: { type: number, nullable: true }
+    AuditEvent:
+      type: object
+      required: [id, at, clockTrust, actorName, action, targetType, targetId, outcome, detail]
+      properties:
+        id: { type: integer }
+        at: { type: string, format: date-time }
+        clockTrust: { $ref: '#/components/schemas/ClockTrust' }
+        actorName: { type: string, nullable: true }
+        action: { type: string, example: export.create }
+        targetType: { type: string, nullable: true }
+        targetId: { type: string, nullable: true }
+        outcome: { type: string, enum: [ok, refused, failed, interrupted] }
+        detail:
+          type: object
+          additionalProperties: true
+    AuditPage:
+      type: object
+      required: [items, page, pageSize, total]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/AuditEvent' }
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }

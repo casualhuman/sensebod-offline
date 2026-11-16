@@ -1,0 +1,20 @@
+1 normal use
+  request code shown on the bag: 1-Z470-G6F1-3NE0  override code from EasySTEM: WB0DE-D5F56
+  valid code after 15 h uptime and a reboot (typed in lower case with dashes) ACCEPTED -> restricted session, new password required, other sessions ended, audited  [as intended]
+2 CONTROL: reuse
+  same code entered again                                                    refused: used  [as intended]
+3 CONTROL: expiry without a trusted clock
+  after 73 h of uptime spread over 20 days off and a clock jump back         refused: expired (72 h of bag uptime)  [as intended]
+  after 20 short boots (2 h uptime) with the clock reset each time           refused: expired (20 boots)  [as intended]
+4 binding
+  bag A's code entered on bag B                                              refused: wrong code (4 attempts left)  [as intended]
+  code for user 'mariama' entered for user 'abu'                             refused: wrong code (4 attempts left)  [as intended]
+  office tool, bag A's request code presented as bag B: refused (request code does not belong to this bag)  [as intended]
+5 attempt limit
+  6th try with the RIGHT code after 5 wrong ones                             refused: void (5 wrong attempts)  [as intended]
+6 stolen card
+  attacker mints a code for the SAME bag from the stolen secret              ACCEPTED -> restricted session, new password required, other sessions ended, audited  [as intended]
+  attacker tries the stolen secret against ANOTHER bag                       refused: wrong code (4 attempts left)  [as intended]
+  office tool after the theft is reported: refused (bag revoked (reported stolen))  [as intended]
+7 online guessing bound (arithmetic)
+  50-bit code, ≤ 15 guesses per 24 h of uptime: success ≈ 1.3e-14 per day, ≈ 4.9e-12 per year of continuous uptime

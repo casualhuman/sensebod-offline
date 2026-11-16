@@ -1,0 +1,2 @@
+A busy_timeout=5000 (as specified): write ok after 1491 ms; max event-loop lag 1489 ms (other requests frozen that long); timer ticks 18
+B busy_timeout=0 + async retry every 20 ms: write ok (after 70 retries) after 1459 ms; max event-loop lag 4 ms (other requests frozen that long); timer ticks 268

@@ -1,0 +1,5 @@
+a) libarchive-written zip opened by the node:crypto reader: AE-1, strength 3 (3 = AES-256), content equal=true
+   wrong password: refused (learners.csv: wrong password (verifier))
+b) node:crypto-written AE-2 zip (2 members, 90019 B progress.csv) extracted by libarchive: content equal=true
+   wrong password: refused by libarchive
+c) one flipped ciphertext byte: refused (learners.csv: authentication failed)

@@ -1,0 +1,4 @@
+architect: 200 addresses, 20 insertions/day                    live tokens <=   600, guesses/day <=    70,000, success <= 6.2e-11/day
+rotating over both /24s (static addresses), 20 insertions/day  live tokens <=  1515, guesses/day <=   161,500, success <= 1.4e-10/day
+both /24s, insertions capped at 4/hour (96/day)                live tokens <=  1515, guesses/day <=   737,200, success <= 6.5e-10/day
+both /24s, 1,000 insertions/day (someone at the bag, no cap)   live tokens <=  1515, guesses/day <= 7,585,000, success <= 6.7e-09/day

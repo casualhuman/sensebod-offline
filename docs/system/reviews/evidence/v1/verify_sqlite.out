@@ -1,0 +1,9 @@
+V-T1 checkpoint(TRUNCATE) with an open reader: (busy, log, checkpointed) = (1, 601, 301); wal bytes = 2476152
+V-T1 same after the reader closed:            (busy, log, checkpointed) = (0, 0, 0); wal bytes = 0
+V-T2 checkpoint after wipe: (0, 0, 0)
+V-T2 password bytes in live.sqlite3            : FOUND
+V-T2 password bytes in live.sqlite3-wal        : absent
+V-T2 password bytes in auto-snapshot.sqlite3   : FOUND
+V-T2 idempotency_record.response_json still holds the password: True
+V-T3 stale wal bytes left by crashed writer: 432632
+V-T3 after swap with stale -wal: learners visible = 51 (backup had 1), integrity = ok

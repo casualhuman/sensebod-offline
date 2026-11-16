@@ -1,0 +1,26 @@
+# Laptop configuration. Needs SENSEBOD_OFFLINE_DEV=1 (the npm scripts set it). A bag's file has no [dev] table.
+[bag]
+name = "Dev bag (laptop)"
+
+[server]
+host = "127.0.0.1"
+port = 8000
+allowed_hosts = ["localhost", "127.0.0.1"]
+trust_proxy = true
+
+[paths]
+data_dir = "./dev/data"
+run_dir = "./dev/run"
+web_dir = "../app/dist"
+recipients_file = "./dev/backup-recipients.txt"
+allowed_signers_file = "./dev/allowed_signers"
+
+[limits]
+reserve_bytes = 536870912
+low_bytes = 2147483648
+
+[dev]
+self_recover = true
+serve_files = true
+assume_clock = "synced"
+fake_privileged = true

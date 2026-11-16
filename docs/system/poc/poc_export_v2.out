@@ -1,0 +1,3 @@
+one uninterrupted export took 602 ms
+120 trials, invariants I1-I4, I6, I7 held every time; outcomes by scenario {'B': {'interrupted': 24, 'ready': 3}, 'A': {'ready': 11, 'interrupted': 31}, 'C': {'interrupted': 29}, 'D': {'orphan removed': 22}}
+I5 generated passwords: 121; found in DB/WAL/any data file: 0; idempotency replays carrying a password: 0

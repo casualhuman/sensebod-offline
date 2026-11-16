@@ -1,0 +1,28 @@
+{
+  "name": "sensebod-offline-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "SENSEBOD_OFFLINE_DEV=1 node --test --test-concurrency=1 \"test/**/*.test.ts\"",
+    "dev:init": "SENSEBOD_OFFLINE_DEV=1 node bin/sensebod-offline-admin.ts init --config dev/sensebod-offline.dev.toml --demo",
+    "dev": "SENSEBOD_OFFLINE_DEV=1 node bin/sensebod-offline-api.ts --config dev/sensebod-offline.dev.toml",
+    "dev:worker": "SENSEBOD_OFFLINE_DEV=1 node bin/sensebod-offline-worker.ts --config dev/sensebod-offline.dev.toml",
+    "dev:maint": "SENSEBOD_OFFLINE_DEV=1 node bin/sensebod-offline-maint.ts --config dev/sensebod-offline.dev.toml",
+    "seed:export": "node scripts/export-mock-seed.ts"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "smol-toml": "^1.9.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.5",
+    "typescript": "^6.0.3"
+  }
+}

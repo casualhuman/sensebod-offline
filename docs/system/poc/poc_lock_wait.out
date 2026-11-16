@@ -1,0 +1,18 @@
+Part 1 - API event loop while another process holds the write lock for 1.5 s
+A busy_timeout=5000, synchronous wait: write after 1514 ms; max event-loop lag 1503 ms
+B busy_timeout=20 + async retry/backoff: write after 1506 ms (10 retries); max event-loop lag 31 ms
+  B with a 7 s hold: SQLITE_BUSY_TIMEOUT after 5011 ms (cap 5 s -> API answers 503 busy); max event-loop lag 33 ms
+C writer in a worker thread (busy_timeout=5000 there): write after 1517 ms; max event-loop lag 6 ms
+Part 1b - many concurrent writes while another process holds the lock for 1.5 s (revision 3a, V-026)
+  CONTROL busy_timeout=20, per-request retry   burst  writes=200 attempts=255 max wait=1526 ms  max event-loop lag=1521 ms
+  busy_timeout=0, per-request retry            burst  writes=200 attempts=2594 max wait=1734 ms  max event-loop lag=6 ms
+  DEFAULT busy_timeout=0 + single-flight gate  burst  writes=200 attempts=212 max wait=1691 ms  max event-loop lag=6 ms
+  CONTROL busy_timeout=20, per-request retry   steady writes=60 attempts=116 max wait=1549 ms  max event-loop lag=163 ms
+  busy_timeout=0, per-request retry            steady writes=60 attempts=541 max wait=1673 ms  max event-loop lag=6 ms
+  DEFAULT busy_timeout=0 + single-flight gate  steady writes=60 attempts=72 max wait=1665 ms  max event-loop lag=8 ms
+Part 2 - lock-hold durations of the other writers (synchronous=FULL; Mac fsync is not a full flush, so the Pi will be slower)
+  job heartbeat/progress commit: median 0.09 ms, max 0.22 ms
+  learner progress commit (with seq): median 0.20 ms, max 0.27 ms
+  retention batch, 500 deletes in one transaction: median 1.20 ms, max 2.08 ms
+  PASSIVE checkpoint: median 0.00 ms, max 0.83 ms
+  TRUNCATE checkpoint with busy_timeout=100 while a reader is open: returned busy=1 after 122 ms (gives up; writers wait at most that long)

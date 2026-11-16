@@ -1,0 +1,21 @@
+# Override quotas are global (SYS §9.9 rate-limit row; openapi createOverrideRequest/redeem)
+584:| Rate limits and lockout | 5 wrong codes per request (then the request is void). At most 3 new requests per 24 h of
+
+# Reset service: approval and key custody not specified
+133:### 6.3b Online password reset (OWNER-3, ADR-017)
+SYNC.md:EasySTEM approves, and the code comes back to the bag.
+SYSTEM-ARCHITECTURE.md:EasySTEM approves, the bag receives the code and the person sets a new password (§9.
+SYSTEM-ARCHITECTURE.md:EasySTEM approves, the service returns the override code, the bag redeems it itself, and the person sets a new password.
+Master key `M_v` | Kept only on EasySTEM's offline office machine that runs `sensebod-office`, passphrase-protected, with a second copy stored with the backup private keys (O-11). It is **separate** f
+
+# Caller verification left outside the bag (O-17)
+Identity checks on the caller (for example, calling back the hub manager's known number) are EasySTEM's procedure, outside the bag 
+
+# Retention runs on any non-unsure clock; a hub manager can set the clock from a phone
+302:- **Automatic removal:** a learner and all their progress are removed **61 d
+5:**Decision.** No ordering, conflict rule or security check depends on wall-clo
+
+# Role rename leftovers
+DATA-EXPORT-AND-BACKUP.md:373:  actor A as Lead admin
+DATA-EXPORT-AND-BACKUP.md:610:| SEC-E1 | Export endpoints without session / as facilitator / with a forged, expired or previous-boot ticket | 401 / 403 / 403 / 
+SYSTEM-ARCHITECTURE.md:510:| T-10 | Admin abuse (exporting names) | Low / high | `hub_manager` role, re-auth for names, audit log readable by leads and in backu

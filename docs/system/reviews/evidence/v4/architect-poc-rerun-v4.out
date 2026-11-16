@@ -1,0 +1,22 @@
+Part 1 - API event loop while another process holds the write lock for 1.5 s
+A busy_timeout=5000, synchronous wait: write after 1517 ms; max event-loop lag 1507 ms
+B busy_timeout=20 + async retry/backoff: write after 1710 ms (11 retries); max event-loop lag 28 ms
+  B with a 7 s hold: SQLITE_BUSY_TIMEOUT after 4932 ms (cap 5 s -> API answers 503 busy); max event-loop lag 29 ms
+C writer in a worker thread (busy_timeout=5000 there): write after 1520 ms; max event-loop lag 9 ms
+Part 2 - lock-hold durations of the other writers (synchronous=FULL; Mac fsync is not a full flush, so the Pi will be slower)
+  job heartbeat/progress commit: median 0.09 ms, max 0.23 ms
+  learner progress commit (with seq): median 0.24 ms, max 0.33 ms
+  retention batch, 500 deletes in one transaction: median 1.21 ms, max 2.26 ms
+  PASSIVE checkpoint: median 0.01 ms, max 0.85 ms
+  TRUNCATE checkpoint with busy_timeout=100 while a reader is open: returned busy=1 after 114 ms (gives up; writers wait at most that long)
+---
+a) libarchive-written zip opened by the node:crypto reader: AE-1, strength 3 (3 = AES-256), content equal=true
+   wrong password: refused (learners.csv: wrong password (verifier))
+b) node:crypto-written AE-2 zip (2 members, 90019 B progress.csv) extracted by libarchive: content equal=true
+   wrong password: refused by libarchive
+c) one flipped ciphertext byte: refused (learners.csv: authentication failed)
+---
+allowed as intended: a USB export preparing while a download export is preparing (one per destination)
+count table columns (no seq, no time): ['lesson_id', 'day', 'opened', 'finished']
+repeat of the same anonymous view/event ignored as intended: True
+change_seq now 10

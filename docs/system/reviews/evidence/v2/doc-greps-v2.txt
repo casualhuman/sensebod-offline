@@ -1,0 +1,32 @@
+# V-004 / V-020: hardening still allows writes only under /var/lib/sensebod; the password file is under /run
+421:/run/sensebod/export-secrets/   tmpfs, 0700 sensebod (tmpfiles.d): one-time export passwords, gone at power-off (V-004)
+486:| T-12 | Privilege escalation from the `sensebod` user | Low / high | systemd hardening (`NoNewPrivileges`, `ProtectSystem=strict`, `ReadWritePaths=/var/lib/sensebod`, `PrivateTmp`, `ProtectHome`, `CapabilityBoundingSet=`); polkit allows exactly two units; no sudo | Low |
+539:| `tmpfiles.d/sensebod.conf` | — | `d /run/sensebod/export-secrets 0700 sensebod sensebod -` | — |
+
+# V-020: privileged units and the format action
+SYSTEM-ARCHITECTURE.md:486:| T-12 | Privilege escalation from the `sensebod` user | Low / high | systemd hardening (`NoNewPrivileges`, `ProtectSystem=strict`, `ReadWritePaths=/var/lib/sensebod`, `PrivateTmp`, `ProtectHome`, `CapabilityBoundingSet=`); polkit allows exactly two units; no sudo | Low |
+SYSTEM-ARCHITECTURE.md:542:| `sensebod-usb-eject.service`, `sensebod-poweroff.service`, `sensebod-update@.service` | root | started by the API through polkit rules that allow `sensebod` to start exactly these units | — |
+DATA-EXPORT-AND-BACKUP.md:318:- "Remove the stick safely" → `POST /admin/usb/eject` → `sensebod-usb-eject.service` (polkit allows the `sensebod` user to start exactly this unit) → `sync`, `umount`, state `ejected` → "You can take the stick out now."
+DATA-EXPORT-AND-BACKUP.md:319:- **Format this stick for Sensebod** (lead only, `POST /admin/usb/format {label: A|B}`, typed confirmation "This deletes everything on the stick"): exFAT, volume label `SENSEBOD-A` or `SENSEBOD-B`, writes `SENSEBOD/STICK.json`.
+
+# V-008: technician restore epoch rule
+DATA-EXPORT-AND-BACKUP.md:391:  C->>DB: new bag secrets, bag_meta.epoch = max(backup epoch, current epoch) + 1 (SYNC §3.2), bag_meta.restored_from, audit restore (actor technician-cli)
+SYNC.md:45:| Technician restore from a backup (`epoch = max(backup epoch, bag epoch) + 1`) | DATA-EXPORT §12 |
+
+# V-019: CP count stamped with the global seq
+522:2. `INSERT OR IGNORE INTO sensitive_activity_seen(view_id, lesson_id, event, day)`. If a row was inserted (`changes() = 1`), upsert `sensitive_activity_count(lesson_id, day)` with `opened += 1` or `finished += 1`, stamped with a new `seq`.
+
+# V-010 leftover
+18:**Trade-offs.** Higher RAM than Go (planning 60–100 MB per process, unverified). WSGI threads are held while a chunk uploads (bounded: ≤ 8 MiB per request). Python version on the Pi pins the wh
+
+# V-016 leftover
+560:Release bundle: `sensebod-<version>.tar` + `.sig` (OpenSSH signature, namespace `sensebod-release`), containing `MANIFEST.sha256`, `release.json` (version, minimum version it can update from, migr
+
+# V-014 leftover: config list and ADR trade-off
+549:`/etc/sensebod/sensebod.toml` (read at start): bag display name, allowed hosts, limits (upload max, in-page download max, reserve bytes, retention), `session.bind_ip`, feature flags (`uploads.single_max_bytes` for the transition). Admin-changeable values live in the `setting` table and are liste
+13:**Trade-offs.** No "2 of 5 done", no "continue where you stopped", no finished chips inside Child protection; the frontend must hide them (HANDOFF FE-4). Small bags may still have identifying counts on a given day; the export aggregates over the period and suppresses < 5.
+
+# V-022: sessions deleted at boot vs download continuing after reboot
+407:1. Record the boot: `previous_clean` = whether `/var/lib/sensebod/run/clean-shutdown` exists (written by the API's `ExecStop`, removed at boot). Clock handling (ADR-014). **Delete every admin session** and clear `locked_until` (V-012: their expiry used a clock that may have jumped; failure count
+198:- `POST /admin/exports/{id}/download-link` → `{ url, expiresAt }`. The URL is `/api/v1/admin/exports/{id}/file?tic
+256:  A->>API: (after a reboot the ticket is refused) POST …/download-link again

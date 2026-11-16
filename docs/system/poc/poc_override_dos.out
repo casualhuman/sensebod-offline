@@ -1,0 +1,5 @@
+S1 CONTROL OLD policy, one phone                                 hub manager recovered on 0/30 days
+S1 NEW policy, one phone                                         hub manager recovered on 30/30 days; attacker guesses/day 360 -> success ≈ 3.2e-13/day
+S2 CONTROL OLD policy, 200 rotating addresses                    hub manager recovered on 0/30 days
+S2 NEW policy, 200 rotating addresses (ceiling reached daily)    hub manager recovered on 30/30 days; via USB-presence path on 30 days; attacker guesses/day 10000 -> success ≈ 8.9e-12/day
+NEW policy worst case (ceiling 2,000 requests x 5 tries + presence requests): ≤ 10,005 guesses per 24 h uptime -> ≈ 8.9e-12 per day, ≈ 3.2e-09 per year of continuous uptime

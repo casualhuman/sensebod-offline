@@ -1,0 +1,36 @@
+# OWNER-1: remaining Django/Python mentions outside reviews/, the instructions file and the response files
+ARCHITECT-NOTES-FOR-VERIFIER.md:13:**OWNER-1 (owner's runtime correction):** the backend is Node.js with Express, and the design is tooling-agnostic. Django/gunicorn/Python backend choices are withdra
+ADR/ADR-000-index.md:7:| [001](ADR-001-modular-monolith-runtime-agnostic.md) | Modular monolith, runtime-agnostic (owner runtime: Node.js/Express); supersedes the earlier Django proposal (OWNER-1) |
+ADR/ADR-001-modular-monolith-runtime-agnostic.md:3:**Status:** Accepted direction from the owner, 13 Nov 2026 (revision 2, OWNER-1). **This supersedes the v0.1/v0.2 proposal "Django 5.2 + gunicorn"**,
+ADR/ADR-001-modular-monolith-runtime-agnostic.md:9:**Alternatives (recorded).** *Django/gunicorn* (the earlier proposal; superseded by the owner). *Go single binary* (small, simple deployment; not the
+
+# V-026: busy_timeout and the write model the Node API must follow
+ADR/ADR-002-sqlite.md:5:**Decision.** One SQLite database file, WAL journal, `synchronous=FULL`, `foreign_keys=ON`, `busy_timeout=5000`, write transactions `BEGIN IMMEDIATE`, configuration and write model as in DATABASE 
+SYSTEM-ARCHITECTURE.md:318:| R-2 | The SQLite driver supports WAL, `busy_timeout`, `BEGIN IMMEDIATE`, `RETURNING`, and the **online backup API or `VACUUM INTO`**; it reports `SQLITE_BUSY`/`SQLITE_FULL`/`SQLITE_CORRUPT` a
+SYSTEM-ARCHITECTURE.md:319:| R-3 | **Writes are serialized**: one writer connection per process (or one process doing all writes), every write transaction `BEGIN IMMEDIATE`, short, with no file or network I/O inside it; 
+SYSTEM-ARCHITECTURE.md:328:| R-12 | One API process is the baseline; if more are used (e.g. a cluster), R-3 still holds through `BEGIN IMMEDIATE` + `busy_timeout`, and in-memory state (rate limits, idempotency in-progres
+DATABASE.md:17:| Concurrency | Many readers, one writer at a time. All write transactions are `BEGIN IMMEDIATE`, short (target < 50 ms on the Pi, to be measured), contain no network or bulk file I/O. `busy_timeout=5000` 
+DATABASE.md:60:| `busy_timeout` | `5000` ms | A writer waiting for the lock retries inside SQLite instead of failing | After 5 s the API answers `503 busy` with `Retry-After: 2` |
+DATABASE.md:61:| Write transactions | always `BEGIN IMMEDIATE` (e.g. `better-sqlite3`: `db.transaction(fn).immediate()`; example only) | Takes the write lock at `BEGIN`, which avoids the "read then upgrade to write" dead
+DATABASE.md:96:5. **Busy handling**: `SQLITE_BUSY` after `busy_timeout` → `503 {"error":{"code":"busy"}}`, `Retry-After: 2`. The client already shows "Something went wrong… Try again". Learner progress writes are fir
+
+# V-025: where counts.sqlite3 appears (not in DATA-EXPORT §4 export snapshot, §9 local snapshots, §12 restore, §13 boot checks; not in DATABASE §9.3)
+DATABASE.md:14:| Location | `/var/lib/sensebod/db/sensebod.sqlite3` (+ `-wal`, `-shm`), directory `0700`, owner `sensebod`. **Plus a second, separate file `coun
+DATABASE.md:97:6. **Change sequence**: inside each write transaction that modifies a syncable table, the code calls `next_seq()` once (`UPDATE bag_meta SET valu
+DATABASE.md:125:The anonymous Child protection tables live in the separate file `counts.sqlite3` and have no relationship to any table here (by design, V-019). 
+DATABASE.md:129:Conventions: ids are `TEXT`; times are ISO 8601 UTC text `YYYY-MM-DDTHH:MM:SS.sssZ` from the server clock (ordering uses `seq`, never time); boo
+DATABASE.md:329:-- (The anonymous Child protection tables are NOT in this file: see the counts.sqlite3 DDL below, V-019.)
+DATABASE.md:477:**Second file, `counts.sqlite3` (V-019).** Same pragmas as the main file (§3). No foreign key to `lesson` (it cannot cross files); the applicat
+DATABASE.md:530:2. In `counts.sqlite3` (its own connection and transaction; nothing is written to `sensebod.sqlite3`): `INSERT OR IGNORE INTO sensitive_activity
+DATABASE.md:533:Definitions: **opened** = a page view of the lesson (counted once, guests and saved learners alike); **finished** = that view reached the end (o
+DATABASE.md:537:**Residual, stated:** the file system's modification time of `counts.sqlite3-wal` reveals when the file was last written (the last Child protect
+DATABASE.md:539:**Sync and backup of counts.** Counts are merged by their natural key `(bag_id, lesson_id, day)` with **`max(opened)`, `max(finished)`** at the 
+DATABASE.md:551:| Child protection de-duplication (`sensitive_activity_seen`, in `counts.sqlite3`) | The current day only | `sensebod-maint`, first run each day
+DATABASE.md:584:`VACUUM INTO '<tmp>'` → `fsync(file)` → `rename` → `fsync(dir)` (the `VACUUM INTO` output is not assumed to be durable by itself), for `se
+DATABASE.md:597:- Numbered SQL migrations (`0001_initial.sql`, `0002_….sql`, …) committed with the release, one set for `sensebod.sqlite3` and one for `coun
+DATA-EXPORT-AND-BACKUP.md:75:| `db/counts.sqlite3` | `VACUUM INTO` snapshot of the anonymous Child protection counts (separate file, DATABASE §6.4) |
+
+# V-029: allowed_signers lists release/content keys only
+436:/etc/sensebod/allowed_signers             release / content-pack signing keys
+504:| T-9 | Malicious update or content pack | Low / high | OpenSSH signature with EasySTEM keys in `allowed_signers`, version and hash checks, root-owned relea
+554:| `sensebod-update@<bundle id>.service` | polkit (sensebod), lead action; or technician | bundle id `[0-9A-Za-z._-]{1,64}` | bundle file present on the moun

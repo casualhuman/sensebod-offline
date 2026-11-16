@@ -1,0 +1,4 @@
+A1 4-minute boots with power cuts: persisted uptime=0s, real uptime=84 min, boots=20; request expired by: expired (20 boots)  -> bound = 72 h + 20 x 5 min (boot cap holds if the boot row is committed before the API serves)
+A2 attempt counter not committed before answering: 40 guesses on ONE request, still open -> the 5-try limit only holds if each wrong attempt is committed before the 401 is sent (physical attacker only)
+A3/A4 policy=documented 30 days of daily attack by one phone: hub manager recovered on 0/30 days
+A3/A4 policy=relaxed    30 days of daily attack by one phone: hub manager recovered on 30/30 days; attacker success bound ≈ 1.3e-14/day at 15 guesses/day from one phone

@@ -1,0 +1,11 @@
+C1 CONTROL OLD phone date +1 year: removed 100 learners in 3 days, of which unexported (EasySTEM never got them): 50
+C1 NEW         phone date +1 year: removed 0 learners in 3 days, of which unexported (EasySTEM never got them): 0
+C2 CONTROL OLD 70 real days, no clock change: removed 21 learners (the quiet ones, after 61/91 days)
+C2 NEW         70 real days, no clock change: removed 21 learners (the quiet ones, after 61/91 days)
+C3 clock lagging 20 days (no RTC): first removal on real day 32 (OLD) / 32 (NEW); the same rule without the lag would start on day 11 (oldest learner, last active 50 days ago) -> later, never earlier
+C1 NEW after the hub manager confirms the date: removed 10 learners that day (exported only; cap 10 %/day); unexported learners kept: 50/50
+Revision 5a (V-033): a bag used one week a month
+C4 CONTROL revision 5, RTC-backed boot steps guarded   : exported removed on real day 245, unexported on day 390 (target 61 / 91)
+C4 revision 5a, RTC-backed boot steps count            : exported removed on real day 61, unexported on day 91 (target 61 / 91)
+C4 revision 5a, the same monthly steps but set by hand from a phone   : exported removed on day 245, unexported on day 390 (guarded: kept until confirmed / ordinary time)
+C1 revision 5a, phone date +1 year (manual): removed 0 learners in 3 days, unexported lost 0

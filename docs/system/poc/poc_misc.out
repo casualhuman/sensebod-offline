@@ -1,0 +1,2 @@
+pbkdf2 1e6 iterations: 119 ms
+sha256 200 MB: 91 ms

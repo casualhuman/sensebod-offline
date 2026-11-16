@@ -1,0 +1,29 @@
+Part 1 - API event loop while another process holds the write lock for 1.5 s
+A busy_timeout=5000, synchronous wait: write after 1511 ms; max event-loop lag 1501 ms
+B busy_timeout=20 + async retry/backoff: write after 1503 ms (10 retries); max event-loop lag 26 ms
+  B with a 7 s hold: SQLITE_BUSY_TIMEOUT after 5031 ms (cap 5 s -> API answers 503 busy); max event-loop lag 27 ms
+C writer in a worker thread (busy_timeout=5000 there): write after 1523 ms; max event-loop lag 5 ms
+Part 1b - many concurrent writes while another process holds the lock for 1.5 s (revision 3a, V-026)
+  CONTROL busy_timeout=20, per-request retry   burst  writes=200 attempts=259 max wait=1519 ms  max event-loop lag=1514 ms
+  busy_timeout=0, per-request retry            burst  writes=200 attempts=2594 max wait=1739 ms  max event-loop lag=8 ms
+  DEFAULT busy_timeout=0 + single-flight gate  burst  writes=200 attempts=212 max wait=1676 ms  max event-loop lag=5 ms
+  CONTROL busy_timeout=20, per-request retry   steady writes=60 attempts=118 max wait=1578 ms  max event-loop lag=149 ms
+  busy_timeout=0, per-request retry            steady writes=60 attempts=549 max wait=1672 ms  max event-loop lag=4 ms
+  DEFAULT busy_timeout=0 + single-flight gate  steady writes=60 attempts=72 max wait=1665 ms  max event-loop lag=11 ms
+Part 2 - lock-hold durations of the other writers (synchronous=FULL; Mac fsync is not a full flush, so the Pi will be slower)
+  job heartbeat/progress commit: median 0.08 ms, max 0.24 ms
+  learner progress commit (with seq): median 0.22 ms, max 0.37 ms
+  retention batch, 500 deletes in one transaction: median 1.06 ms, max 2.46 ms
+  PASSIVE checkpoint: median 0.01 ms, max 0.87 ms
+  TRUNCATE checkpoint with busy_timeout=100 while a reader is open: returned busy=1 after 115 ms (gives up; writers wait at most that long)
+---
+1 automatic recovery, counter lift=True: deleted learner still at office=False; reported lost on bag=['lr-fatmata']
+1 automatic recovery, counter lift=False: deleted learner still at office=True; reported lost on bag=['lr-fatmata']
+2 CONTROL fresh-card restore, revision-1 rule max(backup, bag)+1: epoch=2; deleted learner still at office=True
+3 fresh-card restore, revision-2 rule max(backup, bag, office --min-epoch)+1: epoch=3; deleted learner still at office=False
+4 revision-1 rule with the office (epoch, nonce) clash check: epoch=2; import refused=[('epoch_clash', 2)]; deleted learner still at office=True (the bad import is stopped and reported, not silently merged)
+5a CONTROL new-epoch without re-stamp: first import refused=[('epoch_clash', 2)]; Mohamed (removed on card 2) still at office=True; office Aminata='Aminata card1 v49'
+5b new-epoch with re-stamp since epoch_base_seq: first import refused=[('epoch_clash', 2)]; Mohamed (removed on card 2) still at office=False; office Aminata='Aminata NEW progress on card 2'
+--- verifier v4 remedy script
+new-epoch as documented (no re-stamp): refused=[('epoch_clash', 2)]; Mohamed (deleted on card 2) still at office=True; office Aminata='Aminata card1 v49'
+new-epoch + re-stamp rows/tombstones since restore: refused=[('epoch_clash', 2)]; Mohamed (deleted on card 2) still at office=False; office Aminata='Aminata NEW progress on card 2'

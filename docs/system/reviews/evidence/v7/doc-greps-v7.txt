@@ -1,0 +1,21 @@
+# V-032 remainder: openapi send-online still describes the revision-4 flow; no x-auth request-cookie
+x-auth: none
+Only when the bag has an uplink and a synchronised clock (needed for TLS). The bag sends the request code,
+username, bag id and an HMAC with its override secret to EasySTEM's reset service; after EasySTEM approves,
+the service returns the override code to the bag, which then redeems it itself (the person is asked to
+set a new password). 503 `offline` when there is no internet: the person reads the request code to
+EasySTEM instead. Phase 2 component (SYNC §6); not required for the offline path.
+
+# sync key: where it is created
+SYNC.md:135:- When the bag has internet, it posts the override request `{bag_id, request code, username, requestId}`, signed with its Ed25519 sync key (§6.2).
+SYSTEM-ARCHITECTURE.md:594:| Online reset (normal path, OWNER-3; V-032) | Used only when the bag has internet and NTP has synchronised its clock (needed for TLS); the offline path always works, and no
+
+# V-038: presence endpoint has no stated rate limit; bound says 'a few presence requests'
+plus a few presence requests per 24 h of uptime
+Sets a short-lived HttpOnly cookie `sb_presence`. Every browser holding a live token when a USB stick is inserted
+may then create one presence request (`POST /admin/override/requests` with `presence: true`), exempt from the
+bag-wide ceiling (V-030). Audited (`admin.override.presence`).
+
+
+# V-033 remainder: trusted boot jumps are subtracted too
+A bag that was switched off for weeks with an RTC battery also shows a boot jump. That only delays removal of unexported data by the off period (the safe direction).

@@ -1,0 +1,3 @@
+as specified, no confirmations        : exported learner removed on real day 245, unexported (option B) on real day 390  (target 61 / 91)
+as specified, every jump confirmed    : exported learner removed on real day 61, unexported (option B) on real day 390  (target 61 / 91)
+trusted-clock jumps not subtracted    : exported learner removed on real day 61, unexported (option B) on real day 91  (target 61 / 91)

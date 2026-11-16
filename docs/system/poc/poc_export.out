@@ -1,0 +1,2 @@
+one uninterrupted export took 614 ms
+60 kill -9 trials: invariants held every time; outcomes {'ready': 13, 'interrupted': 47}

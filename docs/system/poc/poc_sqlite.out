@@ -1,0 +1,13 @@
+== 1. commit rate, one row per transaction (Mac, fsync is not a full flush on macOS unless PRAGMA fullfsync)
+synchronous=FULL: 12451 commits/s
+synchronous=NORMAL: 62498 commits/s
+synchronous=FULL + fullfsync=ON: 209 commits/s
+== 2. snapshot while writing
+live db bytes 8380416 rows 80000 progress + 2000 learners
+backup_api_one_step: snapshot 41 ms, bytes 8392704, integrity=ok, journal_mode_of_copy=wal, learners_in_copy=2104, writer commits during snapshot=13, writer p50=0.7 ms max=1.2 ms (before: max 0.9 ms)
+vacuum_into: snapshot 33 ms, bytes 6799360, integrity=ok, journal_mode_of_copy=delete, learners_in_copy=2277, writer commits during snapshot=12, writer p50=0.4 ms max=0.5 ms (before: max 9.6 ms)
+== 3. WAL growth while a read transaction is held open
+wal bytes with reader open after 3000 commits: 35872872
+checkpoint(TRUNCATE) result busy,log,ckpt: (0, 0, 0) wal bytes after: 0
+== 4. kill -9 a writer in the middle of a big transaction
+after kill: integrity ok learners before 2355 after 2355 killed rows 0

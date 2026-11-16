@@ -1,0 +1,12 @@
+javascript-tetris, as installed in Sensebod Offline
+Project: https://github.com/jakesgordon/javascript-tetris   commit e5c0c42   licence MIT (LICENSE)
+Installed: 2026-11-16.
+
+Changes:
+- index.html: added a viewport tag and on-screen buttons (left, turn, down, right) wired to the
+  game's own action queue, because the game was keyboard only. The keyboard still works.
+- index.html: the start link no longer uses a javascript: address.
+- index.html: sensebod-offline-shim.js is loaded first (storage stand-in for the sandboxed frame).
+- index.html: the start link is drawn as a Start button; the developer's speed meter is hidden; on small
+  screens the board is 130 x 260 instead of 100 x 200.
+- Not copied: README.

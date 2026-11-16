@@ -1,0 +1,85 @@
+Clumsy Bird in Sensebod Offline: what was changed
+==================================================
+
+Project:  Clumsy Bird, by Ellison Leao
+Source:   https://github.com/ellisonleao/clumsy-bird  (archived project)
+Commit:   fae3d487d5102af29fb3f78431cbd45e9b83aed3  (branch master, 2017-06-16)
+Licence:  GNU General Public License, version 3 (see LICENSE.md in this folder)
+Engine:   melonJS 4.0.0 (js/melonJS-min.js, MIT licence, notice kept at the top
+          of the file; it contains howler.js 2.0.1 for sound), unchanged
+Modified: 2026-11-16, for Sensebod Offline (an offline learning site)
+
+This folder is a modified copy of the project. It stays under the GPL-3.0.
+The full source code of this copy is the files in this folder: nothing here is
+compiled, and the engine file is the one shipped in the project's repository.
+The unmodified source is at the address and commit above.
+
+Files copied without change
+---------------------------
+LICENSE.md
+js/melonJS-min.js
+js/entities/entities.js
+js/screens/gameover.js
+data/img/: bg, clumsy, gameover, gameoverbg, getready, ground, hit, logo, new,
+           pipe (.png)
+data/sfx/: hit.mp3, lose.mp3, wing.mp3
+data/bgm/: theme.mp3
+
+Files changed
+-------------
+index.html
+  - Loads the readable source files in js/ (in the order of the project's
+    Gruntfile) instead of the minified build/clumsy-min.js.
+  - Loads sensebod-offline-shim.js before every other script.
+  - Removed: the Open Graph and Twitter Card tags (they held web addresses),
+    the Google site verification tag, the robots and keywords tags, the Apple
+    home-screen tags and icons, the favicon and the link to humans.txt.
+  - Added a "Sound: on / off" button for touch screens.
+
+index.css
+  - The game font (data/css/gamefont.woff of the project) is now inside the
+    style sheet as a data: address, and the .eot, .ttf and .svg copies are no
+    longer used.
+  - Removed the unused rules for the share buttons (#share, .google).
+  - Added the style of the sound button.
+
+js/game.js
+  - The share.png and tweet.png pictures (Facebook / Twitter sharing) are no
+    longer loaded. No sharing code was left in the game scripts.
+  - The four sounds are no longer in the list that must load before the game
+    starts. The three short sounds load in the background; the music loads
+    when the first round starts. A sound that cannot load or cannot play is
+    skipped (me.sys.stopOnAudioError = false, guarded me.audio.play), so sound
+    can never stop the game from starting.
+  - Only .mp3 sounds are used (me.audio.init("mp3")).
+  - New functions: setupSound, loadSound, wantTheme, startTheme, toggleMute,
+    showMuted. New setting game.music (false leaves the music out).
+
+js/screens/play.js
+  - The music no longer starts when the game loads (before any tap). It starts
+    with a round, through game.wantTheme().
+
+js/screens/title.js
+  - Start text shortened and font size 20 changed to 44, so that it can be
+    read on a 320px wide screen.
+
+js/entities/HUD.js
+  - The M key now calls game.toggleMute(), the same function as the button.
+
+Files added
+-----------
+sensebod-offline-shim.js
+  In-memory stand-ins for localStorage, sessionStorage and document.cookie
+  when the browser refuses them (sandboxed frame). The best score is then
+  kept only until the game is closed.
+SENSEBOD-OFFLINE-CHANGES.txt (this file)
+
+Files of the project left out
+-----------------------------
+build/clumsy-min.js, Gruntfile.js, package.json, app.json, Procfile,
+.jshintrc, .gitignore, README.md, CUSTOMIZING.md, humans.txt,
+data/img/share.png, data/img/tweet.png, data/img/favicon.ico,
+data/img/touch-icon-iphone.png, data/img/touch-icon-iphone-retina.png,
+data/css/gamefont.eot, .ttf, .svg, .woff (the .woff is inside index.css),
+data/bgm/theme.ogg, data/sfx/hit.ogg, lose.ogg, wing.ogg, wing.wav.
+- js/game.js: the music is streamed, not decoded whole into memory (it took about 43 MB).

@@ -1,0 +1,19 @@
+Hextris, as installed in Sensebod Offline
+Project: https://github.com/Hextris/hextris   commit 3f4847d   licence GPL-3.0 (LICENSE.md)
+Installed: 2026-11-16. This folder is the complete source of the modified version.
+
+Changes (the bag has no internet, and the game runs in a sandboxed frame):
+- index.html: removed Google Fonts link, Google ads script, Google Analytics, web manifest, touch icons,
+  sharing meta tags, the "share my score" button, Facebook/Twitter buttons, the app-shop badges and rrssb.
+  The empty #buttonCont element is kept because the layout code measures it.
+- index.html: sensebod-offline-shim.js is loaded first (memory stand-in for localStorage and cookies,
+  which a sandboxed frame may not use; best scores last until the game is closed).
+- js/main.js: removed the loader of http://hextris.io/a.js; the lines of the help text that linked to app shops and the website were removed (the authors' names stay).
+- js/main.js: removed the request that sent each final score to a server on the internet (54.183.184.126).
+- js/save-state.js, js/main.js, index.html: saving and continuing a running game is switched off and
+  vendor/jsonfn.min.js is not loaded or shipped. It needed eval, which the bag's content security policy
+  refuses; with it the game could not leave the Game Over screen. Best scores still work until the game is closed.
+- js/initialization.js: removed Google Analytics.
+- js/view.js: the pause texts that linked to app shops and the web were removed; they now use the plain "Game Paused" text.
+- Not copied: a.js, CNAME, manifest, icons, share and shop images, rrssb files, README.
+- style/style.css: one rule added at the end so the Game Over restart button is fully on screen in a narrow frame.

@@ -1,0 +1,144 @@
+/*
+ * Games section. Prefix gam-. Plain CSS for the Chrome 58 floor: no flex
+ * gap, grids write grid-gap before gap, no aspect-ratio, clamp() or inset.
+ * Laid out for 320px first.
+ */
+.gam-intro {
+  padding: 4px 4px 0;
+}
+.gam-intro > * + * {
+  margin-top: var(--sb-space-2);
+}
+.gam-eyebrow {
+  font-size: var(--sb-text-body);
+  line-height: 27px;
+  font-weight: 700;
+  color: var(--sb-accent-text);
+}
+
+/* Class filter: "All classes" on a row of its own, then 3 + 3. */
+.gam-count {
+  font-size: var(--sb-text-label);
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-slate);
+}
+
+/* Category heading: icon in a tinted circle beside the words. */
+.gam-category {
+  display: flex;
+  align-items: flex-start;
+  padding: 0 4px;
+}
+.gam-category__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-right: var(--sb-space-3);
+  border-radius: 50%;
+  background: var(--sb-accent-tint);
+  color: var(--sb-accent-strong);
+}
+.gam-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gam-list > li {
+  display: flex;
+}
+.gam-list > li > .sb-card {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Game card (the cards of one row are equally tall: the list item is a flex box) */
+.gam-card__levels {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--sb-text-label);
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--sb-accent-strong);
+}
+.gam-card__missing {
+  display: block;
+  margin-top: 8px;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--sb-slate);
+}
+.gam-card__action {
+  margin-top: 14px;
+}
+
+/* Game page */
+.gam-game {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.gam-credit {
+  font-size: var(--sb-text-label);
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.gam-player {
+  overflow: hidden;
+}
+.gam-player__box {
+  position: relative;
+  height: 72vh;
+  min-height: 360px;
+  background: var(--sb-accent-tint);
+}
+.gam-player__frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--sb-white);
+}
+.gam-player__loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+/* before the frame is there: in the flow, not laid over anything */
+.gam-player__loading--plain {
+  position: static;
+  min-height: 64px;
+}
+.gam-player__loading .sb-icon {
+  margin-right: 10px;
+}
+.gam-player__body {
+  padding: 18px;
+}
+.gam-player__hint {
+  display: flex;
+  align-items: center;
+  margin-top: 14px;
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--sb-slate);
+}
+.gam-player__hint .sb-icon {
+  flex: none;
+  margin-right: 8px;
+}
+
+@media (min-width: 720px) {
+  /* tablet and laptop: the seven choices in one row */
+}

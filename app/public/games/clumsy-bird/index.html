@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Clumsy Bird</title>
+        <!--
+            Clumsy Bird by Ellison Leao, a Flappy Bird clone made with melonJS.
+            GPL-3.0: see LICENSE.md. Modified for Sensebod Offline on 2026-11-16:
+            see SENSEBOD-OFFLINE-CHANGES.txt.
+        -->
+        <link rel="stylesheet" type="text/css" media="screen" href="index.css">
+        <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="description" content="Clumsy Bird - A Flappy Bird clone using MelonJS"/>
+    </head>
+
+    <body>
+        <!-- Canvas placeholder -->
+        <div id="screen"></div>
+
+        <!-- Sensebod Offline: sound on / off by touch (the M key still works) -->
+        <button id="sound-toggle" type="button">Sound: on</button>
+
+        <!-- Sensebod Offline: storage stand-ins, must be the first script -->
+        <script type="text/javascript" src="sensebod-offline-shim.js"></script>
+
+        <!-- melonJS Library -->
+        <script type="text/javascript" src="js/melonJS-min.js" ></script>
+        <script type="text/javascript" src="js/game.js" ></script>
+        <script type="text/javascript" src="js/entities/entities.js" ></script>
+        <script type="text/javascript" src="js/entities/HUD.js" ></script>
+        <script type="text/javascript" src="js/screens/title.js" ></script>
+        <script type="text/javascript" src="js/screens/play.js" ></script>
+        <script type="text/javascript" src="js/screens/gameover.js" ></script>
+        <script type="text/javascript">
+            window.onReady(function onReady() {
+                game.onload();
+            });
+        </script>
+
+    </body>
+</html>

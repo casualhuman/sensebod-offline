@@ -1,0 +1,51 @@
+Dino Runner in Sensebod Offline
+===============================
+
+Project:  https://github.com/wayou/t-rex-runner  (branch gh-pages)
+Commit:   5455bfa408ec6b707c7300ff194b7390733a766d  (8 June 2022)
+Licence:  BSD-3-Clause (see LICENSE, copied unchanged from the project).
+          The game code was taken by that project from the Chromium source
+          code: "Copyright (c) 2014 The Chromium Authors. All rights
+          reserved." (BSD-style licence). That notice is kept at the top of
+          index.js and index.css. The sprite pictures and the three sounds
+          (inside index.html) come from Chromium as well.
+Date of this copy: 2026-11-16
+
+Changes made for Sensebod Offline (no internet, sandboxed frame, old phones)
+
+Files left out
+- README.md, .gitignore, the demo .gif pictures, assets/offline-sprite-1x.png,
+  assets/offline-sprite-2x.png, 100-disabled.png and 200-disabled.png
+  (none of them is loaded by the game).
+
+index.html
+- Removed the Google Fonts style sheet (the only request to another host).
+- Removed the "Press Space to start" message box, its broken "ok" button and
+  the inline script that hid it.
+- Added the line "Tap to jump over the plants. On a keyboard, press Space.",
+  a "Sound: on / off" button and a one-line credit, in a bar at the bottom.
+- Title changed to "Dino Runner"; lang="en" added.
+- Loads sensebod-offline-shim.js before index.js and sensebod-offline-ui.js
+  at the end of the body.
+- The sprite <img> tags and the three sounds (data: addresses) are unchanged.
+
+index.css
+- Upstream rules unchanged. Added at the end: no page scroll, no text
+  selection, touch-action: none on the game, and the styles of the new
+  bottom bar.
+
+index.js
+- loadSounds: the audio context is made once only (upstream made a new one
+  after every pause, and the browser allows only a few); if it cannot be
+  made, the game plays without sound instead of stopping.
+- playSound: silent when the "Sound: off" button is set; errors are caught.
+- onKeyDown: after a crash, a tap anywhere on the screen starts again, once
+  0.75 s have passed (upstream: only a tap on the game strip itself).
+- One comment line added under the Chromium copyright notice.
+
+New files
+- sensebod-offline-shim.js: in-memory stand-ins for localStorage,
+  sessionStorage and document.cookie (the game does not use them; kept as
+  a guard, the same file as in the other games).
+- sensebod-offline-ui.js: the sound button.
+- SENSEBOD-OFFLINE-CHANGES.txt: this file.

@@ -1,0 +1,93 @@
+2048 in Sensebod Offline
+========================
+
+Project:  https://github.com/gabrielecirulli/2048
+Commit:   478b6ec346e3787f589e4af751378d06ded4cbbc (24 October 2024)
+Licence:  MIT, Copyright (c) 2014 Gabriele Cirulli. See LICENSE.txt.
+          The Clear Sans fonts are Copyright (c) 2012 Intel Corporation,
+          Apache License 2.0: see style/fonts/LICENSE-ClearSans.txt.
+Date of these changes: 2026-11-16
+
+The files come from the top of the repository, which runs as it is (the
+project's Sass source and Rakefile were not used, and nothing was built or
+downloaded).
+
+Why it was changed: the game is played with no internet, inside a sandboxed
+frame with no storage, on Android 8 phones (Chrome 58) with a 320px touch
+screen. The frame is 284 x 409 px there and nothing may scroll.
+
+Files that are unchanged
+------------------------
+- All ten files in js/ (the game itself, its swipe and keyboard input, its
+  three small polyfills).
+- LICENSE.txt.
+- style/fonts/ClearSans-Regular-webfont.woff and ClearSans-Bold-webfont.woff.
+
+Files left out
+--------------
+- favicon.ico and the meta/ folder (home-screen icon and two iPhone start-up
+  pictures): not used inside a frame.
+- The Clear Sans Light font (not used by the game) and the .eot and .svg
+  copies of all three fonts (for browsers older than the phones' Chrome).
+- style/main.scss, style/helpers.scss, style/fonts/clear-sans.css, Rakefile,
+  README.md, CONTRIBUTING.md, .jshintrc, .gitignore.
+
+Changes to index.html
+---------------------
+- Added: sensebod-offline-shim.js as the first script (in-memory stand-in
+  for localStorage, sessionStorage and cookies; copied from the Hextris
+  folder of Sensebod Offline). The game then keeps the board and the best
+  score in memory: they are forgotten when the game is closed.
+- Added: sensebod-offline-layout.js (see below).
+- Removed: the "How to play" paragraph, the "official version" note with its
+  link to git.io, and the credits paragraph with its links to
+  gabrielecirulli.com, the iTunes store and asherv.com.
+- The credit is kept as plain text: "Game by Gabriele Cirulli".
+- The line above the board now reads "Swipe or use arrow keys. Join numbers
+  to get 2048!" (it said "Join the numbers and get to the 2048 tile!").
+- Removed: the favicon, apple-touch-icon and start-up image links and the
+  Apple / "HandheldFriendly" / "MobileOptimized" meta tags. The viewport tag
+  lost "target-densitydpi" and "minimal-ui" (both no longer understood).
+- "New Game" now comes before the hint in the page source (it floats right).
+
+style/main.css (rewritten)
+--------------------------
+- Kept from the project: all colours, the tile colour rules, and the
+  "appear", "pop", "move-up" and "fade-in" animations.
+- New layout: one compact column for every screen size. Title and scores in
+  a 44px row, hint + credit + a 48px high "New Game" button in the next row,
+  then the board. The project's two fixed layouts (a 500px board for
+  desktops, a 280px board inside a 320px page for phones) are gone: neither
+  fits a 284px frame.
+- The page cannot scroll: html and body are the size of the frame, overflow
+  hidden, body fixed, touch-action none, no text selection.
+- "Try again" and "Keep going" are 48px high.
+- The font rules now sit in this file (two weights, .woff only); there is no
+  @import any more.
+- The glow around tiles from 128 upwards is smaller (12px blur in place of
+  30px) to suit the smaller tiles.
+- Nothing newer than Chrome 58 understands: no flexbox "gap", no "inset",
+  no "aspect-ratio", no CSS variables, no min() / max().
+
+sensebod-offline-layout.js (new, plain ES5)
+-------------------------------------------
+- Measures the frame and writes the size of the board, cells and tiles, the
+  tile positions and the number sizes into a <style> element. The board is
+  the largest square that fits under the two header rows: 276px in a
+  284 x 409 frame, 247px in a 284 x 360 frame, never more than the
+  project's own 500px.
+- Does it again on "resize", "orientationchange", "load" and four times a
+  second for the first ten seconds, because a sandboxed frame can be 0 x 0
+  for a moment while it loads. Until the frame has a size it uses the
+  284 x 409 sizes.
+- Cancels "touchmove" on the whole page (asked for as a non-passive
+  listener) so the page cannot scroll or bounce under a swipe; cancels the
+  long-press menu.
+
+style/fonts/LICENSE-ClearSans.txt (new)
+---------------------------------------
+- The copyright and licence statement found inside the two font files,
+  followed by the text of the Apache License 2.0. The repository states the
+  licence inside the font files but does not carry the licence text; the
+  text was copied from another Apache-2.0 package already on the build
+  machine (node_modules/typescript/LICENSE.txt). Nothing was downloaded.

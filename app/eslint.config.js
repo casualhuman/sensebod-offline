@@ -21,7 +21,7 @@ const floorRules = {
 
 /** Feature folders may use shared code only, never each other, never the mock. */
 function boundaries(feature) {
-  const others = ['learner', 'lessons', 'admin'].filter((name) => name !== feature);
+  const others = ['learner', 'lessons', 'admin', 'games'].filter((name) => name !== feature);
   return {
     'no-restricted-imports': [
       'error',
@@ -37,7 +37,8 @@ function boundaries(feature) {
 }
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'node_modules'] },
+  // public/games holds other projects' code, kept as they wrote it (docs/GAMES.md).
+  { ignores: ['dist', 'coverage', 'node_modules', 'public/games'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -112,7 +113,7 @@ export default tseslint.config(
       ],
     },
   },
-  ...['learner', 'lessons', 'admin'].map((feature) => ({
+  ...['learner', 'lessons', 'admin', 'games'].map((feature) => ({
     files: [`src/features/${feature}/**/*.{ts,tsx}`],
     ignores: ['**/*.test.{ts,tsx}'],
     rules: boundaries(feature),

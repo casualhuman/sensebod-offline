@@ -1,0 +1,28 @@
+Blockly Games - credits for third-party parts kept in this folder
+
+Code
+- Blockly Games and Blockly: Copyright Google LLC, Apache License 2.0 (LICENSE).
+- JS-Interpreter (Neil Fraser, Google): Apache License 2.0. It includes Acorn (Marijn Haverbeke and others): MIT licence.
+- Closure Library (Google): Apache License 2.0.
+- SoundJS 1.0.0: Copyright (c) 2011-2015 gskinner.com, inc., MIT licence.
+- Ace editor: Copyright (c) 2010, Ajax.org B.V., BSD 3-clause licence.
+- google-code-prettify: Copyright Google Inc., Apache License 2.0.
+
+Pictures (Puzzle)
+- cat.jpg: by Alvesgaspar, CC BY-SA 3.0.
+- duck.jpg: by Ducklover Bonnie, CC BY-ND 2.0 (unchanged).
+- snail.jpg: by Jürgen Schoner, CC BY-SA 3.0.
+- bee.svg: drawn for Sensebod Offline, Apache License 2.0.
+
+Sounds (as written in the files' own tags)
+- maze/win: "success_low.wav" by grunz, freesound.org/people/grunz/sounds/109663, CC Attribution.
+- turtle/win: "Dialup.mp3" by Jlew, freesound.org/people/Jlew/sounds/16475, CC Attribution.
+- bird/quack: "20130403_duck.04.wav" by dobroide, freesound.org, CC Attribution.
+- bird/worm: "Hit Mellon Squish.aif" by amsempl (freesound.org), CC0.
+- pond/boom: "Glass" by jorickhoofd, freesound.org/people/jorickhoofd/sounds/179265, CC Attribution.
+- pond/splash: "water_splash.wav" by soundscalpel.com, freesound.org/people/soundscalpel.com/sounds/110393, CC Attribution.
+- maze/fail_astro: by Neil Fraser.
+- third-party/blockly/media click, disconnect: "Popping Lid of Lipbalm Stick" by Starlitep (pdsounds.org, public domain),
+  delete: "Crumpling paper" by Stephanm (pdsounds.org, public domain); modified and remixed by Google Inc.
+- Music instruments (third-party/soundfonts): CC Attribution 3.0, see en/third-party/soundfonts/README.txt.
+All other pictures and sounds come with the Blockly Games repository under its Apache License 2.0.

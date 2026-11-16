@@ -1,0 +1,77 @@
+JavaScript Snake in Sensebod Offline
+====================================
+
+Project:  https://github.com/patorjk/JavaScript-Snake
+Commit:   3243086c0badb4b4c6bedfe6d95d5a52a7caaa88 (11 October 2026)
+Licence:  MIT, Copyright (c) Patrick Gillespie. See the LICENSE file.
+          The DOS look is TuiCss v2.1.2 by Vinicius Reif Biavatti, MIT:
+          see css/tuicss/LICENSE.md.
+Date of these changes: 2026-11-16
+
+The files come from the project's src/ folder, which runs as it is (the
+project's Parcel build was not used, and nothing was downloaded).
+
+Why it was changed: the game is played with no internet, inside a sandboxed
+frame with no storage, on Android 8 phones (Chrome 58) with a 320px touch
+screen.
+
+Files left out
+--------------
+- The 13 extra colour themes and their pictures (css/*-snake.css other than
+  main, common and dos). Their picture addresses only work after the
+  project's build, and one of them loads a font from Google Fonts.
+- The "Perfect DOS VGA 437" fonts (css/tuicss/fonts/). No licence for them is
+  stated in the repository. The phone's own monospace font is used.
+- TuiCss background and scroll-bar pictures (css/tuicss/images/): not used.
+- The AI demo (ai-example.html, js/ai-init.js), the favicon, README, package
+  files and build settings.
+
+Changes to index.html
+---------------------
+- Removed: the theme list and its script, the "Full Screen" button (the
+  frame does not allow it), the font preload, the favicon link and the
+  commented-out Google Analytics tag.
+- Added: sensebod-offline-shim.js as the first script (in-memory stand-in
+  for localStorage, sessionStorage and cookies).
+- On-screen controls are always shown, not only when the browser reports a
+  touch screen: four 52px arrow buttons at the bottom right (two rows) and
+  a separate 52px pause button at the bottom left. Drawn as inline SVG.
+  CSS changed for Chrome 58 ("grid-gap" in place of "gap", no "env()").
+- New styles: the page cannot scroll; dialogs are centred in the frame and
+  at most 290px wide; dialog buttons are 48px high and the Mode list 44px;
+  score labels are 14px below 480px width; block pictures scale to the
+  block size.
+
+Changes to js/snake.js (marked "Sensebod Offline" in the file)
+------------------------------------------------------------
+- The high score no longer reads localStorage directly. It is kept in
+  memory and written to storage inside try / catch. It is forgotten when
+  the game is closed.
+- No "you have beaten your previous high score" message when there was no
+  earlier score.
+- "??" replaced with a plain test, and trailing commas after the last
+  argument of function calls removed (older browsers).
+- Blocks are 16px instead of 20px when the frame is under 480px wide or
+  high, so a phone gets a bigger board (16 x 12 squares at 320 x 360).
+- Links to patorjk.com, GitHub and YouTube removed. The credit "by Patrick
+  Gillespie (patorjk.com)" is shown as text in the welcome dialog.
+- Welcome text rewritten for touch and keyboard. The F11 hint is gone.
+- The pause dialog has a "Resume" button in place of "Press [space]".
+
+Changes to js/init.js (rewritten, plain ES5)
+--------------------------------------------
+- Creates the board as before, without the console messages.
+- Arrow and pause buttons act on touchstart / mousedown and call the
+  board's own simulateKeyPress().
+- New: swipe on the board to turn (24px of travel), through the same call.
+- New: the "Resume" button, and no long-press menu.
+
+Changes to the style sheets
+---------------------------
+- css/dos-snake.css: the web font rule removed; flexbox "gap" replaced by a
+  margin.
+- css/tuicss/tuicss.min.css: the font rule and the 22 rules that load
+  background or scroll-bar pictures removed.
+- css/common-snake.css, css/main-snake.css, the two pictures in
+  css/images/ and LICENSE are unchanged.
+- js/init.js: start-up waits until the frame has a size (a sandboxed frame can be 0 x 0 for a moment).

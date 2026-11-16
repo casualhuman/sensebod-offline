@@ -1,0 +1,101 @@
+Open Chess (Chess AI) in Sensebod Offline
+=========================================
+
+Project:  https://github.com/zeyu2001/chess-ai
+Commit:   30e96db3b77495ea462c5d9990fc375ba5a1ae7e (31 August 2021)
+Licence:  MIT, Copyright (c) 2020 Zhang Zeyu. See the LICENSE file.
+Date of these changes: 2026-11-16
+
+The project runs as it is (no build). On its own page it loads jQuery,
+chessboard.js, Bootstrap, Font Awesome and Google's icon font from the
+internet. Those that are needed were copied in from their official
+repositories; nothing was built and no code from any repository was run.
+
+Other people's work in this folder
+----------------------------------
+- js/chess.js: chess.js by Jeff Hlywa, BSD 2-Clause, "slightly modified" by
+  the Chess AI project (it adds ugly_moves and ugly_move). Copied unchanged
+  from the Chess AI repository. The licence text is at the top of the file
+  and in licenses/chessjs-LICENSE.txt (from https://github.com/jhlywa/chess.js,
+  commit d43e6683efeefbd07f8c53e8e7a47c62cf612439).
+- js/chessboard-1.0.0.min.js and css/chessboard-1.0.0.min.css: chessboard.js
+  1.0.0 by Chris Oakman, MIT. Taken unchanged from the release archive
+  website/releases/chessboardjs-1.0.0.zip in https://github.com/oakmac/chessboardjs
+  (commit bfb9315cd44d22c4a3ccc883ab4c0b42e902557e). Both files have the same
+  SHA-384 sums as the ones the Chess AI page asked for from the internet.
+  Licence: licenses/chessboardjs-LICENSE.md.
+- js/jquery-3.5.1.min.js: jQuery 3.5.1, MIT, unchanged, from dist/ at the tag
+  3.5.1 of https://github.com/jquery/jquery
+  (commit e1cffdef277fcf543833a20d28cbadcd000ebece). The Chess AI page asked
+  for this version. Licence: licenses/jquery-LICENSE.txt.
+- sensebod-offline-shim.js: the Sensebod Offline storage stand-in, the same
+  file as in the other games.
+
+Files left out
+--------------
+- img/chesspieces/wikipedia/*.png (the twelve piece pictures). They are the
+  same files as in chessboard.js, and neither repository states a licence for
+  them (the MIT licence files speak of the software; the folder name points
+  to Wikipedia, with no author and no licence named). They were NOT copied.
+  js/pieces.js draws twelve new, simple pieces instead (written for Sensebod
+  Offline, MIT like the game).
+- Bootstrap (CSS and JS), Font Awesome and Google's Material Icons: all came
+  from the internet. A small hand-written css/main.css replaces the layout;
+  no icon was in use.
+- css/main.css of the project (replaced), README.md, .gitattributes.
+
+Changes to index.html (rewritten)
+---------------------------------
+- Every address on another host is gone (5 scripts and style sheets from
+  CDNs, their integrity attributes, the link to GitHub in the footer). The
+  credit "Chess AI (c) 2020 Zhang Zeyu, MIT licence" stays as text.
+- Scripts are plain <script> tags at the end of the body, the storage
+  stand-in first.
+- The page is now: one status line, the board, three buttons (New game, Undo,
+  Level) and the credit line. Removed: "positions evaluated" figures, the
+  Settings, Opening Positions and Computer vs. Computer panels, the search
+  depth for White, "Show Suggested Move", the Advantage bar, Redo. They need
+  a large screen or make an old phone work for nothing.
+
+Changes to js/main.js
+---------------------
+Kept from the project: the piece tables, evaluateBoard() and minimax(), and
+the idea of the whole game. Changed:
+- Newer JavaScript written the old way (10 ** 10, [a, b] = ..., `text ${x}`,
+  includes()), although Chrome 58 would have accepted these.
+- Level button instead of the depth lists: Easy = depth 1 (the default),
+  Medium = depth 2, Hard = depth 3. Depths 4 and 5 are gone.
+- minimax(): the depth is tested before the list of moves is made (same
+  answer, much less work at the leaves); a search that has run for 4 seconds
+  stops and plays the best move among those it looked at fully.
+- evaluateBoard(): asks in_draw() once instead of also asking for threefold
+  repetition and stalemate again (in_draw() already includes both).
+- The learner always plays White. The status line always says whose turn it
+  is ("Your turn (White).", "The computer is thinking...", "Check! ...") or
+  how the game ended (checkmate for either side, the kinds of draw).
+- Bug fixed: "if (!checkStatus('black'));" (a stray semicolon) made the
+  computer try to move after the game had ended, which stopped the script.
+- makeBestMove() plays the move first and scores it after, like the
+  learner's move.
+- Tap to move, as well as drag and drop: tap a white piece (it is marked,
+  green dots show where it may go, red frames show what it may take), then
+  tap one of the marked squares. Tap the piece again to let it go. This also
+  works with a mouse. The grey "hover" marks of the project are gone (a
+  finger does not hover).
+- Touch: a finger on the board never scrolls the page (touch-action: none,
+  and touchstart / touchmove are cancelled on the board); chessboard.js's
+  own touchmove listener is added as non-passive.
+- Undo takes back the computer's move and the learner's move, also stops a
+  computer move that is still waiting, and puts the evaluation sum back.
+  The button is greyed out when there is nothing to undo. alert() is no
+  longer used (a sandboxed frame shows no alert box).
+- New game asks for a second tap ("Tap again") while a game is being played,
+  because confirm() does not work in a sandboxed frame either.
+- The board is sized to the frame (made for 284 x 409 and 284 x 360), waits
+  until the frame has a size before it is built, and is resized when the
+  frame changes. The a-h / 1-8 marks in the squares are off (too small to
+  read on these squares).
+- The pieces come from js/pieces.js as data: pictures (no picture files).
+- A pawn that reaches the last row always becomes a queen (as in the project).
+
+Nothing here uses localStorage, cookies, eval or the network.

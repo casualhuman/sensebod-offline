@@ -1,0 +1,48 @@
+Blockly Games, as installed in Sensebod Offline
+Project: https://github.com/blockly-games/blockly-games (formerly google/blockly-games)   licence Apache-2.0 (LICENSE)
+Installed: 2026-11-16
+
+Source: the project's own pre-built English offline bundle, not a build made here.
+  Link given on the project's wiki page "Offline": https://github.com/google/blockly-games/raw/offline/generated/blockly-games-en.zip
+  Fetched as: https://raw.githubusercontent.com/blockly-games/blockly-games/2768f123085854bcf972081d3b222c2d7ffa4158/generated/blockly-games-en.zip
+  Branch "offline", commit 2768f123085854bcf972081d3b222c2d7ffa4158 (2019-10-16, "Routine recompile"); git blob f8e917d5faa40ab0fa5cafa67014ce893d0c3af5
+  SHA-256 of the zip: 5c9edec523162c5b0392a897dccbdaa39e15cdf2c495900932477a569ac66940   (3,806,876 bytes)
+  LICENSE: from branch master, commit 5d2ff6f39207f7ed31e3d11ba1de277c85efe4c2.
+  en/third-party/soundfonts/README.txt: from branch master (the zip leaves it out; it holds the credits the sound files need).
+The folder en/ is the zip's blockly-games/en/ folder with the changes below. The .js files in en/ are compiled (minified)
+files; the readable source is in the project repository.
+
+Changes (the bag has no internet; the game runs in a sandboxed frame with no origin, no pop-up boxes and no 'unsafe-eval'):
+- index.html (new, replaces the zip's one-line redirect page): shows en/index.html in an inner frame laid out at
+  860 x 560 px or more and shrinks it to fit the screen; on a very small screen it first says that the games are made
+  for a tablet or computer ("Play anyway").
+- en/sensebod-offline-shim.js (new), loaded first on all 11 HTML pages of en/:
+  * memory stand-ins for localStorage and sessionStorage, carried from page to page in window.name, so solved levels
+    last until the game is closed;
+  * alert / confirm / prompt boxes drawn inside the page (SensebodOfflineDialog); the browser's own boxes are not
+    allowed in the sandbox.
+- en/*.html: removed <script src="/common/storage.js"> (cloud save; the file is not in the offline bundle).
+- en/about.html: removed Google Analytics, the links to GitHub, Google Groups and Google policies (the developer site
+  is named as text), smaller side padding; the title link points to index.html.
+- all en/**/compressed.js (9 files): removed the Google Analytics loader.
+- the 8 game bundles (puzzle, maze, bird, turtle, movie, music, pond/duck, pond/tutor):
+  * Blockly.alert / confirm / prompt now call SensebodOfflineDialog (typing a number on Android, naming a variable,
+    "delete N blocks?");
+  * the block menu entry "Help" is switched off and no longer calls window.open (it opened Wikipedia / GitHub pages);
+  * Blockly's default media address (blockly-demo.appspot.com) replaced by the local folder (it was never used).
+- en/index/generated/en/compressed.js: "Clear data" asks through SensebodOfflineDialog instead of confirm().
+- en/third-party/JS-Interpreter/compressed.js: acorn's keyword tests were built with new Function(); replaced by a
+  plain look-up table (new Function is refused by the bag's content security policy and the interpreter did not load).
+- en/third-party/SoundJS/soundjs.min.js: no "X-Requested-With" request header (it made the browser send a
+  pre-flight request that a static file server does not answer; the Music instruments did not load).
+- en/third-party/ace/worker-javascript.js: isValidJS() no longer calls eval(); it answers "no", which is what
+  happened anyway when eval was refused (Pond's JavaScript editor shows its hints as errors, not warnings).
+- Pictures and sounds with no open licence stated:
+  * en/puzzle/bee.jpg ("Copyright Matt Cole / Meet Your Neighbours. Used in Blockly with permission") removed;
+    en/puzzle/bee.svg is a new drawing made for Sensebod Offline (Apache-2.0).
+  * en/maze/fail_panda.mp3/.ogg ("100 Days Old", San Diego Zoo) removed; the panda skin uses fail_pegman.
+  * en/movie/win.mp3/.ogg (freesound 128196 by kafokafo, marked only "Creative Commons") removed; Movie uses maze/win.
+- Not copied: en/favicon.ico.
+Other languages are not shipped; the language menu hides itself when there is one language.
+
+Credits for pictures and sounds that are kept: CREDITS.txt

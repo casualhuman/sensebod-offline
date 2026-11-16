@@ -1,0 +1,123 @@
+/*
+ * Open Chess in Sensebod Offline. Hand-written layout: it replaces Bootstrap
+ * and the project's own small style sheet. Made for a 284 x 409 frame.
+ * Chrome 58: no flex gap, no inset, no aspect-ratio.
+ */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: #f4f1ea;
+  color: #1f1f1f;
+  font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+#app {
+  text-align: center;
+}
+
+#status {
+  box-sizing: border-box;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 4px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: #e3ecf7;
+  color: #12365e;
+}
+#status.wait { background: #fff0c2; color: #5c4300; }
+#status.check { background: #ffd9d2; color: #7a1200; }
+#status.over { background: #1f5f2e; color: #ffffff; }
+
+#myBoard {
+  margin: 0 auto;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* the piece that follows the finger */
+img.piece-417db {
+  touch-action: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+#myBoard img.piece-417db {
+  display: block;
+}
+
+/* last move of each side (the project's own colours) */
+.highlight-white {
+  box-shadow: inset 0 0 3px 3px yellow;
+}
+.highlight-black {
+  box-shadow: inset 0 0 3px 3px blue;
+}
+
+/* the picked piece and the squares it may go to */
+#myBoard .oc-selected {
+  box-shadow: inset 0 0 0 3px #0a8f3c;
+  background-color: #b9e6a5;
+}
+#myBoard .oc-target {
+  background-image: radial-gradient(circle, rgba(10, 110, 50, 0.75) 0, rgba(10, 110, 50, 0.75) 20%, transparent 24%);
+}
+#myBoard .oc-capture {
+  box-shadow: inset 0 0 0 4px #c62828;
+}
+
+#controls {
+  display: flex;
+  margin: 0 auto;
+  padding: 6px 0 0;
+  box-sizing: border-box;
+}
+#controls button {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 48px;
+  margin: 0 3px;
+  padding: 0 2px;
+  border: 2px solid #12365e;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #12365e;
+  font: inherit;
+  font-weight: bold;
+  line-height: 1.1;
+  touch-action: manipulation;
+}
+#controls button:first-child { margin-left: 0; }
+#controls button:last-child { margin-right: 0; }
+#controls button:active { background: #d6e4f5; }
+#controls button:focus { outline: 3px solid #f0a500; outline-offset: 1px; }
+#controls button:disabled { border-color: #a9a9a9; color: #8a8a8a; background: #ececec; }
+#controls #newBtn { background: #12365e; color: #ffffff; }
+#controls #newBtn:active { background: #0b2440; }
+#controls #newBtn.ask { background: #c62828; border-color: #c62828; }
+#controls small {
+  display: block;
+  font-size: 11px;
+  font-weight: normal;
+}
+
+#credit {
+  height: 16px;
+  line-height: 16px;
+  font-size: 10px;
+  color: #555555;
+  white-space: nowrap;
+  overflow: hidden;
+}

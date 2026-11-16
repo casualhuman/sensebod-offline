@@ -1,0 +1,51 @@
+Tower Blocks in Sensebod Offline
+================================
+
+Project:  https://github.com/iamkun/tower_game  ("Tower Building")
+Commit:   c6fa84afe179b661fa71cf7cc8788d0c47ca2875 (29 August 2025)
+Licence:  MIT, Copyright (c) 2018 BMQB, Inc (see LICENSE in this folder)
+Also here: assets/zepto-1.1.6.min.js, Zepto 1.1.6, MIT licence,
+           Copyright (c) 2010-2014 Thomas Fuchs (shipped in the project).
+Changed:  2026-11-16, for Sensebod Offline (no internet, sandboxed frame,
+          Chrome 58, touch phones 320px wide).
+
+The game was not rebuilt. dist/main.js is the project's own built file with
+one small edit (see 5).
+
+Changes
+1. index.html rewritten from the project's index.html (same layout, styles
+   and script), with these differences:
+   - removed Google Tag Manager / analytics (the only request to another host);
+   - removed the favicon link;
+   - removed the Share button, the WeChat share overlay and the WeChat
+     ("WeixinJSBridgeReady") start-up branch;
+   - the title picture was in Chinese: replaced by the text "Tower Blocks"
+     and one line of instructions in English;
+   - music no longer tries to start while loading: it starts on the Start tap;
+   - added a "Sound on / off" button (48px, bottom left);
+   - added keyboard play: Space or Enter = Start and drop a block,
+     Enter = play again after Game Over (mouse and touch work as before);
+   - the "Network error" alert() became a line of text on the loading screen
+     (alert is blocked in a sandboxed frame);
+   - Replay reloads the page with location.reload() instead of adding
+     "?s=<time>" to the address;
+   - no scrolling, text selection or tap highlight on the page.
+2. Added sensebod-offline-shim.js (in-memory stand-ins for localStorage,
+   sessionStorage and document.cookie), loaded before every other script.
+   The game itself does not use storage; this is a safety net.
+3. Not copied: src/, package files, README files, .ogg sounds (the game only
+   plays the .mp3 files), favicon.png, rope.png, main-index-logo.png,
+   main-loading-logo.png, main-index-title.png (Chinese title),
+   main-modal-invite-b.png and main-share-icon.png (sharing).
+4. Not copied: the "wenxue" number font (assets/wenxue.*). It is a cut-down
+   copy of a commercial Chinese typeface and its licence could not be
+   confirmed. Numbers are drawn in bold Arial / the phone's sans-serif.
+5. dist/main.js: the default canvas font "wenxue" became
+   "Arial,Helvetica,sans-serif" and its default weight "normal" became
+   "bold" (two string literals; nothing else changed).
+- index.html: start-up waits until the frame has a size (in a sandboxed frame it can be 0 x 0 for a moment,
+  which left an empty canvas with no Start button).
+- Music credit: assets/bgm.mp3 is "Caketown" by Matthew Pablo (2012), by the file's ID3 tags. The track is
+  listed on OpenGameArt (https://opengameart.org/content/caketown-cuteplayful) under CC-BY-SA 3.0 as found
+  by a web search on 2026-11-16; the listing itself was not opened, so confirm it there before the bags ship.
+  The upstream project does not credit it.

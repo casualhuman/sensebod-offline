@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blockly Games</title>
+  <!--
+    Sensebod Offline: start page for Blockly Games.
+    The games are laid out for a wide screen: they need about 860 x 560 px
+    (the map is a fixed 400 px, the blocks area takes what is left). This page shows
+    the unchanged game pages (folder en/) in an inner frame of that size and shrinks
+    the frame to fit, as a phone browser does on the project's own website.
+    Plain ES5: it must run on Chrome 58.
+  -->
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #fff; font-family: sans-serif; }
+    #game { position: absolute; left: 0; top: 0; border: 0; -webkit-transform-origin: 0 0; transform-origin: 0 0; }
+    #small { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: #fff; display: none; overflow: auto; }
+    #small div { padding: 16px; max-width: 420px; margin: 0 auto; text-align: center; }
+    #small h1 { font-size: 20px; margin: 8px 0 12px; color: #222; }
+    #small p { font-size: 16px; line-height: 1.4; margin: 0 0 16px; color: #222; }
+    #small button { min-height: 48px; min-width: 200px; padding: 10px 20px; font-size: 18px; border: 1px solid #4d90fe; border-radius: 4px; background: #4d90fe; color: #fff; }
+  </style>
+</head>
+<body>
+  <iframe id="game" title="Blockly Games"></iframe>
+  <div id="small">
+    <div>
+      <h1>Blockly Games</h1>
+      <p>These games are made for a tablet or a computer. On this small screen the blocks and the words are very small.</p>
+      <button id="anyway" type="button">Play anyway</button>
+    </div>
+  </div>
+  <script>
+    (function () {
+      'use strict';
+      var NEED_WIDTH = 860;   // 400 px map + toolbox + room to build a program
+      var NEED_HEIGHT = 560;  // header + 400 px map + buttons
+      var SMALL = 0.6;        // below this scale, warn the learner first
+      var frame = document.getElementById('game');
+      var small = document.getElementById('small');
+      var started = false;
+      var asked = false;
+
+      function fit() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        // A sandboxed frame can be 0 x 0 for a moment while it loads.
+        if (!(w > 0 && h > 0)) {
+          setTimeout(fit, 100);
+          return;
+        }
+        var scale = Math.min(1, w / NEED_WIDTH, h / NEED_HEIGHT);
+        frame.style.width = Math.floor(w / scale) + 'px';
+        frame.style.height = Math.floor(h / scale) + 'px';
+        var transform = scale < 1 ? 'scale(' + scale + ')' : 'none';
+        frame.style.webkitTransform = transform;
+        frame.style.transform = transform;
+        if (started) return;
+        if (scale < SMALL && !asked) {
+          small.style.display = 'block';
+          return;
+        }
+        start();
+      }
+
+      function start() {
+        if (started) return;
+        started = true;
+        small.style.display = 'none';
+        frame.src = 'en/index.html';
+      }
+
+      document.getElementById('anyway').addEventListener('click', function () {
+        asked = true;
+        start();
+      }, false);
+      window.addEventListener('resize', fit, false);
+      fit();
+    })();
+  </script>
+</body>
+</html>

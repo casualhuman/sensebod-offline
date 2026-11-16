@@ -89,6 +89,7 @@ export const routes: RouteDef[] = [
 |---|---|---|
 | `lessons` | `/lesson` and below | 3 |
 | `admin` | `/admin` and below | 4 |
+| `games` | `/games` and `/games/:gameId` (static game files live below, at `/games/<id>/…`; see `app/docs/GAMES.md`). Off when `features.games` is `false` in `shared/switches.ts` | — |
 | `learner` | everything else (`/`, `/save-progress`, `/portal/…`) | 2 |
 
 ### 3.2 The URL scheme (`paths`)
@@ -106,6 +107,9 @@ Build every link with `paths` from `@shared/router`; never write path strings by
 | `paths.lesson(lessonId)` | `/lesson/:lessonId` | the lesson, any type | lessons |
 | `paths.lessonDone(lessonId)` | `/lesson/:lessonId/done` | finished screen | lessons |
 | `paths.admin(rest?)` | `/admin`, `/admin/<rest>` | admin (stream 4 decides what is below) | admin |
+| `paths.games()` | `/games` | Games home (categories) | games |
+| `paths.gamesCategory(id)` | `/games?category=<id>` | the games of one category | games |
+| `paths.game(gameId)` | `/games/:gameId` | one game | games |
 
 So a lesson card links with `paths.lesson(lesson.id)`, and a lesson's Back goes to `paths.series(lesson.portal.id, lesson.group.id, lesson.series.id)` (all three ids come with `GET /lessons/{id}`).
 

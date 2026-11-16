@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Living things: a butterfly, a bird on a branch, a fish in the water and a green leaf" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<path d="M0 176 q90 -14 180 0 t180 0 v44 h-360 z" fill="#5B8FCC"/>
+<path d="M250 190 q20 -16 44 0 q-24 16 -44 0 z M294 190 l14 -10 v20 z" fill="#E5A90A"/><circle cx="262" cy="188" r="2.5" fill="#15233B"/>
+<path d="M0 96 h120" stroke="#8E4F2A" stroke-width="8" stroke-linecap="round"/>
+<path d="M60 92 q0 -28 28 -28 q20 0 24 18 l12 4 l-12 4 q-4 6 -12 8 z" fill="#085CAA"/><circle cx="98" cy="74" r="3" fill="#FFFFFF"/><path d="M60 92 l-20 6 l12 -18 z" fill="#064A8A"/>
+<g transform="translate(206 84)"><path d="M0 0 q-34 -40 -44 -6 q-2 22 44 6 z M0 0 q34 -40 44 -6 q2 22 -44 6 z" fill="#D9342B"/><path d="M0 4 q-26 30 -30 8 q2 -14 30 -8 z M0 4 q26 30 30 8 q-2 -14 -30 -8 z" fill="#E5A90A"/><rect x="-3" y="-10" width="6" height="34" rx="3" fill="#15233B"/></g>
+<path d="M150 160 q-34 -6 -34 -40 q36 2 34 40 z" fill="#3E9B63"/><path d="M148 158 l-26 -30" stroke="#2E7D4F" stroke-width="3"/>
+</svg>

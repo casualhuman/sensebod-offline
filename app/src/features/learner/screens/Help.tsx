@@ -67,17 +67,16 @@ export default function Help() {
   const backTo = childProtectionAudience ? paths.group(CHILD_PROTECTION, childProtectionAudience) : portalPath;
 
   return (
-    <PageShell title="Get help now" backTo={backTo} quickExit listenSrc={null}>
+    <PageShell title="Get help now" heading="Get help now" backTo={backTo} quickExit listenSrc={null}>
       <div className="sb-stack sb-stack--lg">
         <Hero
-          title="Get help now"
           description="You are not alone. These people can help you."
           picture={{
             url: `${SCENES}CPB-Help-hero.svg`,
             alt: 'Mr Koroma, the teacher, sits on a bench outside the classroom and leans in to listen kindly while Fatmata, in her blue school uniform, tells him something',
           }}
           pictureShape="lesson"
-          icon={<IconHelp size={42} />}
+          icon={<IconHelp size={28} />}
           listenSrc={null}
         />
 

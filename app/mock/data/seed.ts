@@ -29,6 +29,7 @@ import type {
   VideoQuestion,
 } from '../../src/shared/api/types.ts';
 import { AGRICULTURE_VIDEOS, ILLUSTRATION_ALTS } from './generated.ts';
+import { SUBJECT_PICTURES } from './subjectPictures.ts';
 
 export interface GroupRecord {
   id: string;
@@ -83,6 +84,16 @@ const SEED_DATE = '2026-11-12T09:00:00.000Z';
 /** Picture from the repository's illustrations/ folder, with the drawing's own description. */
 export function pic(key: string): Picture {
   return { url: `/illustrations/${key}.svg`, alt: ILLUSTRATION_ALTS[key] ?? '' };
+}
+
+/** The collection of stand-in pictures for a school subject (see subjectPictures.ts). */
+function subjectPics(title: string): Picture[] {
+  return SUBJECT_PICTURES[title === 'Integrated Science' ? 'Science' : title] ?? [];
+}
+
+/** The subject's own picture: the first of its collection. */
+function subjectPic(title: string): Picture | null {
+  return subjectPics(title)[0] ?? null;
 }
 
 function portalPic(id: PortalId, alt: string): Picture {
@@ -332,29 +343,31 @@ function buildDb(): MockDb {
   const sampleLessons = (subject: string, count: number, named: Record<number, string> = {}): LessonSpec[] => {
     const types: LessonType[] = ['watch', 'listen', 'read'];
     const specs: LessonSpec[] = [];
+    // Each lesson takes the next picture of the subject's collection, so a list does not repeat one picture.
+    const pictures = subjectPics(subject);
     for (let n = 1; n <= count; n += 1) {
-      specs.push({ title: named[n] ?? `[Sample] ${subject} lesson ${n}`, type: types[(n - 1) % types.length] as LessonType, picture: null });
+      specs.push({ title: named[n] ?? `[Sample] ${subject} lesson ${n}`, type: types[(n - 1) % types.length] as LessonType, picture: pictures.length > 0 ? pictures[(n - 1) % pictures.length] : null });
     }
     return specs;
   };
   for (let n = 1; n <= 6; n += 1) {
     const group = addGroup('primary', 'class', `Class ${n}`, `Lessons for Class ${n}`, null, 'available', `primary-class-${n}`);
     const board = n === 4;
-    addSeries(group, 'English Language', '', null, sampleLessons('English Language', board ? 8 : 3));
-    addSeries(group, 'Mathematics', '', null, sampleLessons('Mathematics', board ? 10 : 3, board ? { 3: 'Sharing equally' } : {}));
-    addSeries(group, 'Science', '', null, sampleLessons('Science', board ? 9 : 3));
-    if (board) addSeries(group, 'Social Studies', 'Not in this bag yet. Ask your teacher.', null, [], 'not-in-bag');
+    addSeries(group, 'English Language', '', subjectPic('English Language'), sampleLessons('English Language', board ? 8 : 3));
+    addSeries(group, 'Mathematics', '', subjectPic('Mathematics'), sampleLessons('Mathematics', board ? 10 : 3, board ? { 3: 'Sharing equally' } : {}));
+    addSeries(group, 'Science', '', subjectPic('Science'), sampleLessons('Science', board ? 9 : 3));
+    if (board) addSeries(group, 'Social Studies', 'Not in this bag yet. Ask your teacher.', subjectPic('Social Studies'), [], 'not-in-bag');
   }
   for (let n = 1; n <= 3; n += 1) {
     const group = addGroup('jss', 'class', `JSS ${n}`, `Lessons for JSS ${n}`, null, 'available', `jss-${n}`);
     const board = n === 2;
-    addSeries(group, 'English Language', '', null, sampleLessons('English Language', board ? 10 : 3));
-    addSeries(group, 'Mathematics', '', null, sampleLessons('Mathematics', board ? 14 : 3));
+    addSeries(group, 'English Language', '', subjectPic('English Language'), sampleLessons('English Language', board ? 10 : 3));
+    addSeries(group, 'Mathematics', '', subjectPic('Mathematics'), sampleLessons('Mathematics', board ? 14 : 3));
     const science = sampleLessons('Integrated Science', board ? 12 : 3, board ? { 4: 'Kinds of matter' } : {});
-    if (board) science.push({ title: 'Practice quiz', summary: 'Integrated Science · JSS 2', type: 'check', picture: null });
-    addSeries(group, 'Integrated Science', '', null, science);
-    addSeries(group, 'Social Studies', '', null, sampleLessons('Social Studies', board ? 8 : 3));
-    if (board) addSeries(group, 'Agricultural Science', 'Not in this bag yet. Ask your teacher.', null, [], 'not-in-bag');
+    if (board) science.push({ title: 'Practice quiz', summary: 'Integrated Science · JSS 2', type: 'check' });
+    addSeries(group, 'Integrated Science', '', subjectPic('Integrated Science'), science);
+    addSeries(group, 'Social Studies', '', subjectPic('Social Studies'), sampleLessons('Social Studies', board ? 8 : 3));
+    if (board) addSeries(group, 'Agricultural Science', 'Not in this bag yet. Ask your teacher.', subjectPic('Agricultural Science'), [], 'not-in-bag');
   }
 
   /* ---- Child protection (CPB-Who, CPB-Child, CPB-Parent, CPB-Elder) ---- */
@@ -602,6 +615,12 @@ function buildDb(): MockDb {
   db.pictures = Object.keys(ILLUSTRATION_ALTS)
     .filter((key) => key.indexOf('-Tab-') === -1 && ILLUSTRATION_ALTS[key])
     .map((key) => ({ id: `pic-${slug(key)}`, group: groupOf(key), ...pic(key) }));
+  // The school subject collections, for the admin to choose from under "School".
+  for (const subject of Object.keys(SUBJECT_PICTURES)) {
+    for (const picture of SUBJECT_PICTURES[subject] ?? []) {
+      db.pictures.push({ id: `pic-${slug(picture.url.replace('/pictures/subjects/', '').replace('.svg', ''))}`, group: 'school', ...picture });
+    }
+  }
 
   /* ---- learners and progress (V3-SignIn, AGB-Agriculture, CPB-Child) ---- */
   db.learners = [

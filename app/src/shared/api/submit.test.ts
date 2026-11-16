@@ -21,7 +21,7 @@ afterEach(() => {
 });
 
 describe('one Idempotency-Key per submission (A-04)', () => {
-  const form = { name: 'Hawa', role: 'learner' as const };
+  const form = { name: 'Hawa', role: 'learner' as const, pin: '1234' };
   const hawas = () => getMockDb().learners.filter((learner) => learner.name === 'Hawa');
 
   it('a timed-out "Save and start learning" followed by "Try again" makes one learner', async () => {
@@ -61,7 +61,8 @@ describe('one Idempotency-Key per submission (A-04)', () => {
     const spy = vi.spyOn(globalThis, 'fetch');
     const first = await createLearner(form);
     vi.setSystemTime(Date.now() + 6000);
-    const second = await createLearner(form);
+    // Another Hawa, later: same words on the form except her own number.
+    const second = await createLearner({ ...form, pin: '5678' });
     expect(sentKeys(spy)[1]).not.toBe(sentKeys(spy)[0]);
     expect(second.id).not.toBe(first.id);
   });
@@ -69,7 +70,7 @@ describe('one Idempotency-Key per submission (A-04)', () => {
   it('a different form is a different submission', async () => {
     const spy = vi.spyOn(globalThis, 'fetch');
     const hawa = await createLearner(form);
-    const musa = await createLearner({ name: 'Musa', role: 'learner' });
+    const musa = await createLearner({ name: 'Musa', role: 'learner', pin: '1234' });
     expect(sentKeys(spy)[1]).not.toBe(sentKeys(spy)[0]);
     expect(musa.id).not.toBe(hawa.id);
   });
@@ -83,7 +84,7 @@ describe('one Idempotency-Key per submission (A-04)', () => {
 
     forgetSubmissions();
     spy.mockClear();
-    const other = { name: 'Isatu', role: 'learner' as const };
+    const other = { name: 'Isatu', role: 'learner' as const, pin: '1234' };
     mock.failNext(503);
     const failed = await createLearner(other).catch((error: unknown) => error);
     expect(failed).toBeInstanceOf(ApiError);
@@ -94,7 +95,7 @@ describe('one Idempotency-Key per submission (A-04)', () => {
   it('leaves a key passed by the screen alone', async () => {
     const spy = vi.spyOn(globalThis, 'fetch');
     await createLearner(form, { idempotencyKey: 'mine' });
-    await createLearner(form, { idempotencyKey: 'mine-2' });
+    await createLearner({ ...form, pin: '5678' }, { idempotencyKey: 'mine-2' });
     expect(sentKeys(spy)).toEqual(['mine', 'mine-2']);
     expect(hawas()).toHaveLength(2);
   });
@@ -109,12 +110,22 @@ describe('one Idempotency-Key per submission (A-04)', () => {
   });
 });
 
+describe('client header (CSRF defence of the contract)', () => {
+  it('goes with every request, so the bag accepts saves, sign-in and uploads', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch');
+    await createLearner({ name: 'Hawa', role: 'learner', pin: '1234' });
+    await getPortals();
+    const sent = spy.mock.calls.map(([, init]) => ((init as RequestInit | undefined)?.headers as Record<string, string> | undefined)?.['X-Sensebod-Offline-Client']);
+    expect(sent).toEqual(['1', '1']);
+  });
+});
+
 describe('GET cache (A-12)', () => {
   it('saving progress does not empty the content cache', async () => {
     const spy = vi.spyOn(globalThis, 'fetch');
     await getSeries('cp-child-staying-safe');
     await saveLessonProgress('learner-aminata', 'cp-child-staying-safe-3', { state: 'started' });
-    await createLearner({ name: 'Hawa', role: 'learner' });
+    await createLearner({ name: 'Hawa', role: 'learner', pin: '1234' });
     await getSeries('cp-child-staying-safe');
     // series, progress save, learner: the second getSeries came from the cache.
     expect(spy).toHaveBeenCalledTimes(3);
@@ -202,6 +213,7 @@ describe('uploadFile', () => {
     expect(xhr.url).toBe('/api/v1/admin/uploads?smallerCopy=true');
     expect(xhr.headers['Content-Type']).toBe('video/mp4');
     expect(xhr.headers['X-File-Name']).toBe('Quail%20housing.mp4');
+    expect(xhr.headers['X-Sensebod-Offline-Client']).toBe('1');
     expect(xhr.sent).toBe(file);
     xhr.upload.onprogress?.({ lengthComputable: true, loaded: 4, total: 11 });
     xhr.upload.onprogress?.({ lengthComputable: false, loaded: 5, total: 0 });

@@ -62,21 +62,22 @@ export interface LessonHeaderProps {
   lesson: Lesson;
   /** One line under the title (CPB-WatchAnswer: "The video stops to ask you a question…"). */
   hint?: string;
-  /** The title sits elsewhere on this screen (AGB-Agri-Video puts it under the player). */
-  withoutTitle?: boolean;
+  /** Only the kicker and the children (AGB-Agri-Video keeps the facts off the top). */
+  bare?: boolean;
   children?: ReactNode;
 }
 
-/** Kicker, title, facts row and (on phones) Listen with the language switch. */
-export function LessonHeader({ lesson, hint, withoutTitle, children }: LessonHeaderProps) {
+/**
+ * Kicker, facts row and (on phones) Listen with the language switch. The
+ * lesson's title is the page heading in the header bar (PageShell `heading`),
+ * so the lesson itself starts near the top of the screen.
+ */
+export function LessonHeader({ lesson, hint, bare, children }: LessonHeaderProps) {
   return (
     <header className="les-header">
       <LessonKicker lesson={lesson} />
-      {withoutTitle ? null : (
+      {bare ? null : (
         <>
-          <h1 id={TITLE_ID} className={cx('sb-h1', 'les-header__title')}>
-            {lesson.title}
-          </h1>
           {hint ? <p className="les-header__hint">{hint}</p> : null}
           {takesPart(lesson) ? null : <FactsRow tag={lesson} className="les-header__facts" />}
           <ListenBar src={lesson.listenUrl} className="les-header__listen" />

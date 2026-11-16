@@ -19,7 +19,7 @@ import { cx } from '@shared/components';
 import { IconBack, IconClose, IconHome, IconPerson } from '@shared/icons';
 import { Link, useLocation } from '@shared/router';
 import { adminPaths } from '../adminPaths';
-import { IconAddCircle, IconBagWifi, IconLearners, IconLibrary, IconMenuGrid, IconSaved, IconSeriesOrder, IconSettings, IconSignOut, IconStorage } from '../icons';
+import { IconAddCircle, IconLearners, IconLibrary, IconMenuGrid, IconSaved, IconSeriesOrder, IconSettings, IconSignOut, IconStorage } from '../icons';
 import { useAction, useIsLaptop } from '../lib/hooks';
 import { signOutAdmin, useAdminSession } from '../session';
 import '../admin.css';
@@ -89,12 +89,12 @@ export function StepBar({ steps }: { steps: AdminSteps }) {
   );
 }
 
-/** "Saved on this bag · No internet needed". */
+/** "Saved on this bag". */
 export function SavedLine({ children }: { children?: ReactNode }) {
   return (
     <p className="adm-saved">
       <IconSaved size={20} />
-      <span>{children ?? 'Saved on this bag · No internet needed'}</span>
+      <span>{children ?? 'Saved on this bag'}</span>
     </p>
   );
 }
@@ -125,7 +125,7 @@ export function AdminFrame({ title, nav, back, steps, action, wide, closeTo, chi
   const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    document.title = `${title} · Sensebod admin`;
+    document.title = `${title} · Sensebod Offline admin`;
   }, [title]);
 
   // After in-app navigation, keyboard and screen-reader users start at the new screen.
@@ -137,7 +137,12 @@ export function AdminFrame({ title, nav, back, steps, action, wide, closeTo, chi
     if (mainRef.current) mainRef.current.focus();
   }, [pathname]);
 
-  const logo = <img className="adm-logo" src="/brand/sensebod-logo.png" alt="Sensebod" width="107" height="32" />;
+  const logo = (
+    <span className="adm-brand">
+      <img className="adm-logo" src="/brand/sensebod-logo.png" alt="Sensebod" width="107" height="32" />
+      <span className="adm-brand__tag">Offline</span>
+    </span>
+  );
   const pill = <span className="adm-pill">Admin</span>;
   const backLink = back ? (
     <Link to={back.to} className="adm-back">
@@ -172,7 +177,7 @@ export function AdminFrame({ title, nav, back, steps, action, wide, closeTo, chi
           Skip to the main part
         </a>
         <aside className="adm-side">
-          <Link to={adminPaths.home()} className="adm-side__brand" aria-label="Sensebod admin home">
+          <Link to={adminPaths.home()} className="adm-side__brand" aria-label="Sensebod Offline admin home">
             {logo}
             {pill}
           </Link>
@@ -192,10 +197,6 @@ export function AdminFrame({ title, nav, back, steps, action, wide, closeTo, chi
             <p className="adm-side__status-main">
               <IconSaved size={22} />
               Running on this bag
-            </p>
-            <p className="adm-side__status-sub">
-              <IconBagWifi size={22} />
-              No internet needed
             </p>
           </div>
           <div className="adm-side__who">
@@ -223,7 +224,7 @@ export function AdminFrame({ title, nav, back, steps, action, wide, closeTo, chi
       </a>
       <header className="adm-top">
         <div className="adm-top__bar">
-          <Link to={adminPaths.home()} className="adm-top__brand" aria-label="Sensebod admin home">
+          <Link to={adminPaths.home()} className="adm-top__brand" aria-label="Sensebod Offline admin home">
             {logo}
             {pill}
           </Link>

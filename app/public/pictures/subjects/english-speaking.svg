@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two children talk to each other; each has a speech bubble" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<g transform="translate(110 176) scale(1.5)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#085CAA"/></g><g transform="translate(250 176) scale(1.5)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#D9342B"/></g>
+<path d="M40 48 h104 q10 0 10 10 v34 q0 10 -10 10 h-34 l-10 16 l-2 -16 h-58 q-10 0 -10 -10 v-34 q0 -10 10 -10 z" fill="#FFFFFF" stroke="#085CAA" stroke-width="4"/>
+<text x="92" y="86" text-anchor="middle" fill="#085CAA" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="24">Hello!</text>
+<path d="M226 48 h94 q10 0 10 10 v34 q0 10 -10 10 h-50 l-2 16 l-10 -16 h-32 q-10 0 -10 -10 v-34 q0 -10 10 -10 z" fill="#FFFFFF" stroke="#D9342B" stroke-width="4"/>
+<path d="M238 68 h70 M238 84 h48" stroke="#E7A6A1" stroke-width="6" stroke-linecap="round"/>
+</svg>

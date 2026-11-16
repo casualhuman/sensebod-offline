@@ -38,7 +38,7 @@ describe('PageShell focus', () => {
     const main = screen.getByRole('main');
     expect(main).toHaveFocus();
     expect(main).toHaveAttribute('tabindex', '-1');
-    expect(document.title).toBe('Primary school · Sensebod');
+    expect(document.title).toBe('Primary school · Sensebod Offline');
 
     // Back to Home with the browser's Back button: the new screen's main area again.
     act(() => {
@@ -46,7 +46,7 @@ describe('PageShell focus', () => {
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
     expect(screen.getByRole('main')).toHaveFocus();
-    expect(document.title).toBe('Home · Sensebod');
+    expect(document.title).toBe('Home · Sensebod Offline');
   });
 
   it('has a skip link to the main area', () => {

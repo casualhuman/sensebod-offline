@@ -184,6 +184,16 @@ button.sb-card:active {
 .sb-topic-card__top .sb-state-chip {
   margin-top: 10px;
 }
+/* A card with no artwork: the badge and the state chip share the first row. */
+.sb-topic-card--plain .sb-card__body {
+  padding-top: 18px;
+}
+.sb-topic-card--plain .sb-topic-card__top {
+  align-items: center;
+}
+.sb-topic-card--plain .sb-topic-card__top .sb-state-chip {
+  margin-top: 0;
+}
 .sb-topic-card__tag {
   margin-top: 6px;
 }

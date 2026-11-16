@@ -495,7 +495,7 @@ function PlaceForm({ lesson }: { lesson: AdminLesson }) {
         {pictureRow}
       </section>
 
-      <Step number={1} title="Portal" hint="Which part of Sensebod?">
+      <Step number={1} title="Portal" hint="Which part of Sensebod Offline?">
         {portalChooser}
       </Step>
       {portalId ? (

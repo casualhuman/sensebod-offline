@@ -144,11 +144,12 @@ export function TopicCard({ to, title, picture, icon, state, tag, detail, done, 
   if (!line && state === 'finished') line = 'All done. Well done!';
   if (!line && state === 'started' && hasCount) line = `${done} of ${total} done`;
   return (
-    <Card to={unavailable ? undefined : to} unavailable={unavailable} className="sb-topic-card">
-      <ScenePicture picture={picture} shape={pictureShape} />
+    <Card to={unavailable ? undefined : to} unavailable={unavailable} className={cx('sb-topic-card', !picture && 'sb-topic-card--plain')}>
+      {/* No artwork for this one (school subjects have none yet): no empty box, the card is just shorter. */}
+      {picture ? <ScenePicture picture={picture} shape={pictureShape} /> : null}
       <span className="sb-card__body">
         <span className="sb-topic-card__top">
-          <Badge size="md" overlap tone={unavailable ? 'muted' : 'accent'}>
+          <Badge size="md" overlap={Boolean(picture)} tone={unavailable ? 'muted' : 'accent'}>
             {icon}
           </Badge>
           <StateChip state={state} />

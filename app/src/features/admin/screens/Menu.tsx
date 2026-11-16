@@ -42,7 +42,7 @@ export default function Menu() {
       </div>
       <p className="adm-note adm-note--ok">
         <IconBagWifi size={22} />
-        <span>Running on this bag · No internet needed</span>
+        <span>Running on this bag</span>
       </p>
       <nav aria-label="All admin sections">
         <ul className="adm-menu__grid">

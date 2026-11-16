@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three blocks numbered 1, 2 and 3 stacked like steps, and a ruler" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<g font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="34" text-anchor="middle">
+<rect x="78" y="124" width="56" height="50" rx="6" fill="#085CAA"/><text x="106" y="161" fill="#FFFFFF">1</text>
+<rect x="144" y="96" width="56" height="78" rx="6" fill="#D9342B"/><text x="172" y="147" fill="#FFFFFF">2</text>
+<rect x="210" y="66" width="56" height="108" rx="6" fill="#E5A90A"/><text x="238" y="132" fill="#15233B">3</text></g>
+<g transform="rotate(-8 180 54)"><rect x="60" y="42" width="130" height="22" rx="3" fill="#F6E3A1" stroke="#B77900" stroke-width="3"/>
+<path d="M74 42 v10 M90 42 v7 M106 42 v10 M122 42 v7 M138 42 v10 M154 42 v7 M170 42 v10" stroke="#B77900" stroke-width="3"/></g>
+</svg>

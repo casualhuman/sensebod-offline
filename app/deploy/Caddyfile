@@ -14,7 +14,7 @@
 }
 
 :80 {
-	root * /var/www/sensebod/current
+	root * /var/www/sensebod-offline/current
 
 	header {
 		Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-tQjf8gvb2ROOMapIxFvFAYBeUJ0v1HCbOcSmDNXGtDo='; style-src 'self' 'unsafe-inline'; img-src 'self' blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
@@ -39,7 +39,7 @@
 
 	# Animation packages: other people's HTML, kept in a box
 	handle_path /media/tryit/* {
-		root * /var/lib/sensebod/media/tryit
+		root * /var/lib/sensebod-offline/media/tryit
 		header Content-Security-Policy "sandbox allow-scripts; default-src 'self' 'unsafe-inline' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'"
 		header Cache-Control "no-cache"
 		file_server
@@ -47,7 +47,7 @@
 
 	# Media: large local files, streamed with byte ranges
 	handle_path /media/* {
-		root * /var/lib/sensebod/media
+		root * /var/lib/sensebod-offline/media
 		header Cache-Control "public, max-age=86400"
 		file_server
 	}

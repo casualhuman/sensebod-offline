@@ -133,8 +133,7 @@ describe('every lesson screen', () => {
     fireEvent.click(await screen.findByRole('radio', { name: /Nobody/ }));
     expect(screen.getByText('Let’s think again')).toBeInTheDocument();
     act(() => navigate('/lesson/cp-parent-keeping-children-safe-quiz'));
-    await screen.findByText('Quiz · Keeping children safe');
-    expect(screen.queryByText('Let’s think again')).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText('Let’s think again')).not.toBeInTheDocument());
     expect(screen.getByText('Tap the answer you think is right.')).toBeInTheDocument();
   });
 });
@@ -267,12 +266,13 @@ describe('Watch', () => {
     expect(media().currentTime).toBe(8);
   });
 
-  it('Agriculture lessons use the green theme and put the title under the player', async () => {
+  it('Agriculture lessons use the green theme and name the lesson in the header, above the player', async () => {
     open('/lesson/agriculture-chickens-and-quail-videos-2');
     const title = await screen.findByRole('heading', { level: 1, name: 'Quail housing' });
     expect(document.querySelector('[data-theme="agriculture"]')).not.toBeNull();
     const player = screen.getByRole('region', { name: 'Video player' });
-    expect(player.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(title.closest('header')).not.toBeNull();
+    expect(player.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
     expect(screen.getByText(/Chickens and quail · Lesson 2 of 12/)).toBeInTheDocument();
   });
 });

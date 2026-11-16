@@ -11,6 +11,7 @@ import type {
   LearnerProgress,
   Lesson,
   LessonProgress,
+  LearnerSignIn,
   NewLearner,
   Portal,
   PortalDetail,
@@ -53,6 +54,14 @@ export function getLesson(lessonId: string, options?: RequestOptions): Promise<L
  */
 export function createLearner(input: NewLearner, options?: RequestOptions): Promise<Learner> {
   return submitOnce('/learners', input, options);
+}
+
+/**
+ * "Sign in": finds the learner whose name and secret number match. 401 when
+ * the name or the number is not right, 429 after too many wrong tries.
+ */
+export function signInLearner(input: LearnerSignIn, options?: RequestOptions): Promise<Learner> {
+  return api.post('/learners/sign-in', input, options);
 }
 
 /** Checks a remembered learner still exists in this bag (404 if it was removed or the bag was reset). */

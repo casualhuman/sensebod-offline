@@ -13,9 +13,6 @@
 .les-page > * + * {
   margin-top: 16px;
 }
-.les-header__title {
-  margin-top: 8px;
-}
 .les-header__hint {
   margin-top: 6px;
   font-size: 18px;
@@ -1431,41 +1428,33 @@
 }
 
 /* ---------- Check quiz (AGB-Agri-Quiz) ---------- */
-.les-quiz__series {
-  margin-top: 8px;
-  font-size: 17px;
-  line-height: 24px;
-  font-weight: 700;
-  color: var(--sb-accent-strong);
+.les-quiz__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
 .les-quiz__place {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
+  margin-left: 14px;
   font-size: 19px;
   line-height: 26px;
   font-weight: 800;
 }
-.les-quiz__place .sb-icon {
-  margin-right: 10px;
-  color: var(--sb-accent);
-}
 .les-quiz__card {
-  margin-top: 16px;
+  margin-top: 12px;
+}
+.les-quiz__card .les-quiz__body {
+  padding-top: 18px;
 }
 .les-quiz__body,
-.les-done__body,
-.les-picture__body {
+.les-done__body {
   display: flex;
   flex-direction: column;
   padding: 0 20px 22px;
 }
-.les-quiz__badge,
 .les-done__badge {
   align-self: center;
 }
 .les-quiz__prompt {
-  margin-top: 8px;
   font-size: 24px;
   line-height: 32px;
   font-weight: 800;
@@ -1477,7 +1466,7 @@
   margin-top: 16px;
 }
 .les-quiz__ask {
-  margin: 22px 4px 12px;
+  margin: 14px 4px 10px;
   font-size: 18px;
   line-height: 26px;
   font-weight: 700;
@@ -1495,20 +1484,20 @@
   margin-top: 16px;
 }
 .les-picture__place {
+  display: flex;
+  align-items: center;
   padding: 0 4px;
   font-size: 16px;
   line-height: 24px;
   font-weight: 700;
   color: var(--sb-accent-strong);
 }
-.les-picture__title {
-  margin: 8px 0 0;
-  font-size: 26px;
-  line-height: 32px;
-  font-weight: 800;
+.les-picture__place .sb-icon {
+  flex: none;
+  margin-right: 8px;
 }
 .les-picture__summary {
-  margin-top: 8px;
+  padding: 0 4px;
   font-size: 18px;
   line-height: 27px;
   color: var(--sb-slate);
@@ -1828,8 +1817,7 @@
     margin-right: auto;
   }
   .les-quiz,
-  .les-done > *,
-  .les-picture__hero {
+  .les-done > * {
     max-width: 640px;
     margin-left: auto;
     margin-right: auto;

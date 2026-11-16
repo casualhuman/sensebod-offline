@@ -136,6 +136,13 @@ async function parseError(response: Response): Promise<ApiError> {
   return new ApiError('http', message || `The bag answered with an error (${response.status}).`, response.status, code, fields);
 }
 
+/**
+ * Sent with every request. The bag refuses any request that changes something
+ * without it (403 csrf): a foreign web page open on the same phone cannot add
+ * a custom header, so it cannot act as the signed-in admin (openapi.yaml).
+ */
+export const CLIENT_HEADER = 'X-Sensebod-Offline-Client';
+
 async function send<T>(method: string, url: string, body: unknown, options: RequestOptions): Promise<T> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const controller = typeof AbortController === 'undefined' ? null : new AbortController();
@@ -143,7 +150,7 @@ async function send<T>(method: string, url: string, body: unknown, options: Requ
   let timedOut = false;
   let cancelled = false;
 
-  const headers: Record<string, string> = { Accept: 'application/json' };
+  const headers: Record<string, string> = { Accept: 'application/json', [CLIENT_HEADER]: '1' };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey;
 
@@ -337,6 +344,7 @@ export function uploadFile<T>(
   const promise = new Promise<T>((resolve, reject) => {
     xhr.open('POST', buildUrl(path, query));
     xhr.setRequestHeader('Accept', 'application/json');
+    xhr.setRequestHeader(CLIENT_HEADER, '1');
     xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
     xhr.setRequestHeader('X-File-Name', encodeURIComponent(fileName));
     if (onProgress) {

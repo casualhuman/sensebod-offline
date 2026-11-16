@@ -320,6 +320,14 @@ export interface Learner {
 export interface NewLearner {
   name: string;
   role: LearnerRole;
+  /** The learner's secret number: 4 digits. Sent once; never returned. */
+  pin: string;
+}
+
+/** "I have a name already": name + secret number. */
+export interface LearnerSignIn {
+  name: string;
+  pin: string;
 }
 
 export interface LessonProgress {

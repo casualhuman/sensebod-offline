@@ -1,14 +1,14 @@
 /* Home: the gateway to the 5 portals (board: Main). */
 import { learnerApi, useApi } from '@shared/api';
-import { EmptyState, ErrorState, InfoStrip, LoadingState, PortalCard } from '@shared/components';
+import { EmptyState, ErrorState, LoadingState, PortalCard } from '@shared/components';
+import { IconGames } from '@shared/icons';
 import { paths } from '@shared/router';
-import { useSession } from '@shared/session';
 import { ListenButton, PageShell } from '@shared/shell';
-import { GuestCard, LearnerStrip } from '../components';
+import { features } from '@shared/switches';
+import { LearnerNoticeOnce } from '../components';
 import { PortalIcon } from '../icons';
 
 export default function Home() {
-  const { learner } = useSession();
   const { data: portals, error, loading, reload } = useApi((signal) => learnerApi.getPortals({ signal }), []);
 
   return (
@@ -23,7 +23,7 @@ export default function Home() {
           <ListenButton src={null} label="Listen to this page" fullWidth className="sb-phone-only lrn-gap-top" />
         </section>
 
-        {learner ? <LearnerStrip className="lrn-narrow" /> : <GuestCard />}
+        <LearnerNoticeOnce className="lrn-narrow" />
 
         <section aria-labelledby="lrn-portals" className="sb-stack">
           <h2 id="lrn-portals" className="sb-h2">
@@ -46,11 +46,12 @@ export default function Home() {
                   eager={index === 0}
                 />
               ))}
+              {features.games ? (
+                <PortalCard to={paths.games()} title="Games" description="Play and learn: coding, maths, puzzles and more" picture={null} icon={<IconGames size={40} />} />
+              ) : null}
             </div>
           ) : null}
         </section>
-
-        <InfoStrip />
       </div>
     </PageShell>
   );

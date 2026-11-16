@@ -129,7 +129,7 @@ describe('fields added for the learner screens (fix round 1)', () => {
   });
 
   it('marks quiz entries in progress, so a finished quiz is not counted as a lesson', async () => {
-    const learner = await learnerApi.createLearner({ name: 'Hawa', role: 'learner' });
+    const learner = await learnerApi.createLearner({ name: 'Hawa', role: 'learner', pin: '1234' });
     await learnerApi.saveLessonProgress(learner.id, 'cp-child-staying-safe-1', { state: 'finished' });
     const saved = await learnerApi.saveLessonProgress(learner.id, 'cp-child-staying-safe-quiz', { state: 'finished', correct: 2, total: 2 });
     expect(saved.lessonType).toBe('check');

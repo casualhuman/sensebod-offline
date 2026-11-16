@@ -1,3 +1,4 @@
+import { features } from '../switches';
 import type { ReactNode } from 'react';
 import type { LanguageCode } from '../api/types';
 import { IconBagTick } from '../icons';
@@ -45,7 +46,13 @@ const LANGUAGES: { code: LanguageCode; label: string }[] = [
  * shared/session). Screen text is English until translations are delivered;
  * the choice is already remembered and available through useSession().language.
  */
-export function LanguageSwitch({ className }: { className?: string }) {
+export function LanguageSwitch(props: { className?: string }) {
+  // Switched off for now: see shared/switches.ts.
+  if (!features.languageSwitch) return null;
+  return <LanguageSwitchOn {...props} />;
+}
+
+function LanguageSwitchOn({ className }: { className?: string }) {
   const { language } = useSession();
   return (
     <div role="group" aria-label="Language" className={cx('sb-lang', className)}>

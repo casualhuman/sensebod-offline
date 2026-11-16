@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An open book with the letters A, B and C above it and a pencil beside it" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<circle cx="96" cy="70" r="20" fill="#FFFFFF"/><text x="96" y="80" text-anchor="middle" fill="#085CAA" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="27">A</text>
+<circle cx="180" cy="60" r="20" fill="#FFFFFF"/><text x="180" y="70" text-anchor="middle" fill="#D9342B" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="27">B</text>
+<circle cx="264" cy="70" r="20" fill="#FFFFFF"/><text x="264" y="80" text-anchor="middle" fill="#B77900" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="27">C</text>
+<path d="M180 110 q-42 -16 -84 -4 v62 q42 -12 84 4 z M180 110 q42 -16 84 -4 v62 q-42 -12 -84 4 z" fill="#FFFFFF" stroke="#085CAA" stroke-width="5" stroke-linejoin="round"/>
+<path d="M110 124 q28 -6 56 2 M110 142 q28 -6 56 2 M194 126 q28 -8 56 -2 M194 144 q28 -8 56 -2" fill="none" stroke="#9DBFE3" stroke-width="5" stroke-linecap="round"/>
+<g transform="rotate(35 300 140)"><rect x="293" y="96" width="14" height="66" fill="#E5A90A"/><path d="M293 162 h14 l-7 17 z" fill="#F3D9A4"/><rect x="293" y="88" width="14" height="10" rx="3" fill="#D9342B"/></g>
+</svg>

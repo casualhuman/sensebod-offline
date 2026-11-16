@@ -1,7 +1,7 @@
 import path from 'node:path';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { illustrationsPlugin } from './build/illustrationsPlugin.ts';
 import { mockApiPlugin } from './build/mockApiPlugin.ts';
 
@@ -23,15 +23,49 @@ const root = import.meta.dirname;
  * with a <style> element (there is no separate .css file), so the CSP allows
  * inline styles. Measured sizes and the reasoning are in docs/ARCHITECTURE.md.
  */
+/** e.g. http://127.0.0.1:8000 — the Sensebod Offline backend started with `npm run dev` in backend/. */
+const REAL_API = process.env.REAL_API ?? '';
+const proxy = REAL_API
+  ? {
+      // The Host header is passed on unchanged, as nginx does on the bag: the backend compares the
+      // browser's Origin with it (CSRF), so rewriting it would refuse every save and sign-in.
+      '/api': { target: REAL_API, changeOrigin: false, xfwd: true },
+      '/media': { target: REAL_API, changeOrigin: false },
+    }
+  : undefined;
+
 const TARGETS = ['chrome >= 58', 'firefox >= 60', 'safari >= 11', 'edge >= 16'];
+
+/**
+ * Game files (public/games/<id>/...) get the same two headers nginx gives them on the bag
+ * (docs/GAMES.md, section 5), so a game that the bag's policy would stop is stopped here too.
+ */
+const gameHeaders: Plugin = {
+  name: 'sensebod-offline-game-headers',
+  configureServer(server) {
+    server.middlewares.use(setGameHeaders);
+  },
+  configurePreviewServer(server) {
+    server.middlewares.use(setGameHeaders);
+  },
+};
+function setGameHeaders(req: { url?: string }, res: { setHeader(name: string, value: string): void }, next: () => void): void {
+  if (/^\/games\/[^/?]+\/[^?]+/.test(req.url ?? '')) {
+    res.setHeader('Content-Security-Policy', "sandbox allow-scripts; default-src 'self' 'unsafe-inline' data: blob:; form-action 'none'; base-uri 'none'");
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  next();
+}
 
 export default defineConfig({
   root,
   plugins: [
     react(),
+    gameHeaders,
     legacy({ targets: TARGETS, renderModernChunks: false }),
     illustrationsPlugin(path.resolve(root, '../illustrations')),
-    mockApiPlugin(path.resolve(root, 'mock')),
+    // REAL_API set (npm run dev:real): no mock; /api and /media go to the real backend, as nginx does on the bag.
+    ...(REAL_API ? [] : [mockApiPlugin(path.resolve(root, 'mock'))]),
   ],
   resolve: {
     alias: {
@@ -58,6 +92,6 @@ export default defineConfig({
       },
     },
   },
-  server: { host: true, port: 5173, strictPort: false },
-  preview: { host: true, port: 4173, strictPort: false },
+  server: { host: true, port: 5173, strictPort: false, proxy },
+  preview: { host: true, port: 4173, strictPort: false, proxy },
 });

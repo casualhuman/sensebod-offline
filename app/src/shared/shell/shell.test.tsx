@@ -13,7 +13,7 @@ describe('PageShell', () => {
     const nav = screen.getByRole('navigation', { name: 'Go back' });
     expect(within(nav).getByRole('link', { name: 'Back' })).toHaveAttribute('href', '/portal/agriculture');
     expect(within(nav).getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
-    expect(document.title).toBe('Agriculture · Sensebod');
+    expect(document.title).toBe('Agriculture · Sensebod Offline');
     expect(document.querySelector('.sb-shell')).toHaveAttribute('data-theme', 'agriculture');
     expect(screen.queryByRole('link', { name: 'Leave this page' })).toBeNull();
     expect(screen.getByRole('main')).toHaveAttribute('id', 'sb-main');

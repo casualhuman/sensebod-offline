@@ -94,37 +94,36 @@ export function ScreenState({ title, backTo, portalId, loadingLabel, error, onRe
 /* ------------------------------------------------------------------ */
 
 export interface HeroProps {
-  title: string;
   description?: string;
-  /** Small accent line above the title, from tablet width (CPB-Child-Tab). */
+  /** Small accent line: where this page sits ("Climate"). */
   eyebrow?: string;
   picture: Picture | null;
   pictureShape?: PictureShape;
-  /** 42px icon for the round badge. */
+  /** Icon for the round badge. */
   icon: ReactNode;
   listenSrc: string | null;
 }
 
 /**
- * Scene, round badge on the picture edge, title, one line and Listen
- * (V3-Primary, AGB-Agriculture, CPB-Child). From tablet width the picture
- * sits beside the words (CPB-Child-Tab).
+ * A short strip at the top of a portal, series or help page: a small scene,
+ * the round badge, where the page sits and one line about it, then Listen.
+ * The page's name is in the header (PageShell `heading`), so this stays
+ * small and the lessons start near the top of the screen.
  */
-export function Hero({ title, description, eyebrow, picture, pictureShape = 'header', icon, listenSrc }: HeroProps) {
+export function Hero({ description, eyebrow, picture, pictureShape = 'header', icon, listenSrc }: HeroProps) {
   return (
-    <Card tappable large className="lrn-hero">
-      <ScenePicture picture={picture} shape={pictureShape} eager className="lrn-hero__picture" />
-      <div className="sb-card__body lrn-hero__body">
-        <div className="lrn-hero__top">
-          <Badge size="xl" overlap className="lrn-hero__badge">
-            {icon}
-          </Badge>
-          {eyebrow ? <p className="lrn-eyebrow lrn-hero__eyebrow sb-from-tablet">{eyebrow}</p> : null}
+    <Card large className="lrn-hero">
+      <div className="lrn-hero__row">
+        <ScenePicture picture={picture} shape={pictureShape} eager className="lrn-hero__picture" />
+        <Badge size="sm" className="lrn-hero__badge">
+          {icon}
+        </Badge>
+        <div className="lrn-hero__words">
+          {eyebrow ? <p className="lrn-eyebrow">{eyebrow}</p> : null}
+          {description ? <p className="sb-body sb-muted">{description}</p> : null}
         </div>
-        <h1 className="sb-h1 lrn-hero__title">{title}</h1>
-        {description ? <p className="sb-body sb-muted">{description}</p> : null}
-        <ListenBar src={listenSrc} className="lrn-listen lrn-hero__listen" />
       </div>
+      <ListenBar src={listenSrc} className="lrn-listen lrn-hero__listen" />
     </Card>
   );
 }
@@ -136,6 +135,9 @@ export function Hero({ title, description, eyebrow, picture, pictureShape = 'hea
 function NoticeMessage({ notice }: { notice: LearnerNotice }) {
   if (notice.kind === 'saved') {
     return <SuccessState>Your progress is saved in this bag, {firstName(notice.name)}.</SuccessState>;
+  }
+  if (notice.kind === 'welcome') {
+    return <SuccessState>Welcome back, {firstName(notice.name)}. You are signed in.</SuccessState>;
   }
   return (
     <Message tone="info" title="Your name is not in this bag any more">
@@ -166,7 +168,7 @@ export function LearnerStrip({ className }: { className?: string }) {
           Learning as <strong>{firstName(learner.name)}</strong>
         </PersonChip>
       ) : (
-        <PersonChip icon={<IconPerson size={28} />} changeTo={changeTo} changeLabel="Add name">
+        <PersonChip icon={<IconPerson size={28} />} changeTo={changeTo} changeLabel="Sign in">
           You are a <strong>guest</strong>
         </PersonChip>
       )}
@@ -174,7 +176,21 @@ export function LearnerStrip({ className }: { className?: string }) {
   );
 }
 
-/** Home board: "You are a guest · Add your name to save your progress · Add name". */
+/** Home: only the one-off notice ("Your progress is saved…"). Who is learning is in the header there. */
+export function LearnerNoticeOnce({ className }: { className?: string }) {
+  const [notice] = useState(peekLearnerNotice);
+  // Shown once: the next screen starts without it.
+  useEffect(() => {
+    setLearnerNotice(null);
+  }, []);
+  return notice ? (
+    <div className={className}>
+      <NoticeMessage notice={notice} />
+    </div>
+  ) : null;
+}
+
+/** "You are a guest · Add your name to save your progress · Add name" as a card (no longer on Home). */
 export function GuestCard() {
   return (
     <Card tappable large className="lrn-panel">

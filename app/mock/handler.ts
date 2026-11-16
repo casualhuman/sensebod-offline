@@ -73,6 +73,7 @@ let failNext: { status: number; count: number } | null = null;
 /** Start again from the seed. */
 export function resetMockDb(): void {
   db = createDb();
+  for (const id of Object.keys(learnerPins)) delete learnerPins[id];
   failNext = null;
 }
 
@@ -109,6 +110,15 @@ class HttpError extends Error {
 
 const notFound = (what: string) => new HttpError(404, 'not_found', `${what} is not in this bag.`);
 const invalid = (message: string, fields?: Record<string, string>) => new HttpError(422, 'validation', message, fields);
+
+/** Secret numbers of the mock's learners, by learner id. Seeded learners use 1234. Kept beside the database so `Learner` stays as the contract has it. */
+const learnerPins: Record<string, string> = {};
+/** Learners of the seed were made without a number: theirs is 1234. */
+const pinFor = (learnerId: string): string => learnerPins[learnerId] ?? '1234';
+/** For tests and the seed: give a learner of the mock a secret number. */
+export function setMockLearnerPin(learnerId: string, pin: string): void {
+  learnerPins[learnerId] = pin;
+}
 
 function errorBody(code: string, message: string, fields?: Record<string, string>): ApiErrorBody {
   return { error: fields ? { code, message, fields } : { code, message } };
@@ -378,8 +388,14 @@ const routes: [method: string, pattern: RegExp, handler: Handler, admin?: boolea
       if (!name) throw invalid('Type your name first.', { name: 'Type your name first.' });
       if (name.length > 40) throw invalid('That name is too long.', { name: 'Use a shorter name, up to 40 letters.' });
       const role = input.role === 'teacher' || input.role === 'other' ? input.role : 'learner';
+      const pin = typeof input.pin === 'string' ? input.pin.trim() : '';
+      if (!/^[0-9]{4}$/.test(pin)) throw invalid('Type 4 numbers.', { pin: 'Type 4 numbers, for example 2 5 8 0.' });
       const key = request.headers['idempotency-key'];
       if (key && db.idempotency[key]) return ok(findLearner(db.idempotency[key] as string), 200);
+      // Name + number must point at one learner.
+      if (db.learners.some((l) => l.name.toLowerCase() === name.toLowerCase() && pinFor(l.id) === pin)) {
+        throw new HttpError(409, 'pin_taken', 'Choose a different number.', { pin: 'Someone with this name already uses this number. Choose a different number.' });
+      }
       const learner: Learner = {
         id: newId('learner'),
         name,
@@ -387,9 +403,24 @@ const routes: [method: string, pattern: RegExp, handler: Handler, admin?: boolea
         roleLabel: role === 'teacher' ? 'Teacher' : role === 'other' ? 'Parent, farmer or other' : 'Learner',
       };
       db.learners.push(learner);
+      learnerPins[learner.id] = pin;
       db.progress[learner.id] = [];
       if (key) db.idempotency[key] = learner.id;
       return ok(learner, 201);
+    },
+  ],
+  [
+    'POST',
+    /^\/learners\/sign-in$/,
+    (request) => {
+      const input = asObject(request.body) as { name?: unknown; pin?: unknown };
+      const name = typeof input.name === 'string' ? input.name.trim().toLowerCase() : '';
+      const pin = typeof input.pin === 'string' ? input.pin.trim() : '';
+      if (!name) throw invalid('Type your name first.', { name: 'Type your name first.' });
+      if (!/^[0-9]{4}$/.test(pin)) throw invalid('Type 4 numbers.', { pin: 'Type 4 numbers, for example 2 5 8 0.' });
+      const learner = db.learners.filter((l) => l.name.toLowerCase() === name && pinFor(l.id) === pin)[0];
+      if (!learner) throw new HttpError(401, 'wrong_name_or_number', 'The name or the number is not right. Try again.');
+      return ok(learner, 200);
     },
   ],
   ['GET', /^\/learners\/([^/]+)$/, (_request, [learnerId = '']) => ok(findLearner(learnerId))],

@@ -27,7 +27,7 @@ describe('api client', () => {
   });
 
   it('reports validation problems per field', async () => {
-    const error = (await createLearner({ name: '  ', role: 'learner' }).catch((e: unknown) => e)) as ApiError;
+    const error = (await createLearner({ name: '  ', role: 'learner', pin: '1234' }).catch((e: unknown) => e)) as ApiError;
     expect(error.status).toBe(422);
     expect(error.fields.name).toBe('Type your name first.');
     expect(describeError(error)).toBe('Type your name first.');
@@ -79,13 +79,13 @@ describe('api client', () => {
   });
 
   it('does not create a second learner when the same submission is repeated', async () => {
-    const first = await api.post<{ id: string }>('/learners', { name: 'Hawa', role: 'learner' }, { idempotencyKey: 'k1' });
-    const again = await api.post<{ id: string }>('/learners', { name: 'Hawa', role: 'learner' }, { idempotencyKey: 'k1' });
+    const first = await api.post<{ id: string }>('/learners', { name: 'Hawa', role: 'learner', pin: '1234' }, { idempotencyKey: 'k1' });
+    const again = await api.post<{ id: string }>('/learners', { name: 'Hawa', role: 'learner', pin: '1234' }, { idempotencyKey: 'k1' });
     expect(again.id).toBe(first.id);
   });
 
   it('saves and reads progress', async () => {
-    const learner = await createLearner({ name: 'Hawa', role: 'learner' });
+    const learner = await createLearner({ name: 'Hawa', role: 'learner', pin: '1234' });
     await saveLessonProgress(learner.id, 'cp-child-staying-safe-1', { state: 'finished' });
     await saveLessonProgress(learner.id, 'cp-child-staying-safe-1', { state: 'started' });
     const progress = await getProgress(learner.id, { seriesId: 'cp-child-staying-safe' });

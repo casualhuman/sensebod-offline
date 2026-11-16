@@ -8,13 +8,16 @@
  * downloads the lesson players until they preview one.
  */
 import type { RouteDef } from '@shared/router';
+import { features } from '@shared/switches';
 
 export interface FeatureModule {
   routes: readonly RouteDef[];
 }
 
 export interface FeatureEntry {
-  id: 'learner' | 'lessons' | 'admin' | 'dev';
+  id: 'learner' | 'lessons' | 'admin' | 'games' | 'dev';
+  /** Left out: always on. Otherwise asked on every look-up, so a switch in shared/switches.ts turns the feature off. */
+  enabled?: () => boolean;
   /** The feature owns every path that is, or starts with, one of these. */
   prefixes: readonly string[];
   load: () => Promise<FeatureModule>;
@@ -23,6 +26,8 @@ export interface FeatureEntry {
 const entries: FeatureEntry[] = [
   { id: 'lessons', prefixes: ['/lesson'], load: () => import('../features/lessons/routes') },
   { id: 'admin', prefixes: ['/admin'], load: () => import('../features/admin/routes') },
+  // Switched off, /games falls through to the learner feature and gets its "not in this bag" page.
+  { id: 'games', prefixes: ['/games'], load: () => import('../features/games/routes'), enabled: () => features.games },
 ];
 
 // Component kitchen sink: development server only. `import.meta.env.DEV` is
@@ -37,6 +42,7 @@ const learner: FeatureEntry = { id: 'learner', prefixes: ['/'], load: () => impo
 
 export function featureFor(pathname: string): FeatureEntry {
   for (const entry of entries) {
+    if (entry.enabled && !entry.enabled()) continue;
     for (const prefix of entry.prefixes) {
       if (pathname === prefix || pathname.indexOf(prefix + '/') === 0) return entry;
     }

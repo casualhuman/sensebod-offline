@@ -106,6 +106,8 @@ export interface ButtonLinkProps extends LookProps {
   replace?: boolean;
   onClick?: () => void;
   'aria-label'?: string;
+  /** Marks the link to the section that is open now. */
+  'aria-current'?: 'page';
 }
 
 /** Looks like a Button, navigates like a link. Use it when the action is "go to another screen". */

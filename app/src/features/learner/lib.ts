@@ -44,7 +44,7 @@ export function returnToFromQuery(query: URLSearchParams): string {
 
 /* ---- one-time notices, shown once on the next screen ---- */
 
-export type LearnerNotice = { kind: 'saved'; name: string } | { kind: 'name-gone' };
+export type LearnerNotice = { kind: 'saved'; name: string } | { kind: 'welcome'; name: string } | { kind: 'name-gone' };
 
 let pendingNotice: LearnerNotice | null = null;
 

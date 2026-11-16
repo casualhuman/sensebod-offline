@@ -6,8 +6,8 @@
  */
 import { useEffect, useRef } from 'react';
 import { learnerApi, useApi, type Group, type GroupDetail, type PortalDetail, type SeriesSummary } from '@shared/api';
-import { Badge, Card, EmptyState, ErrorState, InfoStrip, LessonCard, LoadingState, ScenePicture, TagLine, TopicCard } from '@shared/components';
-import { IconArrowRight, IconLeave, IconLock, IconTick } from '@shared/icons';
+import { Badge, Card, EmptyState, ErrorState, LessonCard, LoadingState, ScenePicture, TagLine, TopicCard } from '@shared/components';
+import { IconArrowRight, IconTick } from '@shared/icons';
 import { Link, navigate, paths } from '@shared/router';
 import { ListenBar, PageShell } from '@shared/shell';
 import { ContinueCard, HelpCard, Hero, LearnerStrip, SectionHeading } from '../components';
@@ -58,23 +58,12 @@ export function WhoAreYou({ portal }: { portal: PortalDetail }) {
   return (
     <PageShell title="Who are you?" backTo={paths.home()} quickExit listenSrc={portal.listenUrl}>
       <div className="sb-stack sb-stack--lg">
-        <div className="lrn-note">
-          <IconLeave size={32} />
-          <p>
-            <strong>Leave this page</strong> (top right): tap to go back to the home page quickly.
-          </p>
-        </div>
-
         <section className="lrn-intro">
           <p className="lrn-eyebrow">{portal.title}</p>
           <h1 className="sb-h1 lrn-h1-lg">Who are you?</h1>
           <p className="sb-body sb-muted">Tap the picture that is you.</p>
           <ListenBar src={portal.listenUrl} className="lrn-listen lrn-gap-top" />
         </section>
-
-        <InfoStrip icon={<IconLock size={36} />}>
-          You can change this any time. <strong>Nobody else can see your answer.</strong>
-        </InfoStrip>
 
         <section aria-labelledby="lrn-choose" className="sb-stack">
           <h2 id="lrn-choose" className="sb-h2">
@@ -126,13 +115,12 @@ export function TopicPortal({ portal }: { portal: PortalDetail }) {
   const continueItem = useContinueLesson(portal.id);
   const available = portal.groups.filter((group) => group.availability !== 'not-in-bag');
   const allVideos = available.length > 0 && available.every(isWatchOnly);
-  const videoCount = available.reduce((total, group) => total + group.lessonCount, 0);
 
   return (
-    <PageShell title={portal.title} theme={portal.theme} backTo={paths.home()} listenSrc={portal.listenUrl}>
+    <PageShell title={portal.title} heading={portal.title} theme={portal.theme} backTo={paths.home()} listenSrc={portal.listenUrl}>
       <div className="sb-stack sb-stack--lg">
         <div className="sb-stack">
-          <Hero title={portal.title} description={portal.description} picture={portal.picture} pictureShape="portal" icon={<PortalIcon portalId={portal.id} size={42} />} listenSrc={portal.listenUrl} />
+          <Hero description={portal.description} picture={portal.picture} pictureShape="portal" icon={<PortalIcon portalId={portal.id} size={28} />} listenSrc={portal.listenUrl} />
           <LearnerStrip className="lrn-narrow" />
         </div>
 
@@ -147,14 +135,6 @@ export function TopicPortal({ portal }: { portal: PortalDetail }) {
             ))}
           </div>
         </section>
-
-        <InfoStrip>
-          {allVideos ? (
-            <>
-              {count(videoCount, 'video is', 'videos are')} in this bag. <strong>No internet needed.</strong>
-            </>
-          ) : undefined}
-        </InfoStrip>
       </div>
     </PageShell>
   );
@@ -242,6 +222,7 @@ export function SeriesCards({ group, index }: { group: GroupDetail; index: Progr
             to={available ? paths.series(series.portalId, series.groupId, series.id) : undefined}
             title={series.title}
             picture={series.picture}
+            pictureShape="lesson"
             icon={<TopicIcon title={series.title} portalId={series.portalId} />}
             state={progress.state}
             detail={subjectDetail(series, progress.state, progress.done)}
@@ -329,10 +310,10 @@ export function ClassPortal({ portal, groupId }: ClassPortalProps) {
 
   const title = selected ? `${selected.title} · ${portal.title}` : portal.title;
   return (
-    <PageShell title={title} theme={portal.theme} backTo={groupId ? paths.portal(portal.id) : paths.home()} listenSrc={portal.listenUrl}>
+    <PageShell title={title} heading={portal.title} theme={portal.theme} backTo={groupId ? paths.portal(portal.id) : paths.home()} listenSrc={portal.listenUrl}>
       <div className="sb-stack sb-stack--lg">
         <div className="sb-stack">
-          <Hero title={portal.title} description={portal.description} picture={portal.picture} pictureShape="portal" icon={<PortalIcon portalId={portal.id} size={42} />} listenSrc={portal.listenUrl} />
+          <Hero description={portal.description} picture={portal.picture} pictureShape="portal" icon={<PortalIcon portalId={portal.id} size={28} />} listenSrc={portal.listenUrl} />
           <LearnerStrip className="lrn-narrow" />
         </div>
 
@@ -354,9 +335,6 @@ export function ClassPortal({ portal, groupId }: ClassPortalProps) {
 
         {loaded ? <PracticeQuizzes group={loaded} index={progress.index} /> : null}
 
-        <InfoStrip>
-          These lessons are in this bag. <strong>No internet needed.</strong>
-        </InfoStrip>
       </div>
     </PageShell>
   );

@@ -1,7 +1,9 @@
 /*
  * Check · the quiz at the end of a series (AGB-Agri-Quiz; answer states from
  * V3-Components "Quiz question"). One question at a time, no timer, a wrong
- * answer is "let's think again" with the reason and another go.
+ * answer is "let's think again" with the reason and another go. The quiz's
+ * name is in the header bar and the card has no picture, so the question and
+ * its answers are on screen without scrolling.
  *
  * The questions come from the lesson data. The Child protection "Check what
  * you learned" quiz has no board of its own (HANDOFF section 8) and uses
@@ -9,11 +11,10 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import type { CheckContent, Lesson } from '@shared/api';
-import { Badge, Button, cx, EmptyState, LessonHeaderPill, ScenePicture } from '@shared/components';
-import { IconArrowRight, IconCheckQuiz, IconClock, IconQuestion } from '@shared/icons';
+import { Button, cx, EmptyState, LessonHeaderPill } from '@shared/components';
+import { IconArrowRight, IconCheckQuiz, IconClock } from '@shared/icons';
 import { navigate, paths } from '@shared/router';
 import { ListenBar, ListenButton } from '@shared/shell';
-import { TITLE_ID } from '../parts/LessonParts';
 import { finishLesson } from '../progress/progress';
 import { Answers } from '../quiz/Answers';
 import { clearPick, FRESH, hasAnswered, pickAnswer, scoreQuiz, type QuestionState } from '../quiz/quizLogic';
@@ -66,15 +67,12 @@ export default function CheckQuiz({ lesson, content }: { lesson: Lesson; content
   return (
     <div className="les-quiz">
       <header className="les-header">
-        <LessonHeaderPill type="check" detail="Quiz" />
-        <p className="les-quiz__series">Quiz · {lesson.portal.groupKind === 'topic' ? lesson.group.title : lesson.series.title}</p>
-        <h1 id={TITLE_ID} className="sb-h1 les-header__title">
-          {lesson.title}
-        </h1>
-        <p className="les-quiz__place">
-          <IconQuestion size={28} />
-          Question {index + 1} of {questions.length}
-        </p>
+        <div className="les-quiz__top">
+          <LessonHeaderPill type="check" detail="Quiz" />
+          <p className="les-quiz__place">
+            Question {index + 1} of {questions.length}
+          </p>
+        </div>
         <div className="sb-steps" role="img" aria-label={describeQuestions(index, questions.length)}>
           {questions.map((item, at) => (
             <span key={item.id} className={cx('sb-steps__step', at < index && 'sb-steps__step--finished', at === index && 'les-step--now')} />
@@ -84,11 +82,7 @@ export default function CheckQuiz({ lesson, content }: { lesson: Lesson; content
       </header>
 
       <section className="sb-card sb-card--lg sb-card--tappable les-quiz__card" aria-labelledby="les-quiz-prompt">
-        <ScenePicture picture={lesson.picture} eager />
         <div className="les-quiz__body">
-          <Badge size="lg" overlap className="les-quiz__badge">
-            <IconQuestion size={38} />
-          </Badge>
           <p id="les-quiz-prompt" ref={promptRef} tabIndex={-1} className="les-quiz__prompt">
             {question.prompt}
           </p>

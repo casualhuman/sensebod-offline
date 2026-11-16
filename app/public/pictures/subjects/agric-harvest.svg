@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A basket full of harvest: cassava, peppers, oranges and green leaves, next to a watering can" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<path d="M70 110 h150 l-16 64 h-118 z" fill="#B98A4E"/><path d="M78 128 h134 M84 148 h122" stroke="#8E4F2A" stroke-width="4"/>
+<rect x="62" y="102" width="166" height="12" rx="6" fill="#8E4F2A"/>
+<circle cx="104" cy="92" r="16" fill="#E5A90A"/><circle cx="140" cy="84" r="16" fill="#D9342B"/><circle cx="176" cy="92" r="16" fill="#F0B93A"/>
+<path d="M120 76 q-6 -26 16 -32 q6 20 -16 32 z M162 80 q4 -28 28 -28 q0 22 -28 28 z" fill="#3E9B63"/>
+<path d="M254 112 h60 v62 h-60 z" fill="#5B8FCC"/><path d="M314 126 q26 -4 26 -30" fill="none" stroke="#5B8FCC" stroke-width="8" stroke-linecap="round"/>
+<path d="M254 150 q-22 0 -22 -22 q0 -16 22 -14" fill="none" stroke="#085CAA" stroke-width="6"/>
+<path d="M336 84 l14 -8 l2 18 z" fill="#085CAA"/>
+</svg>

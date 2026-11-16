@@ -43,6 +43,21 @@
   width: auto;
   height: 30px;
 }
+.sb-shell__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+}
+.sb-shell__brand-tag {
+  margin-top: 1px;
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--sb-accent-strong);
+}
 .sb-shell__logo-link {
   /* 48px tall target around the 30px logo */
   display: flex;
@@ -50,6 +65,52 @@
   flex: none;
   min-height: var(--sb-target-min);
   border-radius: 8px;
+  text-decoration: none;
+}
+.sb-shell__back {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+.sb-shell__back > * + * {
+  margin-left: 10px;
+}
+/* The way into a section (Games). */
+.sb-shell__sections {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+.sb-shell__who {
+  flex: none;
+  max-width: 46vw;
+}
+.sb-shell__who-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-shell__nav-btn[aria-current='page'] {
+  border-width: 3px;
+  background: var(--sb-accent-tint);
+}
+/*
+ * The page's name in the header. On phones and tablets it has a row of its
+ * own under Back and Home; from laptop width it sits beside them.
+ */
+.sb-shell__bar--titled {
+  flex-wrap: wrap;
+}
+.sb-shell__heading {
+  order: 10;
+  flex: 0 0 100%;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 6px 0 10px;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 800;
+  color: var(--sb-ink);
 }
 .sb-shell__spacer {
   flex: 1 1 auto;
@@ -102,6 +163,16 @@
   display: block;
   width: auto;
   height: 32px;
+}
+.sb-shell__staff {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--sb-target-min);
+  margin-top: 6px;
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--sb-accent-text);
 }
 .sb-shell__motto {
   margin-top: 10px;
@@ -203,6 +274,17 @@
   }
 }
 @media (min-width: 1100px) {
+  .sb-shell__bar--titled {
+    flex-wrap: nowrap;
+  }
+  .sb-shell__heading {
+    order: 0;
+    flex: 0 1 auto;
+    margin-left: 20px !important;
+    padding: 0;
+    font-size: 24px;
+    line-height: 30px;
+  }
   .sb-shell__logo {
     height: 40px;
   }

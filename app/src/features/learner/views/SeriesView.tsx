@@ -12,7 +12,6 @@ import {
   EmptyState,
   FILTER_TYPES,
   filterLessons,
-  InfoStrip,
   LESSON_TYPES,
   LessonCard,
   LessonFilter,
@@ -91,19 +90,18 @@ export function SeriesView({ series, backTo }: SeriesViewProps) {
   const empty = lessons.length === 0 || series.availability === 'not-in-bag';
 
   const icon = sensitive ? (
-    <AudienceIcon group={group} size={42} />
+    <AudienceIcon group={group} size={28} />
   ) : group.kind === 'class' ? (
-    <TopicIcon title={series.title} portalId={portal.id} size={42} />
+    <TopicIcon title={series.title} portalId={portal.id} size={28} />
   ) : (
-    <PortalIcon portalId={portal.id} size={42} />
+    <PortalIcon portalId={portal.id} size={28} />
   );
 
   return (
-    <PageShell title={series.title} backTo={backTo} listenSrc={series.listenUrl} {...shellPropsFor(portal.id)} theme={portal.theme}>
+    <PageShell title={series.title} heading={series.title} backTo={backTo} listenSrc={series.listenUrl} {...shellPropsFor(portal.id)} theme={portal.theme}>
       <div className="sb-stack sb-stack--lg">
         <div className="sb-stack">
           <Hero
-            title={series.title}
             description={series.description || (group.kind === 'class' ? group.title : undefined)}
             eyebrow={group.kind === 'class' ? `${portal.title} · ${group.title}` : portal.title}
             picture={series.picture}
@@ -158,7 +156,7 @@ export function SeriesView({ series, backTo }: SeriesViewProps) {
           </section>
         )}
 
-        {sensitive ? <AudienceExtras group={group} /> : <InfoStrip>These lessons are in this bag. <strong>No internet needed.</strong></InfoStrip>}
+        {sensitive ? <AudienceExtras group={group} /> : null}
       </div>
     </PageShell>
   );

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A glass flask with blue water, a young plant in a pot, and the sun" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<circle cx="296" cy="62" r="20" fill="#E5A90A"/>
+<path d="M116 46 h36 M122 46 v40 l-34 70 q-6 14 10 14 h72 q16 0 10 -14 l-34 -70 v-40" fill="#FFFFFF" stroke="#085CAA" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M106 122 h56 l18 38 q3 6 -5 6 h-82 q-8 0 -5 -6 z" fill="#5B8FCC"/>
+<circle cx="126" cy="144" r="5" fill="#FFFFFF"/><circle cx="146" cy="154" r="3.5" fill="#FFFFFF"/>
+<path d="M222 140 h56 l-7 34 h-42 z" fill="#B5683A"/><rect x="216" y="132" width="68" height="11" rx="4" fill="#8E4F2A"/>
+<path d="M250 132 v-38" stroke="#2E7D4F" stroke-width="6" stroke-linecap="round"/>
+<path d="M250 110 q-26 -4 -28 -26 q26 0 28 26 z M250 100 q24 -8 24 -30 q-24 4 -24 30 z" fill="#3E9B63"/>
+</svg>

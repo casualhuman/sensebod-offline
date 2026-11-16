@@ -1,10 +1,10 @@
 import { installMockApi, type MockApiHandle } from '@mock/installMockFetch';
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { Suspense } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
-import type { Learner } from '@shared/api';
+import { learnerApi, type Learner } from '@shared/api';
 import { paths, Routes } from '@shared/router';
-import { getSession, setLearner } from '@shared/session';
+import { getSession, learnAsGuest, setLearner } from '@shared/session';
 import { routes } from './routes';
 
 const AMINATA: Learner = { id: 'learner-aminata', name: 'Aminata Kamara', role: 'learner', roleLabel: 'Learner · JSS 2' };
@@ -37,8 +37,11 @@ describe('Home (Main)', () => {
     expect(screen.getByRole('link', { name: /Child protection/ })).toHaveAttribute('href', '/portal/child-protection');
     expect(screen.getByRole('link', { name: /Agriculture/ })).toHaveAttribute('data-theme', 'agriculture');
     expect(screen.getByRole('link', { name: /Climate/ })).toHaveAttribute('href', '/portal/climate');
-    expect(screen.getByText('You are a guest')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Add name' })).toHaveAttribute('href', '/save-progress');
+    // Games sits with the portals (and in the header).
+    expect(screen.getByText('Play and learn: coding, maths, puzzles and more').closest('a')).toHaveAttribute('href', '/games');
+    // Who is learning lives in the header, not in a card on the page.
+    expect(screen.queryByText('You are a guest')).not.toBeInTheDocument();
+    expect(within(screen.getByRole('banner')).getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/save-progress');
     expect(screen.getByText('Kushɛ!')).toHaveAttribute('lang', 'kri');
   });
 
@@ -48,7 +51,7 @@ describe('Home (Main)', () => {
     await screen.findByRole('link', { name: /Primary school/ });
     expect(screen.getByText('Aminata')).toBeInTheDocument();
     expect(screen.queryByText('You are a guest')).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Change' })).toHaveAttribute('href', '/save-progress');
+    expect(within(screen.getByRole('banner')).getByRole('link', { name: 'Learning as Aminata. Sign out or change' })).toHaveAttribute('href', '/save-progress');
   });
 
   it('shows an error with Try again when the bag does not answer, and recovers', async () => {
@@ -61,32 +64,84 @@ describe('Home (Main)', () => {
   });
 });
 
-describe('Save my progress (V3-SignIn)', () => {
-  it('saves a name with who you are and returns to the page the learner came from', async () => {
-    open('/save-progress?from=%2Fportal%2Fagriculture');
-    const save = await screen.findByRole('button', { name: 'Type your name first' });
-    expect(save).toBeDisabled();
-    expect(screen.queryByText('Used this phone before?')).not.toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: 'Learner' })).toHaveAttribute('aria-checked', 'true');
+describe('Sign in (V3-SignIn, with a secret number)', () => {
+  const type = (label: string, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
-    fireEvent.change(screen.getByLabelText('Your name'), { target: { value: '  Fatmata  ' } });
-    tap(screen.getByRole('radio', { name: 'Teacher' }));
+  it('a new learner answers one question at a time: name, who, secret number', async () => {
+    open('/save-progress?from=%2Fportal%2Fagriculture');
+    expect(await screen.findByRole('heading', { level: 1, name: 'Sign in' })).toBeInTheDocument();
+    expect(screen.queryByText('Used this phone before?')).not.toBeInTheDocument();
+    tap(screen.getByRole('button', { name: 'I am new here' }));
+
+    // 1: the name, and nothing else.
+    expect(screen.getByRole('heading', { level: 1, name: 'What is your name?' })).toBeInTheDocument();
+    tap(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('Type your name first.');
+    type('Your name', '  Fatmata  ');
+    tap(screen.getByRole('button', { name: 'Next' }));
+    // 2: who you are, one tap.
+    expect(screen.getByRole('heading', { level: 1, name: 'Hello, Fatmata! Who are you?' })).toBeInTheDocument();
+    tap(screen.getByRole('button', { name: 'Teacher' }));
+    // 3: the secret number; only digits are kept, four at most.
+    expect(screen.getByRole('heading', { level: 1, name: 'Choose a secret number' })).toBeInTheDocument();
+    expect(getSession().learner).toBeNull();
+    tap(screen.getByRole('button', { name: 'Save and start learning' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('Type 4 numbers.');
+    type('Your secret number', '2a5-8 09');
+    expect(screen.getByLabelText('Your secret number')).toHaveValue('2580');
     tap(screen.getByRole('button', { name: 'Save and start learning' }));
 
     expect(await screen.findByRole('heading', { name: 'Agriculture' })).toBeInTheDocument();
     expect(window.location.pathname).toBe('/portal/agriculture');
     expect(getSession().learner).toMatchObject({ name: 'Fatmata', role: 'teacher' });
+    expect(JSON.stringify(getSession())).not.toContain('2580');
     expect(screen.getByRole('status')).toHaveTextContent('Your progress is saved in this bag, Fatmata.');
-    expect(screen.getByText('Fatmata', { selector: 'strong' })).toBeInTheDocument();
+  });
+
+  it('two learners with the same name are told apart by their numbers, and each signs in again as themselves', async () => {
+    const first = await learnerApi.createLearner({ name: 'Abdul', role: 'learner', pin: '1111' });
+    const second = await learnerApi.createLearner({ name: 'Abdul', role: 'learner', pin: '2222' });
+    expect(second.id).not.toBe(first.id);
+
+    // A third Abdul who picks a number already used with that name is asked for another.
+    open('/save-progress');
+    tap(await screen.findByRole('button', { name: 'I am new here' }));
+    type('Your name', 'Abdul');
+    tap(screen.getByRole('button', { name: 'Next' }));
+    tap(screen.getByRole('button', { name: 'Learner' }));
+    type('Your secret number', '1111');
+    tap(screen.getByRole('button', { name: 'Save and start learning' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Choose a different number.');
+    expect(getSession().learner).toBeNull();
+    cleanup();
+
+    // "I have a name already": name + number finds the right Abdul.
+    open('/save-progress');
+    tap(await screen.findByRole('button', { name: 'I have a name already' }));
+    expect(screen.getByRole('heading', { level: 1, name: 'Welcome back' })).toBeInTheDocument();
+    type('Your name', 'abdul');
+    type('Your secret number', '9999');
+    tap(screen.getByRole('button', { name: 'Sign in' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('The name or the number is not right. Try again.');
+    expect(screen.getByLabelText('Your secret number')).toHaveValue('');
+    type('Your secret number', '2222');
+    tap(screen.getByRole('button', { name: 'Sign in' }));
+    await waitFor(() => expect(getSession().learner).toMatchObject({ id: second.id }));
+    expect(window.location.pathname).toBe('/');
+    expect(await screen.findByRole('status')).toHaveTextContent('Welcome back, Abdul. You are signed in.');
   });
 
   it('keeps what was typed when saving fails, and a second try saves one learner', async () => {
     open('/save-progress');
-    fireEvent.change(await screen.findByLabelText('Your name'), { target: { value: 'Ibrahim' } });
+    tap(await screen.findByRole('button', { name: 'I am new here' }));
+    type('Your name', 'Ibrahim');
+    tap(screen.getByRole('button', { name: 'Next' }));
+    tap(screen.getByRole('button', { name: 'Learner' }));
+    type('Your secret number', '4321');
     mock.failNext(503);
     tap(screen.getByRole('button', { name: 'Save and start learning' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Your name was not saved');
-    expect(screen.getByLabelText('Your name')).toHaveValue('Ibrahim');
+    expect(screen.getByLabelText('Your secret number')).toHaveValue('4321');
     expect(getSession().learner).toBeNull();
 
     tap(screen.getByRole('button', { name: 'Try again' }));
@@ -95,28 +150,45 @@ describe('Save my progress (V3-SignIn)', () => {
     expect(window.location.pathname).toBe('/');
   });
 
-  it('lets a shared phone pick a name from the short list', async () => {
+  it('a name used on this phone before still needs its number', async () => {
     setLearner(MOHAMED);
     setLearner(AMINATA);
+    learnAsGuest();
     open('/save-progress');
     const list = (await screen.findByText('Used this phone before?')).closest('.sb-card') as HTMLElement;
-    expect(within(list).getByRole('link', { name: /Aminata Kamara/ })).toHaveTextContent('Learner · JSS 2');
-    tap(within(list).getByRole('link', { name: /Mohamed Sesay/ }));
-    expect(getSession().learner).toMatchObject({ id: 'learner-mohamed' });
+    tap(within(list).getByRole('button', { name: 'Mohamed Sesay' }));
+    expect(getSession().learner).toBeNull();
+    expect(screen.getByLabelText('Your name')).toHaveValue('Mohamed Sesay');
+    type('Your secret number', '1234');
+    tap(screen.getByRole('button', { name: 'Sign in' }));
+    await waitFor(() => expect(getSession().learner).toMatchObject({ id: 'learner-mohamed' }));
     expect(window.location.pathname).toBe('/');
   });
 
-  it('skips to guest without saving anything', async () => {
+  it('signs out: the phone goes back to guest and the name stays in the short list', async () => {
     setLearner(AMINATA);
     open('/save-progress?from=%2Fportal%2Fclimate');
-    tap(await screen.findByRole('link', { name: 'Skip — learn as a guest' }));
+    // Signed in: the screen is only about that person. No "I am new here", no other names.
+    expect(await screen.findByRole('heading', { level: 1, name: 'You are signed in' })).toBeInTheDocument();
+    expect(screen.getByText('Aminata Kamara')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'I am new here' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'I have a name already' })).not.toBeInTheDocument();
+    expect(screen.queryByText('Used this phone before?')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Not now, learn as a guest' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Keep learning' })).toHaveAttribute('href', '/portal/climate');
+    tap(screen.getByRole('button', { name: 'Sign out' }));
     expect(getSession().learner).toBeNull();
     expect(getSession().knownLearners).toHaveLength(1);
+    expect(screen.queryByText('You are signed in')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'I am new here' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Sign in' })).toBeInTheDocument();
+    tap(screen.getByRole('link', { name: 'Not now, learn as a guest' }));
     expect(window.location.pathname).toBe('/portal/climate');
   });
 
   it('removes a name only after asking, from the phone and from the bag', async () => {
     setLearner(AMINATA);
+    learnAsGuest();
     open('/save-progress');
     tap(await screen.findByRole('button', { name: 'Remove a name' }));
     tap(screen.getByRole('button', { name: 'Remove Aminata Kamara' }));
@@ -134,7 +206,7 @@ describe('Save my progress (V3-SignIn)', () => {
   it('never returns to an address outside the app', async () => {
     open('/save-progress?from=%2F%2Fexample.org%2Fx');
     expect(await screen.findByRole('link', { name: 'Back' })).toHaveAttribute('href', '/');
-    expect(screen.getByRole('link', { name: 'Skip — learn as a guest' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: 'Not now, learn as a guest' })).toHaveAttribute('href', '/');
   });
 });
 
@@ -203,7 +275,6 @@ describe('Agriculture and Climate (AGB-Agriculture, CLB-Climate)', () => {
     expect(screen.getByRole('link', { name: /Feed and animal health/ })).toHaveTextContent('27 videos');
     expect(screen.getByRole('link', { name: /Rabbits/ })).toHaveTextContent('Not started');
     expect(screen.getByText('Crops').closest('a')).toBeNull();
-    expect(screen.getByText('64 videos are in this bag.', { exact: false })).toBeInTheDocument();
 
     const resume = within(await screen.findByRole('region', { name: 'Continue where you stopped' })).getByRole('link');
     expect(resume).toHaveAttribute('href', '/lesson/agriculture-chickens-and-quail-videos-2');
@@ -217,7 +288,7 @@ describe('Agriculture and Climate (AGB-Agriculture, CLB-Climate)', () => {
     const chickens = await screen.findByRole('link', { name: /Chickens and quail/ });
     expect(chickens).toHaveTextContent('Not started');
     expect(screen.queryByRole('region', { name: 'Continue where you stopped' })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Add name' })).toHaveAttribute('href', '/save-progress?from=%2Fportal%2Fagriculture');
+    expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/save-progress?from=%2Fportal%2Fagriculture');
   });
 
   it('lists a topic’s videos without a filter (one type only), quiz at the end', async () => {
@@ -243,7 +314,7 @@ describe('Agriculture and Climate (AGB-Agriculture, CLB-Climate)', () => {
     await screen.findByRole('link', { name: /Floods: stay safe/ });
     await waitFor(() => expect(getSession().learner).toBeNull());
     expect(getSession().knownLearners).toHaveLength(0);
-    expect(await screen.findByRole('link', { name: 'Add name' })).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: 'Sign in' })).toBeInTheDocument();
   });
 });
 
@@ -264,10 +335,9 @@ describe('Child protection', () => {
     expect(child).toHaveTextContent('This is me');
     expect(screen.getByRole('link', { name: /I am a parent or carer/ })).toHaveAttribute('href', '/portal/child-protection/cp-parent/cp-parent-keeping-children-safe');
     expect(screen.getByRole('link', { name: /I am a community elder/ })).toHaveAttribute('href', '/portal/child-protection/cp-elder/cp-elder-protecting-our-children');
-    expect(screen.getByText('Nobody else can see your answer.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Get help now' })).toHaveAttribute('href', '/portal/child-protection/help');
     // No name is shown or asked for on these pages.
-    expect(screen.queryByRole('link', { name: 'Add name' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Sign in' })).not.toBeInTheDocument();
   });
 
   it('lists the child lessons in order, filters by type and always keeps the Check (CPB-Child)', async () => {

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Water goes round: the sun warms a river, a cloud forms, and rain falls back on the hills" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<circle cx="70" cy="66" r="20" fill="#E5A90A"/>
+<path d="M0 176 q60 -40 120 -16 q60 -30 120 0 q60 -24 120 16 v44 h-360 z" fill="#9CC79F"/>
+<path d="M0 190 q90 -16 180 0 t180 0 v30 h-360 z" fill="#5B8FCC"/>
+<g fill="#FFFFFF" stroke="#9DBFE3" stroke-width="4"><path d="M210 92 q-22 0 -22 -20 q0 -18 20 -18 q6 -18 28 -14 q20 -10 34 8 q24 0 24 22 q0 22 -24 22 z"/></g>
+<path d="M222 104 l-8 22 M250 104 l-8 22 M278 104 l-8 22" stroke="#085CAA" stroke-width="5" stroke-linecap="round"/>
+<path d="M100 150 q10 -40 60 -66" fill="none" stroke="#D9342B" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 12"/>
+<path d="M160 84 l-16 2 l8 12 z" fill="#D9342B"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A village: two houses, a tall tree and four people standing together" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<circle cx="60" cy="62" r="20" fill="#E5A90A"/>
+<rect x="292" y="80" width="12" height="90" fill="#8E4F2A"/><circle cx="298" cy="72" r="34" fill="#3E9B63"/>
+<rect x="96" y="100" width="66" height="54" fill="#FFFFFF"/><path d="M88 102 l41 -32 l41 32 z" fill="#085CAA"/><rect x="120" y="124" width="18" height="30" fill="#8E4F2A"/>
+<rect x="180" y="110" width="56" height="44" fill="#FFFFFF"/><path d="M173 112 l35 -26 l35 26 z" fill="#D9342B"/><rect x="200" y="128" width="16" height="26" fill="#8E4F2A"/>
+<g transform="translate(110 184) scale(0.8)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#D9342B"/></g><g transform="translate(146 186) scale(0.9)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#085CAA"/></g><g transform="translate(184 186) scale(0.9)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#E5A90A"/></g><g transform="translate(220 184) scale(0.8)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#2E7D4F"/></g>
+</svg>

@@ -10,7 +10,7 @@ import { IconHome } from '@shared/icons';
 import { paths, useParams } from '@shared/router';
 import { useSession } from '@shared/session';
 import { PageShell } from '@shared/shell';
-import { HelpCard, isChildProtection, LearningPoints, LessonHeader, SeriesProgress, seriesPath, TITLE_ID, UpNext } from '../parts/LessonParts';
+import { HelpCard, isChildProtection, LearningPoints, LessonHeader, SeriesProgress, seriesPath, UpNext } from '../parts/LessonParts';
 import CheckQuiz from '../players/CheckQuiz';
 import ListenPlayer from '../players/ListenPlayer';
 import PictureLesson, { pictureFrames } from '../players/PictureLesson';
@@ -45,7 +45,7 @@ function LessonBody({ lesson }: { lesson: Lesson }) {
   if (content.type === 'read' && frames) {
     return (
       <div className="les-page">
-        <PictureLesson lesson={lesson} frames={frames} cover={content.cover} />
+        <PictureLesson lesson={lesson} frames={frames} />
         <div className="les-below">
           <div className="les-below__col">
             <UpNext lesson={lesson} />
@@ -76,22 +76,19 @@ function LessonBody({ lesson }: { lesson: Lesson }) {
     player = <TryItPackage lesson={lesson} packageUrl={content.packageUrl} />;
   }
 
-  // AGB-Agri-Video: progress above the player, the title under it.
+  // AGB-Agri-Video: progress above the player, the summary under it. The title is in the header.
   const titleBelow = lesson.portal.theme === 'agriculture';
   const progressBar = <SeriesProgress lesson={lesson} progress={progress} />;
 
   return (
     <div className="les-page">
-      <LessonHeader lesson={lesson} hint={hint} withoutTitle={titleBelow}>
+      <LessonHeader lesson={lesson} hint={hint} bare={titleBelow}>
         {titleBelow ? progressBar : null}
       </LessonHeader>
       {player}
-      {titleBelow ? (
+      {titleBelow && lesson.summary ? (
         <div className="les-under">
-          <h1 id={TITLE_ID} className="sb-h1">
-            {lesson.title}
-          </h1>
-          {lesson.summary ? <p className="les-under__summary">{lesson.summary}</p> : null}
+          <p className="les-under__summary">{lesson.summary}</p>
         </div>
       ) : null}
       <div className="les-below">
@@ -114,6 +111,7 @@ export default function LessonScreen() {
   return (
     <PageShell
       title={lesson ? lesson.title : 'Lesson'}
+      heading={lesson && !error ? lesson.title : undefined}
       theme={lesson ? lesson.portal.theme : undefined}
       backTo={lesson ? seriesPath(lesson) : paths.home()}
       quickExit={lesson ? isChildProtection(lesson) : false}

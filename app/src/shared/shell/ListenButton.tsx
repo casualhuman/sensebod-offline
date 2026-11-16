@@ -2,6 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button } from '../components/Button';
 import { LanguageSwitch } from '../components/Chips';
 import { cx } from '../components/cx';
+import { features } from '../switches';
 import { IconListen } from '../icons';
 import { getListenSnapshot, isListening, listenFailed, startListening, stopListening, subscribeListen } from './listen';
 
@@ -25,7 +26,13 @@ export interface ListenButtonProps {
  * change to "Stop" (the words carry the state; there is no aria-pressed,
  * which would be read out as "Stop, pressed").
  */
-export function ListenButton({ src, label = 'Listen', size, fullWidth, className }: ListenButtonProps) {
+export function ListenButton(props: ListenButtonProps) {
+  // Switched off for now: see shared/switches.ts.
+  if (!features.listen) return null;
+  return <ListenButtonOn {...props} />;
+}
+
+function ListenButtonOn({ src, label = 'Listen', size, fullWidth, className }: ListenButtonProps) {
   useSyncExternalStore(subscribeListen, getListenSnapshot);
   const [asked, setAsked] = useState(false);
   const playing = isListening(src);
@@ -70,6 +77,7 @@ export interface ListenBarProps {
  * up, where the page shell shows both in the header instead.
  */
 export function ListenBar({ src, label, className }: ListenBarProps) {
+  if (!features.listen && !features.languageSwitch) return null;
   return (
     <div className={cx('sb-listen-bar sb-phone-only', className)}>
       <ListenButton src={src} label={label} />

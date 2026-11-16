@@ -41,7 +41,7 @@ export default function SignIn() {
   const mounted = useRef(true);
 
   useEffect(() => {
-    document.title = 'Admin sign-in · Sensebod';
+    document.title = 'Admin sign-in · Sensebod Offline';
     mounted.current = true;
     return () => {
       mounted.current = false;
@@ -90,7 +90,10 @@ export default function SignIn() {
   return (
     <div className="adm-signin">
       <main className="adm-signin__card" id="adm-main">
-        <img className="adm-signin__logo" src="/brand/sensebod-logo.png" alt="Sensebod" width="150" height="45" />
+        <span className="adm-brand adm-brand--signin">
+          <img className="adm-signin__logo" src="/brand/sensebod-logo.png" alt="Sensebod" width="150" height="45" />
+          <span className="adm-brand__tag">Offline</span>
+        </span>
         <h1 className="adm-h1">Admin</h1>
         <p className="adm-lead">For EasySTEM staff and facilitators</p>
 
@@ -149,7 +152,7 @@ export default function SignIn() {
           </p>
           <p className="adm-note adm-note--ok">
             <IconBagWifi size={22} />
-            <span>Running on this bag · No internet needed</span>
+            <span>Running on this bag</span>
           </p>
         </div>
       </main>

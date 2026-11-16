@@ -5,12 +5,12 @@
  */
 import { useEffect, useState } from 'react';
 import type { Lesson, Picture, ReadBlock, ReadContent } from '@shared/api';
-import { Badge, Button, ButtonLink, cx, ScenePicture } from '@shared/components';
+import { Button, ButtonLink, cx, ScenePicture } from '@shared/components';
 import { IconInfo, IconPlay, IconTick } from '@shared/icons';
 import { navigate, paths } from '@shared/router';
 import { ListenBar } from '@shared/shell';
 import { IconArrowLeft, IconPictures } from '../parts/icons';
-import { seriesPath, TITLE_ID } from '../parts/LessonParts';
+import { seriesPath } from '../parts/LessonParts';
 import { finishLesson } from '../progress/progress';
 
 export interface Frame {
@@ -32,7 +32,7 @@ export function pictureFrames(content: Pick<ReadContent, 'blocks' | 'pageImages'
 /** How long each picture stays while "Play animation" runs. Slow on purpose. */
 const FRAME_MS = 3500;
 
-export default function PictureLesson({ lesson, frames, cover }: { lesson: Lesson; frames: Frame[]; cover: Picture | null }) {
+export default function PictureLesson({ lesson, frames }: { lesson: Lesson; frames: Frame[] }) {
   /** The picture showing while the animation plays, or -1 when it is not playing. */
   const [showing, setShowing] = useState(-1);
 
@@ -54,23 +54,13 @@ export default function PictureLesson({ lesson, frames, cover }: { lesson: Lesso
   return (
     <div className="les-picture">
       <p className="les-picture__place">
+        <IconPictures size={26} />
         {lesson.group.title}
         {lesson.position !== null ? ` · Lesson ${lesson.position} of ${count}` : ''}
       </p>
 
-      <section className="sb-card sb-card--lg sb-card--tappable les-picture__hero" aria-labelledby={TITLE_ID}>
-        <ScenePicture picture={cover ?? lesson.picture} shape="header" eager />
-        <div className="les-picture__body">
-          <Badge size="lg" overlap>
-            <IconPictures size={40} />
-          </Badge>
-          <h1 id={TITLE_ID} className="les-picture__title">
-            {lesson.title}
-          </h1>
-          {lesson.summary ? <p className="les-picture__summary">{lesson.summary}</p> : null}
-          <ListenBar src={lesson.listenUrl} className="les-header__listen" />
-        </div>
-      </section>
+      {lesson.summary ? <p className="les-picture__summary">{lesson.summary}</p> : null}
+      <ListenBar src={lesson.listenUrl} className="les-header__listen" />
 
       <section className="sb-card sb-card--lg sb-card--tappable les-picture__steps" aria-labelledby="les-picture-steps">
         <h2 id="les-picture-steps" className="les-picture__heading">

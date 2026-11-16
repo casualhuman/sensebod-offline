@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A school building with a flag on a pole; three pupils walk to the door" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<circle cx="300" cy="60" r="20" fill="#E5A90A"/>
+<rect x="90" y="94" width="170" height="78" fill="#FFFFFF"/><path d="M78 96 h194 l-18 -32 h-158 z" fill="#085CAA"/>
+<rect x="160" y="124" width="30" height="48" fill="#8E4F2A"/>
+<g fill="#C9DCEF" stroke="#085CAA" stroke-width="3"><rect x="106" y="112" width="34" height="26"/><rect x="210" y="112" width="34" height="26"/></g>
+<path d="M56 176 v-112" stroke="#5E6B7D" stroke-width="5" stroke-linecap="round"/>
+<rect x="18" y="64" width="38" height="9" fill="#1EB53A"/><rect x="18" y="73" width="38" height="9" fill="#FFFFFF"/><rect x="18" y="82" width="38" height="9" fill="#0072C6"/>
+<g transform="translate(246 192) scale(0.8)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#085CAA"/></g><g transform="translate(280 196) scale(0.8)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#D9342B"/></g><g transform="translate(314 192) scale(0.8)"><circle cx="0" cy="-34" r="10" fill="#5A3622"/><path d="M-16 6 q0 -30 16 -30 q16 0 16 30 z" fill="#E5A90A"/></g>
+</svg>

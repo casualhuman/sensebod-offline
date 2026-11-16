@@ -10,7 +10,6 @@
  * page does not blank, reload or jump while the subjects appear below.
  */
 import { learnerApi, useApi, type GroupDetail } from '@shared/api';
-import { InfoStrip } from '@shared/components';
 import { paths, useParams } from '@shared/router';
 import { PageShell } from '@shared/shell';
 import { HelpCard, Hero, LearnerStrip, NotInBag, ScreenState, SectionHeading, shellPropsFor, showsLearner } from '../components';
@@ -56,17 +55,17 @@ function SeriesList({ group }: { group: GroupDetail }) {
   const { portal } = group;
   const progress = useProgress({ portalId: portal.id });
   return (
-    <PageShell title={group.title} backTo={paths.portal(portal.id)} listenSrc={null} {...shellPropsFor(portal.id)} theme={portal.theme}>
+    <PageShell title={group.title} heading={group.title} backTo={paths.portal(portal.id)} listenSrc={null} {...shellPropsFor(portal.id)} theme={portal.theme}>
       <div className="sb-stack sb-stack--lg">
         <div className="sb-stack">
-          <Hero title={group.title} description={group.description} eyebrow={portal.title} picture={group.picture} icon={<PortalIcon portalId={portal.id} size={42} />} listenSrc={null} />
+          <Hero description={group.description} eyebrow={portal.title} picture={group.picture} icon={<PortalIcon portalId={portal.id} size={28} />} listenSrc={null} />
           {showsLearner(portal.id) ? <LearnerStrip className="lrn-narrow" /> : null}
         </div>
         <section aria-labelledby="lrn-series" className="sb-stack">
           <SectionHeading id="lrn-series" title="Choose what to learn" />
           <SeriesCards group={group} index={showsLearner(portal.id) ? progress.index : null} />
         </section>
-        {showsLearner(portal.id) ? <InfoStrip /> : <HelpCard title="Need help now?" text="See who can help you today." />}
+        {showsLearner(portal.id) ? null : <HelpCard title="Need help now?" text="See who can help you today." />}
       </div>
     </PageShell>
   );

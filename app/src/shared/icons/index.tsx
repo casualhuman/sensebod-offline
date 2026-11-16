@@ -69,6 +69,16 @@ export function IconGrid(p: IconProps) {
     </Icon>
   );
 }
+/** Games: a game pad. */
+export function IconGames(p: IconProps) {
+  return (
+    <Icon {...p}>
+      <path d="M7.5 7h9a5 5 0 0 1 5 5v1.5a4 4 0 0 1-7.4 2.1l-.4-.6h-3.4l-.4.6a4 4 0 0 1-7.4-2.1V12a5 5 0 0 1 5-5z" />
+      <path d="M8 10.2v3.6M6.2 12h3.6" />
+      <path d="M16 12h.01" />
+    </Icon>
+  );
+}
 export function IconClose(p: IconProps) {
   return (
     <Icon strokeWidth={3.4} {...p}>

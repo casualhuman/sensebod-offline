@@ -3,15 +3,22 @@ import type { ThemeName } from '../api/types';
 import { ButtonLink } from '../components/Button';
 import { LanguageSwitch } from '../components/Chips';
 import { cx } from '../components/cx';
-import { IconBack, IconHome, IconLeave } from '../icons';
+import { IconBack, IconGames, IconHome, IconLeave, IconPerson, IconPersonAdd } from '../icons';
 import { Link, paths, useLocation } from '../router';
-import { clearSensitiveChoices } from '../session';
+import { clearSensitiveChoices, useSession } from '../session';
+import { features } from '../switches';
 import { stopListening } from './listen';
 import { ListenButton } from './ListenButton';
 
 export interface PageShellProps {
   /** Browser tab title; " · Sensebod" is added. Also announced to screen readers after navigation. */
   title: string;
+  /**
+   * The page's name, shown as its main heading in the header bar beside Back
+   * and Home (under them on phones and tablets). The page then has no large
+   * title of its own, which leaves the room for the content.
+   */
+  heading?: string;
   /** 'agriculture' turns the accent green and the page #F3F8F4 for this screen. */
   theme?: ThemeName;
   /**
@@ -54,13 +61,14 @@ function quickExit(): void {
  * the Child protection quick exit, the main area and the footer. Responsive
  * for phone (390), tablet (800) and laptop (1440) widths.
  */
-export function PageShell({ title, theme = 'blue', variant = 'inner', backTo, quickExit: hasQuickExit = false, listenSrc, noFooter = false, flush = false, children }: PageShellProps) {
+export function PageShell({ title, heading, theme = 'blue', variant = 'inner', backTo, quickExit: hasQuickExit = false, listenSrc, noFooter = false, flush = false, children }: PageShellProps) {
   const { pathname } = useLocation();
+  const { learner } = useSession();
   const mainRef = useRef<HTMLElement>(null);
   const showListen = listenSrc !== undefined;
 
   useEffect(() => {
-    document.title = `${title} · Sensebod`;
+    document.title = `${title} · Sensebod Offline`;
   }, [title]);
 
   // After in-app navigation move focus to the main area so keyboard and
@@ -81,7 +89,13 @@ export function PageShell({ title, theme = 'blue', variant = 'inner', backTo, qu
     if (window.pageXOffset !== x || window.pageYOffset !== y) window.scrollTo(x, y);
   }, [pathname]);
 
-  const logo = <img className="sb-shell__logo" src="/brand/sensebod-logo.png" alt="Sensebod" width="113" height="34" />;
+  // The wordmark is a picture; "Offline" is added under it as text.
+  const logo = (
+    <span className="sb-shell__brand">
+      <img className="sb-shell__logo" src="/brand/sensebod-logo.png" alt="Sensebod" width="113" height="34" />
+      <span className="sb-shell__brand-tag">Offline</span>
+    </span>
+  );
   const backHome = (
     <>
       <ButtonLink to={backTo ?? paths.home()} variant="secondary" className="sb-shell__nav-btn" icon={<IconBack size={28} />}>
@@ -94,7 +108,36 @@ export function PageShell({ title, theme = 'blue', variant = 'inner', backTo, qu
   );
   const headerListen = showListen ? <ListenButton src={listenSrc} size="sm" className="sb-shell__listen sb-from-tablet" /> : null;
 
+  // The way into the Games section (switch: shared/switches.ts). In the header
+  // from tablet width only: a phone's header has no room for it beside the
+  // name button (Home) or Back and Home (inner screens). A phone reaches Games
+  // through the Games card on Home. Not on
+  // Child protection screens: that header is kept to the quick exit.
+  const onGames = pathname === paths.games() || pathname.indexOf(paths.games() + '/') === 0;
+  const gamesLink = features.games ? (
+    <nav className="sb-shell__sections sb-from-tablet" aria-label="Sections">
+      <ButtonLink to={paths.games()} variant="secondary" className="sb-shell__nav-btn" icon={<IconGames size={28} />} aria-current={onGames ? 'page' : undefined}>
+        Games
+      </ButtonLink>
+    </nav>
+  ) : null;
+
+  // Who is learning, on Home: a guest is offered "Sign in"; a learner sees their first name and can
+  // change it. It is in the header, not a card on the page, so the portals come first.
+  const first = learner ? learner.name.trim().split(/\s+/)[0] || learner.name : '';
+  const who = learner ? (
+    <ButtonLink to={paths.saveProgress()} variant="secondary" className="sb-shell__nav-btn sb-shell__who" icon={<IconPerson size={28} />} aria-label={`Learning as ${first}. Sign out or change`}>
+      <span className="sb-shell__who-name">{first}</span>
+    </ButtonLink>
+  ) : (
+    <ButtonLink to={paths.saveProgress()} variant="secondary" className="sb-shell__nav-btn sb-shell__who" icon={<IconPersonAdd size={28} />}>
+      Sign in
+    </ButtonLink>
+  );
+
   const spacer = <span className="sb-shell__spacer" />;
+  const pageHeading = heading ? <h1 className="sb-shell__heading">{heading}</h1> : null;
+  const navClass = cx('sb-shell__bar', 'sb-shell__bar--nav', heading && 'sb-shell__bar--titled');
 
   let header: ReactNode;
   if (variant === 'home') {
@@ -102,6 +145,8 @@ export function PageShell({ title, theme = 'blue', variant = 'inner', backTo, qu
       <div className="sb-shell__bar">
         {logo}
         {spacer}
+        {gamesLink}
+        {who}
         {headerListen}
         <LanguageSwitch />
       </div>
@@ -117,24 +162,31 @@ export function PageShell({ title, theme = 'blue', variant = 'inner', backTo, qu
             Leave this page
           </ButtonLink>
         </div>
-        <nav className="sb-shell__bar sb-shell__bar--nav" aria-label="Go back">
-          {backHome}
+        <div className={navClass}>
+          <nav className="sb-shell__back" aria-label="Go back">
+            {backHome}
+          </nav>
+          {pageHeading}
           {spacer}
           {headerListen}
-        </nav>
+        </div>
       </>
     );
   } else {
     header = (
-      <nav className="sb-shell__bar sb-shell__bar--nav" aria-label="Go back">
-        {backHome}
+      <div className={navClass}>
+        <nav className="sb-shell__back" aria-label="Go back">
+          {backHome}
+        </nav>
+        {pageHeading}
         {spacer}
+        {gamesLink}
         {showListen ? <LanguageSwitch className="sb-from-tablet" /> : null}
         {headerListen}
-        <Link to={paths.home()} className="sb-shell__logo-link" aria-label="Sensebod home">
+        <Link to={paths.home()} className="sb-shell__logo-link" aria-label="Sensebod Offline home">
           {logo}
         </Link>
-      </nav>
+      </div>
     );
   }
 
@@ -155,6 +207,11 @@ export function PageShell({ title, theme = 'blue', variant = 'inner', backTo, qu
           <p className="sb-shell__motto" lang="kri">
             Wi dae make u sensebod
           </p>
+          {variant === 'home' ? (
+            <Link to={paths.admin()} className="sb-shell__staff">
+              Staff sign in
+            </Link>
+          ) : null}
         </footer>
       )}
     </div>

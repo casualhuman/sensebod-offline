@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A round loaf cut into four equal pieces, with one piece moved away, and four children waiting to share it" width="360" height="220" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice">
+<rect width="360" height="220" fill="#E8F0F9"/>
+<rect y="170" width="360" height="50" fill="#C9DCEF"/>
+<circle cx="130" cy="108" r="56" fill="#F3D9A4" stroke="#B98A4E" stroke-width="6"/>
+<path d="M130 52 v112 M74 108 h112" stroke="#B98A4E" stroke-width="5"/>
+<path d="M214 100 v-56 a56 56 0 0 1 56 56 z" fill="#F3D9A4" stroke="#B98A4E" stroke-width="6" stroke-linejoin="round"/>
+<path d="M130 108 v-56 a56 56 0 0 1 56 56 z" fill="#E8F0F9"/>
+<text x="268" y="158" text-anchor="middle" fill="#085CAA" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="40">1/4</text>
+</svg>

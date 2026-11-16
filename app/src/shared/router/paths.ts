@@ -12,8 +12,13 @@
  *   /lesson/:lessonId                         lesson player (any type)       lessons
  *   /lesson/:lessonId/done                    finished screen                lessons
  *   /admin, /admin/…                          admin                          admin
+ *   /games                                    Games (?category=<id>)         games
+ *   /games/:gameId                            one game                       games
  *
- * Anything not under /lesson or /admin belongs to the learner feature.
+ * Anything not under /lesson, /admin or /games belongs to the learner feature.
+ * The files of a game are static and live one level deeper, at
+ * /games/<id>/index.html (see app/docs/GAMES.md): the app only owns /games
+ * and /games/<id>.
  */
 const enc = encodeURIComponent;
 
@@ -29,4 +34,7 @@ export const paths = {
   lesson: (lessonId: string): string => `/lesson/${enc(lessonId)}`,
   lessonDone: (lessonId: string): string => `/lesson/${enc(lessonId)}/done`,
   admin: (rest = ''): string => (rest ? `/admin/${rest.replace(/^\/+/, '')}` : '/admin'),
+  games: (): string => '/games',
+  gamesCategory: (categoryId: string): string => `/games?category=${enc(categoryId)}`,
+  game: (gameId: string): string => `/games/${enc(gameId)}`,
 } as const;

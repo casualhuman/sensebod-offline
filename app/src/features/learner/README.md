@@ -20,7 +20,7 @@ Stream 1 created only `routes.tsx` (a working placeholder) and this note. Everyt
 | `learner.css` | Local styles, prefix `lrn-` |
 | `learner.test.tsx`, `lib.test.ts` | Screen and journey tests on the mock API |
 
-Decisions, deviations and open items: `docs/reports/stream-2-learner-browsing.md`.
+
 
 ## The one rule: add screens in `routes.tsx`
 

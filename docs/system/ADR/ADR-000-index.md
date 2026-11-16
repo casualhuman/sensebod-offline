@@ -1,6 +1,6 @@
 # Architecture decision records — index
 
-Status of all records: **Proposed** (12 Nov 2026); ADR-003, 006, 007, 008, 009, 011, 012 and 014 revised on 13 Nov 2026 (revision 1, REVISION-1-RESPONSE.md); ADR-001, 003, 007, 008, 009 and 012 again in revision 2 (REVISION-2-RESPONSE.md); ADR-001, 002, 008 and 011 in revision 3 (REVISION-3-RESPONSE.md); awaiting reverification. Format: Decision · Context · Alternatives · Rationale · Trade-offs · Consequences · Revisit when.
+Status of all records: **Proposed** (12 Nov 2026); ADR-003, 006, 007, 008, 009, 011, 012 and 014 revised on 13 Nov 2026 (revision 1); ADR-001, 003, 007, 008, 009 and 012 again in revision 2; ADR-001, 002, 008 and 011 in revision 3; awaiting reverification. Format: Decision · Context · Alternatives · Rationale · Trade-offs · Consequences · Revisit when.
 
 | ADR | Decision |
 |---|---|

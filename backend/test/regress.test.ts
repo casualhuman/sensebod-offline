@@ -1,4 +1,4 @@
-/* Regression tests for findings of the independent review, round 2 (docs/reviews/backend/BACKEND-REVIEW-2.md). */
+/* Regression tests for findings of the independent reviews (rounds 2 and 3). */
 import assert from 'node:assert/strict';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';

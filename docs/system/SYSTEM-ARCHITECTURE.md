@@ -1,6 +1,6 @@
 # Sensebod Offline system architecture
 
-Version 0.5 · 13 Nov 2026 (revision 5: V-030…V-036; revision 4: OWNER-2…6) · System Architecture Agent · status: **revision 2: answers ARCHITECTURE-VERIFICATION-2 and the owner's runtime correction (OWNER-1: backend is Node.js/Express, design stays tooling-agnostic, §4.1), changes listed in `REVISION-2-RESPONSE.md` (revision 1: `REVISION-1-RESPONSE.md`); awaiting reverification**
+Version 0.5 · 13 Nov 2026 (revision 5: V-030…V-036; revision 4: OWNER-2…6) · System Architecture Agent · status: **revision 2: answers verification round 2 and the owner's runtime correction (OWNER-1: backend is Node.js/Express, design stays tooling-agnostic, §4.1), changes listed in `the revision notes` (revision 1: `the revision notes`); awaiting reverification**
 
 Deliverables A (system architecture), B (diagrams), F (deployment), G (security), plus requirements and constraints register, failure-mode analysis, resource budget, monitoring and the test plan. Companion documents in `docs/system/`:
 
@@ -12,7 +12,6 @@ Deliverables A (system architecture), B (diagrams), F (deployment), G (security)
 | `DATA-EXPORT-AND-BACKUP.md` | Owner requirement: safe download of user data, backup, restore, power loss |
 | `ADR/` | H — decision records |
 | `HANDOFF-PACKAGES.md` | I — work packages |
-| `ARCHITECT-NOTES-FOR-VERIFIER.md` | Where each Definition of Done item is answered; weak spots |
 | `poc/` | Throwaway proofs of concept and their output (run on a Mac) |
 
 **Evidence rule used throughout.** "Measured" means measured, and says where (all measurements in this design are on the development Mac, never on a Pi or a phone). "Kit fact" means stated by the DLH-in-a-bag build guide or the IIAB review (treated as data; they win over assumptions). "Assumption" and "policy" figures are marked as such and have a verification step. Nothing here has run on a Raspberry Pi.
@@ -116,7 +115,7 @@ A **modular monolith on one Pi**: nginx serves every static byte and media file 
 flowchart TB
   L[Learners: children, carers, elders, farmers, pupils<br/>old Android phones, shared phones] -->|Wi-Fi, plain HTTP| BAG
   F[Facilitators and teachers<br/>phone-first admin, sometimes a laptop] -->|Wi-Fi, plain HTTP| BAG
-  BAG[["DLH in a bag: Raspberry Pi 5 running Sensebod Offline<br/>http://materials.sensebod.com"]]
+  BAG[["DLH in a bag: Raspberry Pi running Sensebod Offline<br/>http://materials.sensebod.com"]]
   T[EasySTEM technician<br/>laptop, SSH key, USB sticks, backup key] -->|SSH over Ethernet or Wi-Fi, USB| BAG
   E[EasySTEM office / partners] -.->|USB stick or file carried by hand: encrypted backups, learner-data zip, diagnostics| T
   E -.->|signed releases and content packs on USB| T
@@ -168,7 +167,7 @@ flowchart LR
 flowchart TB
   subgraph Bag[The bag]
     PS[Power bank or mains<br/>USB-C 5 A] --> PI
-    subgraph PI[Raspberry Pi 5 · 8 GB · microSD 256 GB · fan · RTC battery recommended]
+    subgraph PI[Raspberry Pi · kit model Pi 5 with 8 GB · microSD 256 GB · fan · RTC battery recommended]
       subgraph OS[Raspberry Pi OS 64-bit, Debian 13 base]
         NM[NetworkManager hotspot wlan0 10.10.0.1]
         DQ[dnsmasq wlan0 + dnsmasq-eth eth0]

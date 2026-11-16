@@ -1,6 +1,6 @@
 # features/lessons — Lesson players (stream 3)
 
-Everything under `/lesson`: one screen per lesson, whatever its type, and the finished screen. Full write-up: `docs/reports/stream-3-lesson-players.md`.
+Everything under `/lesson`: one screen per lesson, whatever its type, and the finished screen.
 
 | URL | Screen | File |
 |---|---|---|

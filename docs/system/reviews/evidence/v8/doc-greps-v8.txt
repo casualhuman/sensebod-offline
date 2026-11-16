@@ -1,8 +1,0 @@
-# clock helper: what it writes, and in which order relative to the clock_jump row
-565:| `sensebod-clock@<unix seconds>-<nonce>.service` | polkit (sensebod), hub-manager action | digits, within ±10 years of the release build date | request file matches | system time (`clock_settime`), `clock.json`; audited by the API |
-
-# guard 2 (revision 5a): rtc and synced steps count as real time
-  2. **Untrusted forward jumps are recorded (revision 5a).** A forward step of **more than 7 days** creates a `clock_jump` row **only if it is not backed by a trusted clock**: a time set by hand (`manual`), or a step at boot that neither a battery-backed RTC (`rtc`) nor NTP (`synced`) explains (`unexplained`). A step that a trusted RTC reads at boot after the bag was switched off, or that NTP makes, is **real elapsed time and counts**: the bag really was off for those weeks.
-
-# presence bound as stated
-588:| Online guessing bound (revision 5a, V-038) | Per 24 h of uptime, guesses ≤ (2,000 network requests + insertions per day × live tokens at each insertion) × 5. Live tokens at one moment ≤ 3 

@@ -5,8 +5,7 @@ info:
   description: |
     The confirmed contract between the Sensebod Offline frontend and the backend on the Raspberry Pi
     ("DLH in a bag"). Proposed by the System Architecture Agent on 12 Nov 2026, revised 13 Nov 2026
-    (revision 1, answers ARCHITECTURE-VERIFICATION-1) and again (revision 2, answers ARCHITECTURE-VERIFICATION-2;
-    see REVISION-2-RESPONSE.md), **awaiting reverification**. Item-by-item decisions against the frontend's proposal
+    (revision 1, answers verification round 1) and again (revision 2, answers verification round 2), **awaiting reverification**. Item-by-item decisions against the frontend's proposal
     (`docs/API-CONTRACT.md`) are in `docs/system/API-DECISIONS.md`. Field names follow
     `app/src/shared/api/types.ts` exactly.
     The contract is independent of the backend runtime (the owner's choice is Node.js with Express, OWNER-1).

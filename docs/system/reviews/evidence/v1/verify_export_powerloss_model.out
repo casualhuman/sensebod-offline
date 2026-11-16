@@ -1,2 +1,0 @@
-documented order: 200 runs (8 step boundaries x 25); violations by boundary: none
-CONTROL: .part not fsynced before rename: 200 runs (8 step boundaries x 25); violations by boundary: {7: {'ready file whose SHA-256 does not match (passed the size-only boot check)'}, 8: {'ready file whose SHA-256 does not match (passed the size-only boot check)'}}

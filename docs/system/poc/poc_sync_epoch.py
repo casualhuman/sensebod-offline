@@ -19,7 +19,7 @@ Scenarios:
       5a CONTROL new-epoch without re-stamping (revision-3 text)                   -> name removal LOST at office
       5b new-epoch that re-stamps every row/tombstone changed since the last
          replacement (seq > bag_meta.epoch_base_seq) under the new epoch          -> removal and progress reach office
-The Bag/Office class interface is unchanged, so reviews/evidence/v2/verify_epoch_restore.py still runs against it.
+The Bag/Office class interface is unchanged, so the verifier's verify_epoch_restore.py still runs against it.
 """
 import copy, secrets
 
@@ -109,7 +109,7 @@ def scenario(lift):
 
 
 def fresh_card_restore(rule, clash_check=False):
-    """The verifier's case (reviews/evidence/v2/verify_epoch_restore.py): card 1 recovers once (epoch 2),
+    """The verifier's case: card 1 recovers once (epoch 2),
     B2 reaches the office, card 1 dies, a fresh card is restored from the older B1."""
     office = Office(clash_check)
     card1 = Bag()
@@ -137,7 +137,7 @@ def fresh_card_restore(rule, clash_check=False):
 
 
 def clash_remedy(restamp):
-    """The verifier's case (reviews/evidence/v4/verify_new_epoch_remedy.py): a fresh-card restore with a stale
+    """The verifier's case: a fresh-card restore with a stale
     registry reuses epoch 2; while the clash is undetected the card records changes; the office refuses the
     clashing backup; the technician runs new-epoch; the next backup is imported."""
     office = Office(clash_check=True)

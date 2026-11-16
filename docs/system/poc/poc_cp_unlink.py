@@ -1,7 +1,7 @@
 """Throwaway PoC for V-019 (revision 2): Child protection counts must not share any ordering with personal data.
 Run: python3 -I poc_cp_unlink.py   (Mac; real SQLite files in WAL mode, created next to this script in work_cp/)
 
-Replays the verifier's afternoon (reviews/evidence/v2/verify_cp_seq_link.py): three saved learners write progress;
+Replays the verifier's afternoon: three saved learners write progress;
 Fatmata opens a Child protection lesson between two of her own progress writes.
 
   v1 design (revision 1): counts in the main database, stamped with the global change_seq.

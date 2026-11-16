@@ -1,6 +1,0 @@
-R-3a as written (busy_timeout=20, per-request) burst  n=200 ok=200 attempts=258 max wait=1523 ms  max event-loop lag=1518 ms
-busy_timeout=0, per-request retry            burst  n=200 ok=200 attempts=2688 max wait=1744 ms  max event-loop lag=9 ms
-busy_timeout=20 + single-flight gate         burst  n=200 ok=200 attempts=211 max wait=1574 ms  max event-loop lag=29 ms
-R-3a as written (busy_timeout=20, per-request) steady n=60 ok=60 attempts=117 max wait=1534 ms  max event-loop lag=155 ms
-busy_timeout=0, per-request retry            steady n=60 ok=60 attempts=567 max wait=1701 ms  max event-loop lag=9 ms
-busy_timeout=20 + single-flight gate         steady n=60 ok=60 attempts=70 max wait=1507 ms  max event-loop lag=30 ms

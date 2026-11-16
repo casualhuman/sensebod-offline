@@ -1,6 +1,6 @@
 # Safe download of user data, backup and restore — with power loss
 
-Version 0.6 · 13 Nov 2026 · System Architecture Agent · status: **revision 5 (V-030…V-036; REVISION-5-RESPONSE.md); revision 4: OWNER-2…6**
+Version 0.6 · 13 Nov 2026 · System Architecture Agent · status: **revision 5 (V-030…V-036); revision 4: OWNER-2…6**
 
 Answers the owner's requirement (DESIGN-DECISIONS §4): *"a way to download safely user data from the server by the admin, accounting for power loss also"*. Also covers power loss for uploads, the database, updates and progress writes (§15).
 
@@ -424,7 +424,7 @@ sequenceDiagram
 ```
 
 Rules:
-- The old `-wal` and `-shm` files **must** be removed (after a `TRUNCATE` checkpoint, with all connections closed) before the restored file is renamed in; otherwise SQLite replays the old WAL onto the restored database (shown by the verifier: `reviews/evidence/v1/verify_sqlite.out` V-T3).
+- The old `-wal` and `-shm` files **must** be removed (after a `TRUNCATE` checkpoint, with all connections closed) before the restored file is renamed in; otherwise SQLite replays the old WAL onto the restored database (measured in verification V-T3).
 - The new epoch is greater than the backup's epoch, the bag's current epoch **and the highest epoch the office has imported for this bag** (from the signed `bag-registry.json` the technician carries, or a typed `--min-epoch`; without either the CLI refuses unless the technician states that no backup of this bag ever reached the office). Only with the office's number does the new lineage sort after everything the office has seen; v0.2's rule `max(backup, bag) + 1` did not, on a fresh card (V-008 remainder; `poc/poc_sync_epoch.out` scenarios 2–3). A new random `epoch_nonce` lets the office detect and stop any remaining clash (scenario 4).
 - If the bag holds learners that are not in the backup, the confirmation says so with the count: "This bag has 12 learners that are not in the backup. They will be lost."
 - `bag_id` is kept from the backup (a replacement card becomes the same bag). The CLI warns that the old card must not be used again in the field.

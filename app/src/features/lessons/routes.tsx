@@ -4,8 +4,7 @@
  * This file is the only thing the app router knows about this feature, and
  * the app router already loads it lazily, the first time a /lesson URL is
  * opened. The two screens are imported directly rather than through a second
- * `lazy()`: the whole feature is then ONE request (measured in
- * docs/reports/stream-3-lesson-players.md) instead of three small ones in a
+ * `lazy()`: the whole feature is then ONE request (measured) instead of three small ones in a
  * row, which matters more on the bag's Wi-Fi than the few kilobytes a
  * learner might not need. Every lesson after the first downloads no code.
  */

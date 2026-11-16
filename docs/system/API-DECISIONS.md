@@ -1,6 +1,6 @@
 # API decisions: the frontend's proposed contract, item by item (deliverable D)
 
-Version 0.4 · 13 Nov 2026 (revision 4: OWNER-2…6) · System Architecture Agent · status: **revision 2 (answers ARCHITECTURE-VERIFICATION-2; see REVISION-2-RESPONSE.md), awaiting reverification**
+Version 0.4 · 13 Nov 2026 (revision 4: OWNER-2…6) · System Architecture Agent · status: **revision 2 (answers verification round 2), awaiting reverification**
 
 Input: `docs/API-CONTRACT.md` (proposed by frontend stream 1, built against the mock) and `app/src/shared/api/types.ts` (field-level source). Output: the confirmed contract `openapi.yaml` (OpenAPI 3.0.3, version 0.4.0; 53 paths, 66 operations, 91 schemas; parsed with Ruby's YAML loader, every `$ref` resolved, operationIds unique; not run through an OpenAPI linter, none was available offline).
 

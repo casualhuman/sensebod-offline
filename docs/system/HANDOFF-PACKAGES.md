@@ -95,7 +95,7 @@ Phase 2 network sync: **do not build** until O-4 is answered.
 
 ## QA — Testing
 
-**Read:** SYSTEM-ARCHITECTURE §14; DATA-EXPORT §18; Reviewer B's evidence scripts (`docs/reviews/evidence/b/`).
+**Read:** SYSTEM-ARCHITECTURE §14; DATA-EXPORT §18.
 
 | # | Work | Acceptance criteria |
 |---|---|---|
@@ -110,7 +110,7 @@ Phase 2 network sync: **do not build** until O-4 is answered.
 
 ## Deferred to the backend build (owner decision, 13 Nov 2026)
 
-The owner chose to leave the last two Low findings from verification round 8 (`reviews/ARCHITECTURE-VERIFICATION-5.md`, "Round 8") to the backend implementation, not another design revision:
+The owner chose to leave the last two Low findings from verification round 8 to the backend implementation, not another design revision:
 
 - **V-039 (Low):** a power cut while the clock is being set, or a hand-set date written to the RTC, can turn a hand-set date into "trusted" time; plain NTP over an uplink is also trusted. Build: record the source of each clock change durably before applying it, and keep a hand-set date untrusted for expiry until confirmed by a later independent source.
 - **V-038 (Low, partial):** restate the "I am at the bag" guessing bound keyed on subnet size (rotating addresses across both subnets gives ~1.4 × 10^-10 per day, still negligible), and cap the number of honoured stick insertions per window.

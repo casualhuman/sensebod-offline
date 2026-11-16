@@ -69,8 +69,8 @@ const textFiles = files.filter((file) => /\.(html|js|css|svg|json|txt|vtt)$/.tes
 const external = new Map();
 for (const file of textFiles) {
   // Games are other projects' code, kept as written: their comments and licence headers name web
-  // addresses. Each game is checked for real network use when it is installed (docs/GAMES.md, and
-  // docs/reviews/games/), not by this scan of the app's own output.
+  // addresses. Each game is checked for real network use when it is installed (docs/GAMES.md),
+  // not by this scan of the app's own output.
   if (path.relative(dist, file).split(path.sep)[0] === 'games') continue;
   const text = await fs.readFile(file, 'utf8');
   for (const match of text.matchAll(/(?:https?:)?\/\/[a-z0-9.-]+\.[a-z]{2,}[^\s"'`)<>\\]*/gi)) {

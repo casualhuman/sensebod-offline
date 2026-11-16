@@ -1,6 +1,6 @@
 # Sensebod Offline
 
-Sensebod Offline, by EasySTEM, is a learning site that works with no internet. It runs on a Raspberry Pi 5 carried in a bag ("DLH in a bag"). The Pi makes its own Wi-Fi; phones, tablets and laptops join it and open the site in a browser. It is built for rural Sierra Leone: old Android phones, shared devices, unreliable power and no connectivity.
+Sensebod Offline, by EasySTEM, is a learning site that works with no internet. It runs on a Raspberry Pi carried in a bag ("DLH in a bag"). The Pi makes its own Wi-Fi; phones, tablets and laptops join it and open the site in a browser. It is built for rural Sierra Leone: old Android phones, shared devices, unreliable power and no connectivity.
 
 **Status: in development.** The app and the backend run together on a laptop and pass their tests. Nothing has been run on a Raspberry Pi or on a real Android 8 phone yet; see [What is not done](#what-is-not-done).
 
@@ -84,7 +84,7 @@ Games live in `app/public/games/<id>/`, one folder per game, and are listed in `
 | Dino Runner | wayou/t-rex-runner | BSD-3-Clause |
 | Clumsy Bird | ellisonleao/clumsy-bird | GPL-3.0 |
 
-How to add a game, and the rules a game must meet, are in [app/docs/GAMES.md](app/docs/GAMES.md). The verification reports are in [docs/reviews/games/](docs/reviews/games/). Some pictures, sounds and fonts inside these games carry no licence statement of their own in their source projects; the reports list them.
+How to add a game, and the rules a game must meet, are in [app/docs/GAMES.md](app/docs/GAMES.md). Some pictures, sounds and fonts inside these games carry no licence statement of their own in their source projects.
 
 ## Where to read more
 
@@ -98,12 +98,12 @@ How to add a game, and the rules a game must meet, are in [app/docs/GAMES.md](ap
 
 ## What is not done
 
-- **No run on a Raspberry Pi.** Everything was verified on a Mac. The deployment files (systemd units, the nginx rule for games) are not finished.
+- **No run on a Raspberry Pi.** The design is for a Raspberry Pi in general (the current kit holds a Pi 5; a Pi 4 with 2 GB or more is also in scope), but everything so far was verified on a Mac. The deployment files (systemd units, the nginx rule for games) are not finished.
 - **No run on Android 8 / Chrome 58 or on a real phone.** The code is written for that floor and checked by reading and by tests in a current browser, not on the old one.
 - **USB paths are untested**: backup to a stick, content packs and restore have only been exercised with files on a laptop.
 - **The update tool is not built**, and password reset over the internet is left for a later phase.
 - **A learner who forgets their secret number has no way back yet**; there is no staff screen to reset it.
-- **Open review findings** are listed in `backend/docs/BUILD-STATUS.md` and `docs/reviews/`.
+- **Open review findings** are listed in `backend/docs/BUILD-STATUS.md`.
 
 ## Licence
 

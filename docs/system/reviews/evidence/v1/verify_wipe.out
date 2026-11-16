@@ -1,2 +1,0 @@
-reader_open=False: checkpoint=(0, 0, 0) password present per file={'live.sqlite3-wal': False, 'live.sqlite3-shm': False, 'live.sqlite3': False} sizes={'live.sqlite3-wal': 0, 'live.sqlite3-shm': 32768, 'live.sqlite3': 12288}
-reader_open=True: checkpoint=(1, 6, 5) password present per file={'live.sqlite3-wal': True, 'live.sqlite3-shm': False, 'live.sqlite3': False} sizes={'live.sqlite3-wal': 24752, 'live.sqlite3-shm': 32768, 'live.sqlite3': 12288}

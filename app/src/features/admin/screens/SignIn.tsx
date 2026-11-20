@@ -10,7 +10,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { adminApi, ApiError, describeError } from '@shared/api';
 import { Button, LoadingState, Message } from '@shared/components';
-import { IconArrowRight, IconInfoMark, IconLock } from '@shared/icons';
+import { IconArrowRight, IconLock } from '@shared/icons';
 import { Link, navigate, paths, useQuery } from '@shared/router';
 import { adminPaths, safeNextPath } from '../adminPaths';
 import { InputField } from '../components';
@@ -141,10 +141,7 @@ export default function SignIn() {
 
         <div className="adm-signin__notes adm-stack">
           <p className="adm-note">
-            <IconInfoMark size={22} />
-            <span>
-              <strong className="adm-strong">Learners never need this page.</strong> Learning works without signing in. <Link to={paths.home()}>Go to the learning site</Link>
-            </span>
+            <Link to={paths.home()}>Go to the learning site</Link>
           </p>
           <p className="adm-note">
             <IconLock size={22} />

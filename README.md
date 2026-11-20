@@ -95,6 +95,7 @@ How to add a game, and the rules a game must meet, are in [app/docs/GAMES.md](ap
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): the app's architecture and browser target
 - [backend/README.md](backend/README.md) and [backend/docs/BUILD-STATUS.md](backend/docs/BUILD-STATUS.md): the backend and what is built
 - [HANDOFF.md](HANDOFF.md): the designer's handoff note for the design boards
+- [docs/DEPLOY-ONLINE-DEMO.md](docs/DEPLOY-ONLINE-DEMO.md): the online demo (static site) and the online test server (Docker), for testing only; the Pi build is unchanged
 
 ## What is not done
 

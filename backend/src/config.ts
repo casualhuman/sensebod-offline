@@ -153,8 +153,13 @@ export function buildConfig(doc: Record<string, unknown>): Config {
   // The [dev] switches weaken a bag (the API serving files itself, pretend root helpers, an assumed clock).
   // They are honoured only when the process was started for development on purpose.
   const dev = out.dev as Record<string, unknown>;
-  const devUsed = dev.self_recover === true || dev.serve_files === true || dev.fake_privileged === true || dev.assume_clock !== null;
-  if (devUsed && process.env.SENSEBOD_OFFLINE_DEV !== '1') throw new ConfigError('The [dev] switches are for laptops only. Remove the [dev] table from this configuration.');
+  const laptopUsed = dev.self_recover === true || dev.serve_files === true;
+  const stubsUsed = dev.fake_privileged === true || dev.assume_clock !== null;
+  // The online test server (SENSEBOD_DEPLOY=online, deploy/online) may use the two switches a cloud
+  // machine needs: no root helpers (USB, power-off, clock, update) and a clock kept by NTP. Never on a bag.
+  const laptop = process.env.SENSEBOD_OFFLINE_DEV === '1';
+  const online = process.env.SENSEBOD_DEPLOY === 'online';
+  if ((laptopUsed && !laptop) || (stubsUsed && !laptop && !online)) throw new ConfigError('The [dev] switches are for laptops only. Remove the [dev] table from this configuration.');
   const v = <T>(table: string, key: string): T => (out[table] as Record<string, unknown>)[key] as T;
   return {
     bag: { name: v('bag', 'name') },

@@ -1,0 +1,47 @@
+# Sensebod Offline, ONLINE TEST SERVER. Run from the repository root:
+#
+#   cp deploy/online/online.env.example deploy/online/online.env   # then edit it
+#   docker compose -f deploy/online/compose.yaml up -d --build
+#
+# Site: http://localhost:8080 (on a VPS with a domain, add `--profile https` to get Caddy + HTTPS).
+# Reset to the demo lessons:  docker compose -f deploy/online/compose.yaml exec sensebod node deploy/supervise.mjs reset-demo
+# Guide: docs/DEPLOY-ONLINE-DEMO.md
+name: sensebod-offline-online
+
+services:
+  sensebod:
+    build:
+      context: ../..
+      dockerfile: deploy/online/Dockerfile
+    image: sensebod-offline-online
+    env_file:
+      - path: online.env
+        required: false
+    environment:
+      SENSEBOD_DEPLOY: online
+    ports:
+      - "127.0.0.1:${SENSEBOD_HTTP_PORT:-8080}:8080"
+    volumes:
+      - sensebod-data:/data
+    restart: unless-stopped
+    stop_grace_period: 40s
+
+  # Optional, for a plain VPS: Caddy gets a certificate for SENSEBOD_PUBLIC_HOST and forwards to the app.
+  caddy:
+    profiles: ["https"]
+    image: caddy:2
+    env_file:
+      - path: online.env
+        required: false
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [sensebod]
+    restart: unless-stopped
+
+volumes:
+  sensebod-data:
+  caddy-data:

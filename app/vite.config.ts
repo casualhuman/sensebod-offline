@@ -3,6 +3,7 @@ import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import { illustrationsPlugin } from './build/illustrationsPlugin.ts';
+import { demoPlugin } from './build/demoPlugin.ts';
 import { mockApiPlugin } from './build/mockApiPlugin.ts';
 
 const root = import.meta.dirname;
@@ -33,6 +34,13 @@ const proxy = REAL_API
       '/media': { target: REAL_API, changeOrigin: false },
     }
   : undefined;
+
+/**
+ * VITE_DEMO=1 (npm run build:demo): the online demo for static hosts, built into dist-demo/.
+ * Same code, plus demo/ (in-browser mock API and a "Demo" banner). Unset (the default, the Pi
+ * build): nothing below changes. See docs/DEPLOY-ONLINE-DEMO.md.
+ */
+const DEMO = process.env.VITE_DEMO === '1';
 
 const TARGETS = ['chrome >= 58', 'firefox >= 60', 'safari >= 11', 'edge >= 16'];
 
@@ -65,7 +73,9 @@ export default defineConfig({
     legacy({ targets: TARGETS, renderModernChunks: false }),
     illustrationsPlugin(path.resolve(root, '../illustrations')),
     // REAL_API set (npm run dev:real): no mock; /api and /media go to the real backend, as nginx does on the bag.
-    ...(REAL_API ? [] : [mockApiPlugin(path.resolve(root, 'mock'))]),
+    // VITE_DEMO=1: the mock runs inside the page instead (demo/), so `vite preview` behaves like a static host.
+    ...(REAL_API || DEMO ? [] : [mockApiPlugin(path.resolve(root, 'mock'))]),
+    ...(DEMO ? [demoPlugin(root)] : []),
   ],
   resolve: {
     alias: {
@@ -73,7 +83,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: DEMO ? 'dist-demo' : 'dist',
     // Keep CSS syntax at the Android 8 floor (no inset, no #rrggbbaa, no nesting).
     cssTarget: ['chrome58', 'safari11', 'firefox60'],
     // Never inline assets as data: URIs: the CSP then needs no `data:` source

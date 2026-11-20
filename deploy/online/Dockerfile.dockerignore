@@ -1,0 +1,14 @@
+# Used by `docker build -f deploy/online/Dockerfile .` (BuildKit reads <Dockerfile>.dockerignore).
+**/node_modules
+**/dist
+**/dist-demo
+backend/dev/data
+backend/dev/run
+.git
+.claude
+design
+briefs
+brand
+content
+docs
+**/.DS_Store

@@ -26,5 +26,5 @@
       "@mock/*": ["./mock/*"]
     }
   },
-  "include": ["src", "mock"]
+  "include": ["src", "mock", "demo"]
 }

@@ -52,6 +52,21 @@ describe('configuration (R-7)', () => {
       process.env.SENSEBOD_OFFLINE_DEV = saved;
     }
   });
+  test('the online test server (SENSEBOD_DEPLOY=online) may stub root helpers and the clock, nothing else', () => {
+    const saved = process.env.SENSEBOD_OFFLINE_DEV;
+    delete process.env.SENSEBOD_OFFLINE_DEV;
+    process.env.SENSEBOD_DEPLOY = 'online';
+    try {
+      assert.doesNotThrow(() => buildConfig({ dev: { fake_privileged: true, assume_clock: 'synced' } }));
+      assert.throws(() => buildConfig({ dev: { serve_files: true } }), /laptops only/);
+      assert.throws(() => buildConfig({ dev: { self_recover: true } }), /laptops only/);
+      delete process.env.SENSEBOD_DEPLOY;
+      assert.throws(() => buildConfig({ dev: { fake_privileged: true } }), /laptops only/);
+    } finally {
+      delete process.env.SENSEBOD_DEPLOY;
+      process.env.SENSEBOD_OFFLINE_DEV = saved;
+    }
+  });
 });
 
 describe('schema conformance (BE-2, DB-3)', () => {

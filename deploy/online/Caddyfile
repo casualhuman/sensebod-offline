@@ -1,0 +1,9 @@
+# Online test server only (deploy/online, `--profile https`). Caddy gets and renews the HTTPS
+# certificate for SENSEBOD_PUBLIC_HOST (its DNS record must point at this VPS) and passes
+# everything to the app container. Security headers, noindex and the optional site password
+# are done by the app container's nginx, so they are the same on every host.
+{$SENSEBOD_PUBLIC_HOST} {
+	encode gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy sensebod:8080
+}

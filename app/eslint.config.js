@@ -38,11 +38,11 @@ function boundaries(feature) {
 
 export default tseslint.config(
   // public/games holds other projects' code, kept as they wrote it (docs/GAMES.md).
-  { ignores: ['dist', 'coverage', 'node_modules', 'public/games'] },
+  { ignores: ['dist', 'dist-demo', 'coverage', 'node_modules', 'public/games'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['src/**/*.{ts,tsx}', 'mock/**/*.ts'],
+    files: ['src/**/*.{ts,tsx}', 'mock/**/*.ts', 'demo/**/*.ts'],
     languageOptions: { ecmaVersion: 2020, globals: globals.browser },
     plugins: { 'react-hooks': reactHooks },
     rules: {

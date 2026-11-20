@@ -17,7 +17,10 @@ import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const appDir = path.resolve(import.meta.dirname, '..');
-const dist = path.join(appDir, 'dist');
+// SENSEBOD_DEMO=1 (npm run build:demo): check the online demo in dist-demo/ instead. It carries the
+// mock API and its sample clips on purpose, so step 4 looks only for the dev screens there.
+const demo = process.env.SENSEBOD_DEMO === '1';
+const dist = path.join(appDir, demo ? 'dist-demo' : 'dist');
 const problems = [];
 
 async function walk(dir) {
@@ -47,7 +50,7 @@ if (!polyfills || !entry) {
 /* 2. inline scripts must match the CSP hashes in the deployment configs */
 const inline = [...html.matchAll(/<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]).filter((code) => code.trim());
 const hashes = inline.map((code) => `'sha256-${createHash('sha256').update(code).digest('base64')}'`);
-for (const config of ['deploy/nginx.conf', 'deploy/Caddyfile']) {
+for (const config of demo ? ['deploy/nginx.conf', 'deploy/Caddyfile', 'deploy/security-headers.conf'] : ['deploy/nginx.conf', 'deploy/Caddyfile']) {
   let text = '';
   try {
     text = await fs.readFile(path.join(appDir, config), 'utf8');
@@ -91,11 +94,12 @@ for (const hit of external.keys()) problems.push(`external URL in build output â
 const scripts = files.filter((file) => file.endsWith('.js'));
 for (const file of scripts) {
   const text = await fs.readFile(file, 'utf8');
-  for (const marker of ['Kitchen sink', '__dev', 'mock-session', '__mock/', 'sample-video.mp4']) {
+  for (const marker of demo ? ['Kitchen sink', '__dev'] : ['Kitchen sink', '__dev', 'mock-session', '__mock/', 'sample-video.mp4', 'data-demo-banner']) {
     if (text.includes(marker)) problems.push(`development-only code in ${path.relative(dist, file)} (found "${marker}")`);
   }
 }
-if (files.some((file) => /[\\/]media[\\/]/.test(path.relative(dist, file)))) problems.push('mock media was copied into dist/');
+// Only a top-level media/ folder is mock media; games keep their own media/ folders (e.g. Blockly's sounds).
+if (!demo && files.some((file) => /^media[\\/]/.test(path.relative(dist, file)))) problems.push('mock media was copied into dist/');
 
 /* 5. pre-compress */
 let saved = 0;

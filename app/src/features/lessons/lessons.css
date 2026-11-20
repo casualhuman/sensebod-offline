@@ -1400,8 +1400,8 @@
   justify-content: center;
   font-weight: 700;
 }
-.les-package__loading .sb-icon {
-  margin-right: 10px;
+.les-package__loading .sb-dots {
+  margin-right: 14px;
 }
 .les-package__start {
   padding: 28px 18px 8px;

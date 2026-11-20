@@ -120,8 +120,8 @@
   position: static;
   min-height: 64px;
 }
-.gam-player__loading .sb-icon {
-  margin-right: 10px;
+.gam-player__loading .sb-dots {
+  margin-right: 14px;
 }
 .gam-player__body {
   padding: 18px;

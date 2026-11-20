@@ -12,8 +12,8 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import type { Lesson } from '@shared/api';
-import { Button, EmptyState, Message } from '@shared/components';
-import { IconFullScreen, IconInfo, IconSpinner, IconTick, IconTryAgain, IconTryIt } from '@shared/icons';
+import { Button, EmptyState, LoadingDots, Message } from '@shared/components';
+import { IconFullScreen, IconInfo, IconTick, IconTryAgain, IconTryIt } from '@shared/icons';
 import { navigate, paths } from '@shared/router';
 import { stopListening } from '@shared/shell';
 import { IconExitFullScreen } from '../parts/icons';
@@ -82,7 +82,7 @@ export default function TryItPackage({ lesson, packageUrl }: { lesson: Lesson; p
         <div ref={boxRef} className="les-package__box">
           {loaded ? null : (
             <p className="les-package__loading" role="status">
-              <IconSpinner size={32} />
+              <LoadingDots />
               Opening the activity…
             </p>
           )}

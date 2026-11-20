@@ -129,9 +129,10 @@
   color: var(--sb-red-text);
 }
 
-/* Loading: words with a spinner, never a blank screen */
+/* Loading: bouncing brand dots with words under them, never a blank screen */
 .sb-loading {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 160px;
@@ -139,9 +140,55 @@
   color: var(--sb-accent-text);
   font-size: 19px;
   font-weight: 700;
+  text-align: center;
 }
-.sb-loading .sb-icon {
-  margin-right: 12px;
+.sb-loading .sb-dots {
+  margin-bottom: 18px;
+}
+
+/* The dots: blue, gold, green. They bounce only when motion is allowed. */
+.sb-dots {
+  display: inline-flex;
+  align-items: flex-end;
+  flex: none;
+  height: 34px;
+}
+.sb-dots__dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--sb-blue);
+}
+.sb-dots__dot + .sb-dots__dot {
+  margin-left: 12px;
+}
+.sb-dots__dot:nth-child(2) {
+  background: var(--sb-gold);
+}
+.sb-dots__dot:nth-child(3) {
+  background: var(--sb-green);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sb-dots__dot {
+    animation: sb-bounce 1.2s ease-in-out infinite;
+  }
+  .sb-dots__dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .sb-dots__dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+}
+@keyframes sb-bounce {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-16px);
+  }
 }
 
 /* "Everything here is in this bag. No internet needed." */

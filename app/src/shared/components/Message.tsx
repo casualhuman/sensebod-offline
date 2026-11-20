@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { describeError } from '../api/client';
-import { IconBag, IconError, IconInfoMark, IconSpinner, IconTick, IconTryAgain } from '../icons';
+import { IconBag, IconError, IconInfoMark, IconTick, IconTryAgain } from '../icons';
 import { Button } from './Button';
 import { cx } from './cx';
 
@@ -38,12 +38,28 @@ export function Message({ tone, title, children, action, className }: MessagePro
   );
 }
 
-/** Loading: a spinner with words. Use for a whole screen or a section while data arrives. */
+/**
+ * Three brand dots (blue, gold, green) that bounce in turn: the loader for a
+ * screen, a section, a game or an activity. Pure CSS, so it costs nothing on
+ * old phones; the dots sit still when the phone asks for less motion.
+ * Small in-place waits (a button, an upload row) keep IconSpinner.
+ */
+export function LoadingDots({ className }: { className?: string }) {
+  return (
+    <span className={cx('sb-dots', className)} aria-hidden="true">
+      <span className="sb-dots__dot" />
+      <span className="sb-dots__dot" />
+      <span className="sb-dots__dot" />
+    </span>
+  );
+}
+
+/** Loading: bouncing dots with words under them. Use for a whole screen or a section while data arrives. */
 export function LoadingState({ label = 'Loading…', className }: { label?: string; className?: string }) {
   return (
     <div className={cx('sb-loading', className)} role="status">
-      <IconSpinner size={32} />
-      {label}
+      <LoadingDots />
+      <span>{label}</span>
     </div>
   );
 }

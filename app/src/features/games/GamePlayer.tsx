@@ -18,8 +18,8 @@
  * missing, so the bag is asked for the headers first.
  */
 import { useEffect, useRef, useState } from 'react';
-import { Button, EmptyState, Message } from '@shared/components';
-import { IconInfo, IconSpinner, IconTryAgain } from '@shared/icons';
+import { Button, EmptyState, LoadingDots, Message } from '@shared/components';
+import { IconInfo, IconTryAgain } from '@shared/icons';
 import { stopListening } from '@shared/shell';
 import type { Game } from './catalogue';
 
@@ -76,7 +76,7 @@ export function GamePlayer({ game }: { game: Game }) {
         <div className="gam-player__box">
           {loaded ? null : (
             <p className="gam-player__loading" role="status">
-              <IconSpinner size={32} />
+              <LoadingDots />
               Opening the game…
             </p>
           )}
@@ -116,7 +116,7 @@ export function GamePlayer({ game }: { game: Game }) {
           </Message>
         ) : (
           <p className="gam-player__loading gam-player__loading--plain" role="status">
-            <IconSpinner size={32} />
+            <LoadingDots />
             Opening the game…
           </p>
         )}

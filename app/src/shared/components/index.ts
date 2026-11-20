@@ -15,7 +15,7 @@ export { FactsRow, LessonHeaderPill, LessonTypeBadge, LessonTypeIcon, StateChip,
 export type { ChipState } from './LessonTags';
 export { FILTER_TYPES, formatLength, formatPages, LESSON_TYPES, lessonActionLabel, lessonPositionLabel, takesPart } from './lessonTypes';
 export type { LessonTypeInfo } from './lessonTypes';
-export { EmptyState, ErrorState, LoadingState, Message, SuccessState } from './Message';
+export { EmptyState, ErrorState, LoadingDots, LoadingState, Message, SuccessState } from './Message';
 export type { EmptyStateProps, ErrorStateProps, MessageProps, MessageTone } from './Message';
 export { Progress, ProgressSteps, ProgressTrack, summariseStates } from './Progress';
 export type { ProgressProps, ProgressStepsProps } from './Progress';

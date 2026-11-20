@@ -8,3 +8,5 @@ coverage/
 
 # Games are other projects' ready-made files: a game's own dist/ folder is part of the game.
 !public/games/**/dist/
+.vercel
+.env*

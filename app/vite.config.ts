@@ -37,7 +37,7 @@ const proxy = REAL_API
 
 /**
  * VITE_DEMO=1 (npm run build:demo): the online demo for static hosts, built into dist-demo/.
- * Same code, plus demo/ (in-browser mock API and a "Demo" banner). Unset (the default, the Pi
+ * Same code, plus demo/ (in-browser mock API). Unset (the default, the Pi
  * build): nothing below changes. See docs/DEPLOY-ONLINE-DEMO.md.
  */
 const DEMO = process.env.VITE_DEMO === '1';

@@ -6,5 +6,4 @@
  * first request, so it is imported first.
  */
 import './installDemoApi.ts';
-import './banner.ts';
 import '../src/app/main.tsx';

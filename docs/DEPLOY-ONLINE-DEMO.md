@@ -19,9 +19,9 @@ Sensebod Offline is built for a Raspberry Pi with no internet. This guide is for
 | `VITE_DEMO=1` (set by `npm run build:demo`) | not set: `npm run build` makes exactly the Pi build in `app/dist/` | the demo build in `app/dist-demo/` |
 | `SENSEBOD_DEPLOY=online` (set by the Docker image) | not set: the backend refuses every `[dev]` switch, as before | the backend accepts two switches only: `fake_privileged` and `assume_clock` |
 
-- The Pi build still has no service worker, is still the single Chrome 58 legacy build, and its default configuration is unchanged. `npm run build` now also fails if the demo banner ever gets into `app/dist/`.
+- The Pi build still has no service worker, is still the single Chrome 58 legacy build, and its default configuration is unchanged.
 - The demo code lives in `app/demo/` and is reached only from the demo build's entry point. The eslint rule that keeps `src/` from importing the mock still applies.
-- The test server uses the normal Pi build of the app (no demo flag, no banner).
+- The test server uses the normal Pi build of the app (no demo flag).
 
 ---
 
@@ -32,7 +32,7 @@ Sensebod Offline is built for a Raspberry Pi with no internet. This guide is for
 `npm run build:demo` builds the same app, but starts it at `app/demo/main.ts`, which:
 
 1. answers every `/api/...` call inside the browser with the mock API that development and tests already use (`app/mock/handler.ts`), so no server is needed;
-2. shows a small dark strip at the top of every page: **"Demo — sample data, nothing is saved. Staff sign-in: admin / sensebod"**. Those are the mock's fixed demo credentials, not a real account.
+2. shows no demo strip (removed at the owner's request, 20 Nov 2026). Test sign-ins: staff **admin / sensebod**; learner **Aminata Kamara / 1234** (every sample learner uses 1234). These are the mock's fixed demo values, not real accounts.
 
 The build also writes, into `app/dist-demo/`:
 

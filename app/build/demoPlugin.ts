@@ -6,7 +6,7 @@ import { listFiles } from './staticDir.ts';
 /**
  * Online demo build only (VITE_DEMO=1, `npm run build:demo`). The Pi build never loads this plugin.
  *
- *  - starts the page at demo/main.ts (in-browser mock API + demo banner) instead of src/app/main.tsx;
+ *  - starts the page at demo/main.ts (in-browser mock API) instead of src/app/main.tsx;
  *  - tells search engines not to index the page;
  *  - puts the bag's Content-Security-Policy in a <meta> tag, so it covers the app page only and
  *    never the games' own pages (static hosts merge header rules, which would stack two policies);

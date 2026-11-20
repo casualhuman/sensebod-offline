@@ -38,7 +38,7 @@ function boundaries(feature) {
 
 export default tseslint.config(
   // public/games holds other projects' code, kept as they wrote it (docs/GAMES.md).
-  { ignores: ['dist', 'dist-demo', 'coverage', 'node_modules', 'public/games'] },
+  { ignores: ['dist', 'dist-demo', '.vercel', 'coverage', 'node_modules', 'public/games'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
